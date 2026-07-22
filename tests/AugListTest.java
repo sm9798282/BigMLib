@@ -64,7 +64,7 @@ public class AugListTest implements MultiTest {
         testCountsOfElements();
         testDistinctCopy();
         testDistinctSelf();
-        testEnsureCapacity();
+        // testEnsureCapacity();
         testEquals();
         testFilterCopy();
         testFilterSelf();
@@ -113,7 +113,7 @@ public class AugListTest implements MultiTest {
         testToArrayGivenType();
 
         testToString();
-        testTrimToSize();
+//         testTrimToSize();
 
         testWithout();
         testWithoutAll();
@@ -340,14 +340,6 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr, "[the, quick, brown, fox, jumps, over, lazy dog]");
     }
 
-    @Test
-    public void testEnsureCapacity() {
-        setupTestData();
-        // As there is no way to measure the outcome of ArrayList<T>.EnsureCapacity,
-        // (As the relevant fields are private)
-        // This test is an auto-pass.
-    }
-
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
@@ -430,8 +422,6 @@ public class AugListTest implements MultiTest {
          * 145
          * -56
          * 43
-         * + Fire (+1)
-         * + Water (2.0x)
          */
         testDataDouble.forEach(System.out::println);
         testDataStr.forEach(System.out::println);
@@ -1138,13 +1128,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-    }
 
-    @Test
-    public void testTrimToSize() {
-        setupTestData();
-        // There is no way to see how this method performs (due to being type void and the relevant field being private)
-        // So this test auto-succeeds
     }
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -1223,4 +1207,19 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutWhere(i -> 18 <= i && i <= 20).equals("[7, 11, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).equals(testDataInt));
 	}
+
+    // @Test
+    // public void testEnsureCapacity() {
+    //     setupTestData();
+    //     // As there is no way to measure the outcome of ArrayList<T>.EnsureCapacity,
+    //     // (As the relevant fields are private)
+    //     // This test is an auto-pass.
+    // }
+
+    // @Test
+    // public void testTrimToSize() {
+    //     setupTestData();
+    //     // There is no way to see how this method performs (due to being type void and the relevant field being private)
+    //     // So this test auto-succeeds
+    // }
 }
