@@ -1128,7 +1128,11 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-
+        assertEquals(new AugList<String>(""), "[]");
+        assertEquals(new AugList<String>("", ""), "[, ]");
+        assertEquals(new AugList<String>("", "", ""), "[, , ]");
+        assertEquals(new AugList<String>("", ",", ",,"), "[, ,, ,,]");
+        assertEquals(new AugList<String>(" ", ", ", "  ,, "), "[ , , ,   ,, ]");
     }
 
 	@SuppressWarnings("unlikely-arg-type")
