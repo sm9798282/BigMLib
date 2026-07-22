@@ -21,9 +21,9 @@ import java.util.stream.Stream;
 
 /**
  * An augmented ArrayList which implements most ArrayList methods.
- * <p>(Does not implement {@code addLast()}, {@code getFirst()} & {@code removeFirst()})
+ * <p>(Does not implement {@code addLast()}, {{@code ensureCapacity()}, {@code getFirst()}, {@code trimToSize()} & {@code removeFirst()})
  * <p>Changes:
- * <p>{@code boolean ArrayList<T>.add()} (which always returned {@code true}) has been altered to {@code void AugList<T>.add()}.</p>
+ * <p>{@code boolean add()} (which always returned {@code true}) has been altered to {@code AugList<T> add()}.</p>
  * <p>{@code clone()} and {@code subList()} produce an {@code AugList<T>} rather than an {@code List<T>}.</p>
  * <p>Overrides {@code equals()}, which is more lenient than {@code ArrayList.equals()} and can match AugLists, Lists and Strings.
  * Notably this means {@code this.equals(this.clone())}.</p>
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  * <p>Adds varargs variations of {@code addAll}, {@code containsAll}.</p>
  * <p>Adds {@code allSatisfy}, {@code anySatisfy}, {@code distinct}, {@code filter}, {@code getAndAppendIfEmpty}, {@code pairUp},
  * {@code setDifference}, {@code setIntersect}, {@code setUnion}, {@code subListToEnd}, {@code skipWhile}, {@code takeWhile}</p>
- * <p>An example of the Decorator design pattern.
+ * <p>Decorates an ArrayList.
  */
 public class AugList<T> implements Iterable<T> {
     /**
@@ -56,7 +56,7 @@ public class AugList<T> implements Iterable<T> {
         this.ls = ls;
     }
 
-     /**
+    /**
      * Create an AugList from the given ArrayList<T> {@code ls}
      * @param   ls
      *          The list of objects that this AugList will have
@@ -74,24 +74,6 @@ public class AugList<T> implements Iterable<T> {
     public AugList(T... a) {
         this.ls = new ArrayList<T>(Arrays.asList(a));
     }
-
-    // /**
-    //  * Create a new AugList that is the given length, filled with the given value.
-    //  * @param   fill
-    //  *          What to fill this AugList with.
-    //  * @param   size
-    //  *          How long the AugList should be.
-    //  * @throws  IllegalArgumentException
-    //  *          {@code size < 0}
-    //  */
-    // public AugList(T fill, int size) {
-    //     if (size < 0) {
-    //         throw new IllegalArgumentException("size must be positive.");
-    //     }
-    //     for (int i = 0; i < size; i++) {
-    //         this.ls.add(fill);
-    //     }
-    // }
 
     /**
      * Create a new AugList from an Enumeration over some sequence.
@@ -117,7 +99,6 @@ public class AugList<T> implements Iterable<T> {
         }
     }
 
-    // Does not return true like ArrayList.add() (Since why would it?)
     /**
      * Appends {@code e} to the end of this AugList.
      *
@@ -133,7 +114,6 @@ public class AugList<T> implements Iterable<T> {
     
     /**
      * Appends all items in {@code pAugList} to this AugList.
-     * <p>For a non-destructive method, use {@code setUnion}.
      * @param   pAugList
      *          The AugList to append onto the end of this AugList.
      * @return  This list, with the given elements appended to it.
@@ -181,8 +161,6 @@ public class AugList<T> implements Iterable<T> {
     public AugList<Integer> allIndicesOf(T e) {
         AugList<Integer> ret = new AugList<Integer>();
         for (int i = 0; i < ls.size(); i++) {
-            // For some godforsaken reason,
-            // i.e. StringA.equals(StringB) and StringA == StringB act differently... What a pain.
             if (ls.get(i).equals(e)) {
                 ret.add(i);
             }
@@ -249,7 +227,7 @@ public class AugList<T> implements Iterable<T> {
      */
     public AugList<AugList<T>> chunk(int size) {
         if (size <= 0) {
-            throw new java.lang.IllegalArgumentException("size may not be smaller than 1.");
+            throw new java.lang.IllegalArgumentException("AugList<T>.chunk(int size): size may not be smaller than 1.");
         }
         AugList<AugList<T>> ret = new AugList<AugList<T>>();
         for (int i = 0; i < (int)Math.ceil(ls.size() / (size + 0d)); i++) {
@@ -387,7 +365,7 @@ public class AugList<T> implements Iterable<T> {
 
     /**
      * Creates a new AugList which is a copy of this AugList, except without duplicates.
-     * @return  A new Auglist with only the distinct elements in this AugList.
+     * @return  A new AugList with only the distinct elements in this AugList.
      * @apiNote Custom method that implements the functionality of C# function {@code IEnumerable<T>.Distinct()};
      */
     public AugList<T> distinctCopy() {
@@ -417,43 +395,13 @@ public class AugList<T> implements Iterable<T> {
         return ret;
     }
 
-    // I have no idea how to use this or why I would use this, so I have commented it out.
-    // /**
-    //  * Increases the maximum number of elements this AugList can take to {@code minCapacity}. 
-    //  * Does nothing if capacity is already sufficient.
-    //  * 
-    //  * @deprecated (Other methods already perform the same task.)
-    //  * @param   minCapacity
-    //  *          The minimum capacity this AugList is desired to have.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.ensureCapacity()}.
-    //  */
-    // public void ensureCapacity(int minCapacity) {
-    //     ls.ensureCapacity(minCapacity);
-    // }
-
-    // Was a part of an attempted change to .Equals() that went nowhere.
-    // /**
-    //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
-    //  */
-    // private class TypeFinder {
-    //     // This only works if we don't force a parameter on the AugList.
-    //     @SuppressWarnings({ "rawtypes", "unused" })
-    //     AugList genericAugList;
-    //     AugList<T> thisAugList;
-
-    //     public TypeFinder(@SuppressWarnings("rawtypes") AugList genericAugList, AugList<T> thisAugList) {
-    //         this.genericAugList = genericAugList;
-    //         this.thisAugList = thisAugList;
-    //     }
-    // }
-
     // (Overrides ArrayList<T>.equals()).
     /**
      * This method will accept an input if it is STRICTLY equal: Use isRearrangement() for a more lenient Equality comparer.
      */
     @Override
     /**
-     * For some reason it is not possible to change the hover-tooltip for Object.equals()
+     * In VSCode, it appears it is not be possible to change the hover-tooltip for Object.equals()
      */
     public boolean equals(Object o) {
         if (o instanceof AugList) {
@@ -464,34 +412,36 @@ public class AugList<T> implements Iterable<T> {
             if (ls.size() != oAsAugList.size()) {
                 return false;
             }
-            // (This has been commented out as I can't for the life of me figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
-            // // If they are, do they have the same generic type?
-            // try {
-            //     /**
-            //      * Credit: There's no way I would be able to do this without StackOverflow.
-            //      * Based off the following:
-            //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
-            //      * (Full reference coming eventually)
-            //      */
-            //     Class<?> testClass = TypeFinder.class;
-                
-            //     Field oALF = testClass.getDeclaredField("genericAugList");
-            //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
-            //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
-            //     System.out.println(oALClass.toString()); // class java.lang.String
+            // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
+            {
+                // // If they are, do they have the same generic type?
+                // try {
+                //     /**
+                //      * Credit: There's no way I would be able to do this without StackOverflow.
+                //      * Based off the following:
+                //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
+                //      */
+                //     Class<?> testClass = TypeFinder.class;
+                    
+                //     Field oALF = testClass.getDeclaredField("genericAugList");
+                //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
+                //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
+                //     System.out.println(oALClass.toString()); // class java.lang.String
 
-            //     Field tALF = testClass.getDeclaredField("thisAugList");
-            //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
-            //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
-            //     System.out.println(tALClass.toString()); // class java.lang.Integer
+                //     Field tALF = testClass.getDeclaredField("thisAugList");
+                //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
+                //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
+                //     System.out.println(tALClass.toString()); // class java.lang.Integer
 
-            //     // If the generic fields have different names, the lists are treated as unequal.
-            //     if (!oALClass.toString().equals(tALClass.toString())) {
-            //         return false;
-            //     }
-            // } catch (NoSuchFieldException e) {
-            //     return false;
-            // }
+                //     // If the generic fields have different names, the lists are treated as unequal.
+                //     if (!oALClass.toString().equals(tALClass.toString())) {
+                //         return false;
+                //     }
+                // } catch (NoSuchFieldException e) {
+                //     return false;
+                // }
+            }
+            
             // If they are, are the sequences identical?
             for (int i = 0; i < ls.size(); i++) {
                 if (ls.get(i) != oAsAugList.get(i)) {
@@ -593,30 +543,6 @@ public class AugList<T> implements Iterable<T> {
         return ls.getLast();
     }
 
-    // Currently no need for this method?
-    // /**
-    //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
-    //  * @param   index
-    //  *          The index of the item to get.
-    //  * @return  The value at that index (which will be the default value if {@code index >= this.size()})
-    //  * @throws  IllegalArgumentException
-    //  *          If {@code index < 0}
-    //  */
-    // public T getAndAppendIfEmpty(int index) {
-    //     if (index < 0) {
-    //         throw new IllegalArgumentException("index was negative.");
-    //     }
-    //     // Add empty entries until the given index if necessary.
-    //     if (index >= ls.size()) {
-    //         ArrayList<T> newLs = new ArrayList<T>(index + 1);
-    //         for (int i = 0; i < ls.size(); i++) {
-    //             newLs.set(i, ls.get(i));
-    //         }
-    //         ls = newLs;
-    //     }
-    //     return get(index);
-    // }
-
     /**
      * @return  The hash code of the underlying ArrayList.
      * @apiNote Encapsulates {@code ArrayList<T>.getLast()}.
@@ -638,7 +564,6 @@ public class AugList<T> implements Iterable<T> {
 
     /**
      * Inserts {@code e} at the specified position in this list, shifting other elements along if necessary.
-     *
      * @param   index
      *          Index at which the specified element is to be inserted.
      * @param   e
@@ -694,76 +619,6 @@ public class AugList<T> implements Iterable<T> {
         return ls.isEmpty();
     }
 
-    // Method currently unnecessary, so has been commented.
-    /**
-     * Finds if the two AugLists are in an Equivalence Relationship.
-     * @param   augListB
-     *          The second AugList.
-     * @return  {@code true} if the lists are in a EqRel, and {@code false} otherwise.
-     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.equals()}.
-     * @implNote If ~ is a relation (a mapping), then if it fulfils the following:
-     *           <p>Reflexive (x ~ x)
-     *           <p>Symmetric (x ~ y <=> y ~ x)
-     *           <p>Transitive (x ~ y ^ y ~ z => x ~ z)
-     *           <p>Consistent (x ~ y => x ~ y for as long as x, y are constant)
-     *           <p>Non-null equivalence ( x != null <=> x !~ null )
-     *           <p>Then they must be equivalent.
-     *           <p>Any such relation is called an equivalence relation.
-     *           <p>(Notably any such EqRel is a one to one mapping.)
-     */
-    // public boolean isEqRel(AugList<T> augListB) {
-        // if (ls.size() != augListB.size()) {
-        //     // If the two lists are different lengths, there is no world in which an EqRel can exist.
-        //     // So rather than wasting compute time, we can terminate early.
-        //     return false;
-        // }
-        // if (!this.allSatisfy(x -> x.equals(x)) || !augListB.allSatisfy(x -> x.equals(x))) { // Reflexive check
-        //     return false; // Should theoretically never trigger.
-        // }
-        // AugList<AugList<T>> allRelations = new AugList<AugList<T>>();
-        // for (int i = 0; i < ls.size(); i++) {
-        //     if (!ls.get(i).equals(ls.get(i)) || !augListB.get(i).equals(augListB.get(i))) { // Consistency check
-        //         return false; // (In theory this condition should never fail.)
-        //     }
-        //     allRelations.add(new AugList<T>());
-        //     // (Notably oAsAugList.size() == ls.size().)
-        //     for (int j = 0; j < augListB.size(); j++) {
-        //         if (ls.get(i).equals(augListB.get(j))) {
-        //             if (!ls.get(j).equals(augListB.get(i))) { // Symmetric check
-        //                 return false;
-        //             }
-        //             if ((ls.get(i) == null && augListB.get(j) != null) || (ls.get(i) != null && augListB.get(j) == null))
-        //             {
-        //                 // Non-null equivalence check
-        //                 return false;
-        //             }
-        //             allRelations.get(i).add(augListB.get(j)); // Setting up for Transitivity check
-        //         }
-        //     }
-        // }
-
-        // for (int i = 0; i < allRelations.size(); i++) { // Relations of i
-        //     for (int j = 0; j < allRelations.get(i).size(); j++) { // Relations of j
-        //         // For all relations of i, check all relations of j relate to them.
-        //         // (in other words, if i relates to j, are their relations equivalent?)
-        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().equals(allRelations.get(j).toString()))
-        //         {
-        //             // If i is equivalent to j but the list of equivalences of i is not the same as the list of equivalences of j,
-        //             // then Transitivity is broken, so return false.
-        //             return false;
-        //         }
-        //     }
-        // }
-        //
-        //return true;
-        //// Notably, this change means that as long as the correct elements are present, any reordering is considered valid.
-        //// I.e. [1,2] = [2,1]
-        //// For cases in which this is not desired behaviour, please use Equal().
-    //}
-
-    
-    // [7.11, -2.5, 2.0, 3.1415926, 1.0],
-    // [1.0, 2.0, 7.11, -2.5, 3.1415926]
     /**
      * Compares whether or not two lists have the same elements. (Order does not matter)
      * <p>For a stricter equality function, use {@code this.equals()}.</p>
@@ -774,7 +629,7 @@ public class AugList<T> implements Iterable<T> {
      */
     public boolean isRearrangement(AugList<T> otherAL) {
         if (ls.size() != otherAL.size()) {
-            // If the two lists are different lengths, there is no world in which an EqRel can exist.
+            // If the two lists are different lengths, there is no world in which they are rearrangements of eachother.
             // So rather than wasting compute time, we can terminate early.
             return false;
         }
@@ -1280,8 +1135,9 @@ public class AugList<T> implements Iterable<T> {
         return ret;
     }
 
-    // ArrayList<T>.toArray() without arguments is for all practical purposes useless (as an array of Objects is difficult to parse in any meaningful way), so is not implemented.
-    // That being said if I could instantiate an array of T (T[]) then I would encapsulate and override the toArray() method.
+    // ArrayList<T>.toArray() without arguments is for all practical purposes useless
+    // (as an array of Objects is difficult to parse in any meaningful way), so is not implemented.
+    // That being said, if I could instantiate an array of T (T[]), then I would encapsulate and override the toArray() method.
 
     /**
      * Create an array copy of this AugList with the specified output type.
@@ -1298,19 +1154,6 @@ public class AugList<T> implements Iterable<T> {
         return ls.toArray(arrType);
     }
 
-    // I have no idea how to use this and I don't have enough time to find it out.
-    // /**
-    //  * Create an array copy of this AugList via use of the given {@code generator}
-    //  * @param   generator
-    //  *          The generator by which the array will be made.
-    //  * @return  An array copy of this AugList.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.toArray(IntFunction<T[]>)}.
-    //  * @implNote I have no idea how this overload will be useful, or even how to use it.
-    //  */
-    // public T[] toArray(IntFunction<T[]> generator) {
-    //     return ls.toArray(generator);
-    // }
-
     // Returns this AugList as a string. Example outputs: "/", "[1,2,3,4]", "[a,b,c,d]"
     @Override
     public String toString() {
@@ -1324,19 +1167,8 @@ public class AugList<T> implements Iterable<T> {
         return ListAsString.substring(0, ListAsString.length() - 2) + "]";
     }
 
-    // I'm pretty sure this method is redundant, so I've commented it out.
-    // /**
-    //  * Reduces the allocated storage space to this AugList to the minimum possible.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.trimToSize()}.
-    //  * @deprecated (Other methods perform the same job)
-    //  */
-    // public void trimToSize() {
-    //     ls.trimToSize();
-    // }
-
     // Object.wait() and its parameterized overloads cannot be overridden and so are not implemented.
 
-    
     /**
      * Attempts to remove {@code o} from this AugList.
      * @param   o
@@ -1384,7 +1216,6 @@ public class AugList<T> implements Iterable<T> {
         return this;
     }
 
-    // Works the same as a pop operation from a stack, except can pop any element rather than the top element.
     /**
      * Removes the item at the given {@code index}, and shifts indices as necessary.
      * @param   index
@@ -1424,4 +1255,166 @@ public class AugList<T> implements Iterable<T> {
         ls.removeIf(filter);
         return this;
     }
+
+    // /**
+    //  * Create a new AugList that is the given length, filled with the given value.
+    //  * @param   fill
+    //  *          What to fill this AugList with.
+    //  * @param   size
+    //  *          How long the AugList should be.
+    //  * @throws  IllegalArgumentException
+    //  *          {@code size < 0}
+    //  */
+    // public AugList(T fill, int size) {
+    //     if (size < 0) {
+    //         throw new IllegalArgumentException("size must be positive.");
+    //     }
+    //     for (int i = 0; i < size; i++) {
+    //         this.ls.add(fill);
+    //     }
+    // }
+
+    // I have no idea how or why ensureCapacity would be used as it has no discernable impact on internal state.
+    // /**
+    //  * Increases the maximum number of elements this AugList can take to {@code minCapacity}.
+    //  * Does nothing if capacity is already sufficient.
+    //  * 
+    //  * @deprecated (Other methods already perform the same task.)
+    //  * @param   minCapacity
+    //  *          The minimum capacity this AugList is desired to have.
+    //  * @apiNote Encapsulates {@code ArrayList<T>.ensureCapacity()}.
+    //  */
+    // public void ensureCapacity(int minCapacity) {
+    //     ls.ensureCapacity(minCapacity);
+    // }
+
+    // Was a part of an attempted change to .Equals() that went nowhere.
+    // /**
+    //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
+    //  */
+    // private class TypeFinder {
+    //     // This only works if we don't force a parameter on the AugList.
+    //     @SuppressWarnings({ "rawtypes", "unused" })
+    //     AugList genericAugList;
+    //     AugList<T> thisAugList;
+
+    //     public TypeFinder(@SuppressWarnings("rawtypes") AugList genericAugList, AugList<T> thisAugList) {
+    //         this.genericAugList = genericAugList;
+    //         this.thisAugList = thisAugList;
+    //     }
+    // }
+
+    // Currently no need for this method?
+    // /**
+    //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
+    //  * @param   index
+    //  *          The index of the item to get.
+    //  * @return  The value at that index (which will be the default value if {@code index >= this.size()})
+    //  * @throws  IllegalArgumentException
+    //  *          If {@code index < 0}
+    //  */
+    // public T getAndAppendIfEmpty(int index) {
+    //     if (index < 0) {
+    //         throw new IllegalArgumentException("index was negative.");
+    //     }
+    //     // Add empty entries until the given index if necessary.
+    //     if (index >= ls.size()) {
+    //         ArrayList<T> newLs = new ArrayList<T>(index + 1);
+    //         for (int i = 0; i < ls.size(); i++) {
+    //             newLs.set(i, ls.get(i));
+    //         }
+    //         ls = newLs;
+    //     }
+    //     return get(index);
+    // }
+
+    // Method currently unnecessary, so has been commented.
+    /**
+     * Finds if the two AugLists are in an Equivalence Relationship.
+     * @param   augListB
+     *          The second AugList.
+     * @return  {@code true} if the lists are in a EqRel, and {@code false} otherwise.
+     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.equals()}.
+     * @implNote If ~ is a relation (a mapping), then if it fulfils the following:
+     *           <p>Reflexive (x ~ x)
+     *           <p>Symmetric (x ~ y <=> y ~ x)
+     *           <p>Transitive (x ~ y ^ y ~ z => x ~ z)
+     *           <p>Consistent (x ~ y => x ~ y for as long as x, y are constant)
+     *           <p>Non-null equivalence ( x != null <=> x !~ null )
+     *           <p>Then they must be equivalent.
+     *           <p>Any such relation is called an equivalence relation.
+     *           <p>(Notably any such EqRel is a one to one mapping.)
+     */
+    // public boolean isEqRel(AugList<T> augListB) {
+        // if (ls.size() != augListB.size()) {
+        //     // If the two lists are different lengths, there is no world in which an EqRel can exist.
+        //     // So rather than wasting compute time, we can terminate early.
+        //     return false;
+        // }
+        // if (!this.allSatisfy(x -> x.equals(x)) || !augListB.allSatisfy(x -> x.equals(x))) { // Reflexive check
+        //     return false; // Should theoretically never trigger.
+        // }
+        // AugList<AugList<T>> allRelations = new AugList<AugList<T>>();
+        // for (int i = 0; i < ls.size(); i++) {
+        //     if (!ls.get(i).equals(ls.get(i)) || !augListB.get(i).equals(augListB.get(i))) { // Consistency check
+        //         return false; // (In theory this condition should never fail.)
+        //     }
+        //     allRelations.add(new AugList<T>());
+        //     // (Notably oAsAugList.size() == ls.size().)
+        //     for (int j = 0; j < augListB.size(); j++) {
+        //         if (ls.get(i).equals(augListB.get(j))) {
+        //             if (!ls.get(j).equals(augListB.get(i))) { // Symmetric check
+        //                 return false;
+        //             }
+        //             if ((ls.get(i) == null && augListB.get(j) != null) || (ls.get(i) != null && augListB.get(j) == null))
+        //             {
+        //                 // Non-null equivalence check
+        //                 return false;
+        //             }
+        //             allRelations.get(i).add(augListB.get(j)); // Setting up for Transitivity check
+        //         }
+        //     }
+        // }
+
+        // for (int i = 0; i < allRelations.size(); i++) { // Relations of i
+        //     for (int j = 0; j < allRelations.get(i).size(); j++) { // Relations of j
+        //         // For all relations of i, check all relations of j relate to them.
+        //         // (in other words, if i relates to j, are their relations equivalent?)
+        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().equals(allRelations.get(j).toString()))
+        //         {
+        //             // If i is equivalent to j but the list of equivalences of i is not the same as the list of equivalences of j,
+        //             // then Transitivity is broken, so return false.
+        //             return false;
+        //         }
+        //     }
+        // }
+        //
+        //return true;
+        //// Notably, this change means that as long as the correct elements are present, any reordering is considered valid.
+        //// I.e. [1,2] = [2,1]
+        //// For cases in which this is not desired behaviour, please use Equal().
+    //}
+
+    // I am not sure how I would call this with the correct generator.
+    // /**
+    //  * Create an array copy of this AugList via use of the given {@code generator}
+    //  * @param   generator
+    //  *          The generator by which the array will be made.
+    //  * @return  An array copy of this AugList.
+    //  * @apiNote Encapsulates {@code ArrayList<T>.toArray(IntFunction<T[]>)}.
+    //  * @implNote I have no idea how this overload will be useful, or even how to use it.
+    //  */
+    // public T[] toArray(IntFunction<T[]> generator) {
+    //     return ls.toArray(generator);
+    // }
+
+    // I'm pretty sure this method is redundant, so I've commented it out.
+    // /**
+    //  * Reduces the allocated storage space to this AugList to the minimum possible.
+    //  * @apiNote Encapsulates {@code ArrayList<T>.trimToSize()}.
+    //  * @deprecated (Other methods perform the same job)
+    //  */
+    // public void trimToSize() {
+    //     ls.trimToSize();
+    // }
 }
