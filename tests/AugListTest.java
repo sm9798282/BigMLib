@@ -6,12 +6,10 @@ import src.*;
 import java.lang.IndexOutOfBoundsException;
 import java.util.ArrayList;
 import java.util.Arrays;
-//import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-//import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -28,17 +26,13 @@ public class AugListTest implements MultiTest {
 
     @Override
     public void setupTestData() {
-        //if (testDataDouble == null)
-        //{
-            testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
-            testDataStr = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
-            testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
-            // As strings, the test data is:
-            // [1.0, 2.0, 7.11, -2.5, 3.1415926]
-            // [The, quick, brown, fox, jumps, over, the, lazy dog]
-            // [7, 11, 19, -24, 117, 145, -56, 43]
-            // [+ Fire (+1), + Water (2.0x)]
-        //}
+        testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
+        testDataStr = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
+        testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
+        // As strings, the test data is:
+        // [1.0, 2.0, 7.11, -2.5, 3.1415926]
+        // [The, quick, brown, fox, jumps, over, the, lazy dog]
+        // [7, 11, 19, -24, 117, 145, -56, 43]
     }
 
     @Test
@@ -64,7 +58,6 @@ public class AugListTest implements MultiTest {
         testCountsOfElements();
         testDistinctCopy();
         testDistinctSelf();
-        testEnsureCapacity();
         testEquals();
         testFilterCopy();
         testFilterSelf();
@@ -105,16 +98,11 @@ public class AugListTest implements MultiTest {
         testSort();
         testSpliterator();
         testStream();
-
         testSubList();
         testSubListToEnd();
         testTakeWhile();
-        //testToArrayGivenGenerator();
         testToArrayGivenType();
-
         testToString();
-        testTrimToSize();
-
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
@@ -340,21 +328,13 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr, "[the, quick, brown, fox, jumps, over, lazy dog]");
     }
 
-    @Test
-    public void testEnsureCapacity() {
-        setupTestData();
-        // As there is no way to measure the outcome of ArrayList<T>.EnsureCapacity,
-        // (As the relevant fields are private)
-        // This test is an auto-pass.
-    }
-
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         setupTestData();
         final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
         assertTrue(TESTDATA.equals(TESTDATA));
-        // AugList.Equals() has been overridden so that as long as the contents of the lists match, they evaluate as equal.
+        // AugList.equals() has been overridden so that as long as the contents of the lists match, they evaluate as equal.
         assertTrue(TESTDATA.equals(new AugList<String>("Hello", "World")));
         assertEquals(TESTDATA, new AugList<String>("Hello", "World"));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
@@ -430,8 +410,6 @@ public class AugListTest implements MultiTest {
          * 145
          * -56
          * 43
-         * + Fire (+1)
-         * + Water (2.0x)
          */
         testDataDouble.forEach(System.out::println);
         testDataStr.forEach(System.out::println);
@@ -612,7 +590,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.lastIndexOf(711) == -1);
     }
 
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
+    @SuppressWarnings("unlikely-arg-type") 
     @Test
     public void testListDifference() {
         setupTestData();
@@ -630,7 +608,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.listDifference(new AugList<String>("the", "fox", "lazy", "dog")).equals("[quick, brown, jumps, over, the, lazy dog]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testListIntersection() {
         setupTestData();
@@ -664,7 +642,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDD_lIterator.previous(), ALD_lIterator.previous());
                 assertEquals(TDD_lIterator.previousIndex(), ALD_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDD_lIterator.next(), ALD_lIterator.next());
             assertEquals(TDD_lIterator.nextIndex(), ALD_lIterator.nextIndex());
@@ -678,7 +656,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDS_lIterator.previous(), ALS_lIterator.previous());
                 assertEquals(TDS_lIterator.previousIndex(), ALS_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDS_lIterator.next(), ALS_lIterator.next());
             assertEquals(TDS_lIterator.nextIndex(), ALS_lIterator.nextIndex());
@@ -690,7 +668,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDI_lIterator.previous(), ALI_lIterator.previous());
                 assertEquals(TDI_lIterator.previousIndex(), ALI_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
@@ -717,7 +695,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDD_lIterator.previous(), ALD_lIterator.previous());
                 assertEquals(TDD_lIterator.previousIndex(), ALD_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDD_lIterator.next(), ALD_lIterator.next());
             assertEquals(TDD_lIterator.nextIndex(), ALD_lIterator.nextIndex());
@@ -731,7 +709,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDS_lIterator.previous(), ALS_lIterator.previous());
                 assertEquals(TDS_lIterator.previousIndex(), ALS_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDS_lIterator.next(), ALS_lIterator.next());
             assertEquals(TDS_lIterator.nextIndex(), ALS_lIterator.nextIndex());
@@ -743,7 +721,7 @@ public class AugListTest implements MultiTest {
                 assertEquals(TDI_lIterator.previous(), ALI_lIterator.previous());
                 assertEquals(TDI_lIterator.previousIndex(), ALI_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
@@ -1138,13 +1116,6 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-    }
-
-    @Test
-    public void testTrimToSize() {
-        setupTestData();
-        // There is no way to see how this method performs (due to being type void and the relevant field being private)
-        // So this test auto-succeeds
     }
 
 	@SuppressWarnings("unlikely-arg-type")
