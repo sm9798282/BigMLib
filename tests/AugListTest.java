@@ -1122,6 +1122,7 @@ public class AugListTest implements MultiTest {
         assertTrue(tDStrArr[2] == "red");
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testToString() {
         setupTestData();
@@ -1133,6 +1134,7 @@ public class AugListTest implements MultiTest {
         assertEquals(new AugList<String>("", "", ""), "[, , ]");
         assertEquals(new AugList<String>("", ",", ",,"), "[, ,, ,,]");
         assertEquals(new AugList<String>(" ", ", ", "  ,, "), "[ , , ,   ,, ]");
+        assertTrue(new AugList<String>(null, null).equals("[*null*, *null*]"));
     }
 
 	@SuppressWarnings("unlikely-arg-type")

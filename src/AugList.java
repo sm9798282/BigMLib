@@ -1162,7 +1162,13 @@ public class AugList<T> implements Iterable<T> {
             return "/";
         }
         for (T e : ls) {
-            ListAsString += e.toString() + ", ";
+            String eString = null;
+            try {
+                eString = e.toString();
+            } catch (Exception ex) {
+                eString = "*null*";
+            }
+            ListAsString += eString + ", ";
         }
         return ListAsString.substring(0, ListAsString.length() - 2) + "]";
     }
