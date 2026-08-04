@@ -1,16 +1,21 @@
 package src;
 
+//import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+//import java.util.Deque;
 import java.util.Enumeration;
+//import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+//import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Spliterator;
+//import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 //import java.util.function.IntFunction;
@@ -47,24 +52,6 @@ public class AugList<T> implements Iterable<T> {
         this.ls = new ArrayList<T>() {};
     }
 
-    /**
-     * Create an AugList from the given ArrayList<T> {@code ls}
-     * @param   ls
-     *          The list of objects that this AugList will have
-     */
-    public AugList(ArrayList<T> ls) {
-        this.ls = ls;
-    }
-
-    /**
-     * Create an AugList from the given ArrayList<T> {@code ls}
-     * @param   ls
-     *          The list of objects that this AugList will have
-     */
-    public AugList(List<T> ls) {
-        this.ls = new ArrayList<T>(ls);
-    }
-
     @SafeVarargs
     /**
      * Create an AugList from the given T[] {@code a}
@@ -97,6 +84,102 @@ public class AugList<T> implements Iterable<T> {
         while (iterator.hasNext()) {
             this.ls.add(iterator.next());
         }
+    }
+
+    /**
+     * Creates a new AugList with the elements of the class that implements the given Iterable<T>.
+     * @param   iterable
+     *          The iterable from which to source the elements for this AugList.
+     */
+    public AugList(Iterable<T> iterable) {
+        this.ls = new AugList<T>(iterable.iterator()).ls;
+    }
+
+    {
+        // /**
+        //  * Create an AugList from the given ArrayList<T> {@code arrayList}
+        //  * @param   arrayList
+        //  *          The list of objects that this AugList will have
+        //  */
+        // public AugList(ArrayList<T> arrayList) {
+        //     this.ls = arrayList;
+        // }
+
+        // /**
+        //  * Create an AugList from the given ArrayList<T> {@code ls}
+        //  * @param   ls
+        //  *          The list of objects that this AugList will have
+        //  */
+        // public AugList(List<T> ls) {
+        //     this.ls = new ArrayList<T>(ls);
+        // }
+
+        // /**
+        //  * Create an AugList from the given AugList<T> {@code augList}
+        //  * @param   augList
+        //  *          The list of objects that this AugList will have
+        //  */
+        // public AugList(AugList<T> augList) {
+        //     this.ls = new ArrayList<T>(augList.ls);
+        // }
+
+        // /**
+        //  * Creates a new AugList with the elements of the provided ArrayDeque.
+        //  * @param   deque
+        //  *          The deque from which to source the elements for this AugList.
+        //  */
+        // public AugList(Deque<T> deque) {
+        //     this.ls = new AugList<T>(deque.iterator()).ls;
+        // }
+
+        // /**
+        //  * Creates a new AugList with the elements of the provided HashSet.
+        //  * @param   prioQueue
+        //  *          The HashSet from which to source the elements for this AugList.
+        //  */
+        // public AugList(PriorityQueue<T> prioQueue) {
+        //     this.ls = new AugList<T>(prioQueue.iterator()).ls;
+        // }
+
+        // /**
+        //  * Creates a new AugList with the elements of the provided HashSet.
+        //  * @param   hashSet
+        //  *          The HashSet from which to source the elements for this AugList.
+        //  */
+        // public AugList(HashSet<T> hashSet) {
+        //     this.ls = new AugList<T>(hashSet.iterator()).ls;
+        // }
+
+        // /**
+        //  * Creates a new AugList with the elements of the provided TreeSet.
+        //  * @param   treeSet
+        //  *          The TreeSet from which to source the elements for this AugList.
+        //  */
+        // public AugList(TreeSet<T> treeSet) {
+        //     this.ls = new AugList<T>(treeSet.iterator()).ls;
+        // }
+    }
+
+    /**
+     * Create a new AugList from an Spliterator over some sequence.
+     * @param   spliterator
+     *          The Spliterator object to source the input from.
+     */
+    public AugList(Spliterator<T> spliterator) {
+        this.ls = new ArrayList<T>() {};
+        spliterator.forEachRemaining(e -> this.ls.add(e));
+    }
+
+    /**
+     * Create a new AugList from a Stream.
+     * @param   stream
+     *          The Stream to source the input from.
+     */
+    public AugList(Stream<T> stream) {
+        // if (stream.anyMatch(e -> e == null)) {
+        //     throw new IllegalStateException("The stream must not contain nulls.")
+        // }
+        this.ls = new AugList<T>(stream.iterator()).ls;
     }
 
     /**

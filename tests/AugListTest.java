@@ -4,17 +4,26 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import src.*;
 import java.lang.IndexOutOfBoundsException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 //import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 //import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+//import java.util.SortedSet;
 import java.util.Spliterator;
+import java.util.TreeSet;
+import java.util.Vector;
+import java.util.stream.Stream;
 
 public class AugListTest implements MultiTest {
 
@@ -37,7 +46,6 @@ public class AugListTest implements MultiTest {
             // [1.0, 2.0, 7.11, -2.5, 3.1415926]
             // [The, quick, brown, fox, jumps, over, the, lazy dog]
             // [7, 11, 19, -24, 117, 145, -56, 43]
-            // [+ Fire (+1), + Water (2.0x)]
         //}
     }
 
@@ -105,16 +113,13 @@ public class AugListTest implements MultiTest {
         testSort();
         testSpliterator();
         testStream();
-
         testSubList();
         testSubListToEnd();
         testTakeWhile();
         //testToArrayGivenGenerator();
         testToArrayGivenType();
-
         testToString();
-//         testTrimToSize();
-
+        // testTrimToSize();
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
@@ -482,13 +487,58 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.indexOf(711) == -1);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testInitSpecial() {
-        // Special inits covered: From ArrayList, from Iterator, from Enumerator.
         setupTestData();
+        // From List<T> (Or any class that implements it) (Which implements Iterable<T>)
         assertTrue(new AugList<String>(new ArrayList<String>(Arrays.asList(""))).add("1").get(1).equals("1"));
+        // From LinkedList<T> (Which implements Iterable<T>)
+        LinkedList<String> l = new LinkedList<String>();
+        assertTrue(new AugList<String>(l).equals("/"));
+        // From Vector<T> (Which implements Iterable<T>)
+        Vector<String> v = new Vector<String>();
+        assertTrue(new AugList<String>(v).equals("/"));
+        // From Iterator<T>
         assertTrue(new AugList<String>(testDataStr.iterator()).equals(testDataStr));
+        // From Enumeration<T>
         assertTrue(new AugList<String>(testDataStr.countsOfElements().keys()).isRearrangement(testDataStr));
+        // From Spliterator<T>
+        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).equals("[b, a, ce, ddd]"));
+        // From AugList<T> (Which implements Iterable<T>)
+        assertTrue(new AugList<String>(testDataStr).equals(testDataStr));
+        // From HashSet<T> (and LinkedHashSet<T>) (Which both implement Iterable<T>)
+        HashSet<String> h = new HashSet<String>();
+        assertTrue(new AugList<String>(h).equals("/"));
+        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+        assertTrue(new AugList<String>(lhs).equals("/"));
+        h.add("Hello");
+        h.add("World");
+        h.add("!");
+        assertTrue(new AugList<String>(h).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From TreeSet<String> (Which implements Iterable<T>)
+        TreeSet<String> t = new TreeSet<String>();
+        assertTrue(new AugList<String>(t).equals("/"));
+        t.add("Hello");
+        t.add("World");
+        t.add("!");
+        assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From any class that implements Deque<String> (Which implements Iterable<T>)
+        ArrayDeque<String> ad = new ArrayDeque<String>();
+        assertTrue(new AugList<String>(ad).equals("/"));
+        ad.add("Hello");
+        ad.add("World");
+        ad.add("!");
+        assertTrue(new AugList<String>(ad).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From a PriorityQueue<String> (Which implements Iterable<T>)
+        PriorityQueue<String> pq = new PriorityQueue<String>();
+        assertTrue(new AugList<String>(pq).equals("/"));
+        pq.add("Hello");
+        pq.add("World");
+        pq.add("!");
+        assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
+        assertTrue(new AugList<Integer>(s).equals("[1, *null*]"));
     }
 
     @Test
