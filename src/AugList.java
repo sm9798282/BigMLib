@@ -514,6 +514,28 @@ public class AugList<T> implements Iterable<T> {
         ls.forEach(action);
     }
 
+    /**
+     * Fragments this AugList into irregularly sized fragments. Preserves order. Always partitions into at least 2 lists, and no list is empty.
+     * @return  This AugList fragmented into randomly sized shards.
+     * @apiNote Randomized variant of {@code AugList<T>.chunk()}.
+     */
+    public AugList<AugList<T>> fragment() {
+        AugList<AugList<T>> ret = new AugList<AugList<T>>(new AugList<T>());
+        Integer lower = 0, fragmentSize = (new Random().nextInt(1, ls.size()));
+        for (int i = 0; i < ls.size(); i++) {
+            if (i == fragmentSize - lower) {
+                lower = i;
+                // Branch only triggers if a list split would be scheduled after the last index
+                if (lower != ls.size() - 1) {
+                    fragmentSize = ((new Random()).nextInt(1, ls.size() - lower));
+                }
+                ret.add(new AugList<T>());
+            }
+            ret.getLast().add(ls.get(i));
+        }
+        return ret;
+    }
+
     // Ideally I would add the ability to index with [].
     // However, I don't believe the such is even possible in Java.
     /**
@@ -541,6 +563,14 @@ public class AugList<T> implements Iterable<T> {
      */
     public T getLast() {
         return ls.getLast();
+    }
+
+    /**
+     * @return  A random item in this AugList.
+     * @apiNote Randomized variant of {@code AugList<T>.get()}.
+     */
+    public T getRandom() {
+        return ls.get((new Random()).nextInt(ls.size()));
     }
 
     /**
@@ -608,6 +638,47 @@ public class AugList<T> implements Iterable<T> {
     @SafeVarargs
     public final AugList<T> insertAll(int index, T... elements) {
         ls.addAll(index, new AugList<T>(elements).ls);
+        return this;
+    }
+
+    /**
+     * Inserts all items in {@code otherAugList} to this AugList at random.
+     * @param   otherAugList
+     *          The AugList to shuffle into this AugList.
+     * @return  This list, with the given elements inserted at random.
+     * @apiNote Custom code, albeit simple in nature. 
+     */
+    public AugList<T> insertAllAtRandom(AugList<T> otherAugList) {
+        for (int i = 0; i < otherAugList.size(); i++) {
+            insertAtRandom(otherAugList.get(i));
+        }
+        return this;
+    }
+
+    /**
+     * Inserts all items in {@code otherAugList} to this AugList at random.
+     * @param   elements
+     *          The AugList to shuffle into this AugList.
+     * @return  This list, with the given elements inserted at random.
+     * @apiNote Randomized variant of {@code AugList<T>.insertAll()}
+     */
+    @SafeVarargs
+    public final AugList<T> insertAllAtRandom(T... elements) {
+        for (int i = 0; i < elements.length; i++) {
+            insertAtRandom(elements[i]);
+        }
+        return this;
+    }
+
+    /**
+     * Inserts {@code e} at a random position in this list, shifting other elements along if necessary.
+     * @param   e
+     *          Element to be inserted
+     * @return  This list, with the given element inserted somewhere into this AugList.
+     * @implNote Randomized variant of {@code AugList<T>.insert(T, int)}
+     */
+    public AugList<T> insertAtRandom(T e) {
+        ls.add((new Random()).nextInt(ls.size()), e);
         return this;
     }
 
@@ -903,12 +974,70 @@ public class AugList<T> implements Iterable<T> {
         return ls.removeLast();
     }
 
+    // Works the same as a pop operation from a stack, except can pop any element rather than the top element.
+    /**
+     * Removes a random item, shifting indices of other elements if necessary
+     * @return  The item that was removed
+     * @throws  NoSuchElementException
+     *          {@code this.size() == 0}
+     * @apiNote Custom code, albeit simple in nature.
+     * @implNote See {@code this.withoutRandom()} for a Stream-oriented approach.
+     */
+    public T removeRandom() {
+        if (size() == 0) {
+            throw new NoSuchElementException("Cannot remove an element from an empty list.");
+        }
+        return ls.remove((new Random()).nextInt(ls.size()));
+    }
+
+    //TODO: Encapsulate ArrayList<T>.retainAll() (Work will be done on a different branch to avoid branch contamination)
+    /*
+     * (The reason as to why implementation has so far been pushed back is that
+     *  listIntersection() and setIntersection() do ALMOST the same job.
+     *  For the particular nuances, consider the following:
+     *  With this = [1, 1, 1, 2, 2, 4] and augList2 = [1, 1, 2, 3], then:
+     *  retainAll()         would yield [1, 1, 1, 2, 2],
+     *  listIntersection()  would yield [1, 1, 2],
+     *  setIntersection()   would yield [1, 2].
+     *  )
+     */
+
     /**
      * @return  A new AugList with its elements in reverse order.
      * @apiNote Encapsulates {@code List<T>.reversed()}.
      */
     public AugList<T> reversed() {
         return new AugList<T>(ls.reversed());
+    }
+
+    /**
+     * Takes {@code size} random samples of this AugList
+     * @param   size
+     *          The size of the sample to take
+     * @param   withReplacements
+     *          Whether or not the same element can be picked multiple times.
+     * @return  A random sample of the given size.
+     * @throws  IllegalArgumentException
+     *          {@code (!withReplacements && size > this.size()) || size < 0}
+     * @apiNote Randomized variant of {@code AugList<T>.subList(int, int)} when not using {@code withReplacements} 
+     */
+    public AugList<T> sample(int size, boolean withReplacements) {
+        if (!withReplacements && size > size()) {
+            throw new IllegalArgumentException("Cannot create a sample that is longer than the original list without repetition.");
+        }
+        if (size < 0) {
+            throw new IllegalArgumentException("Cannot create a sample with negative elements.");
+        }
+        AugList<T> population = this.clone(),
+                   sample = new AugList<T>();
+        for (int i = 0; i < size; i++) {
+            T item = population.getRandom();
+            if (!withReplacements) {
+                population.remove(item);
+            }
+            sample.add(item);
+        }
+        return sample;
     }
 
     /**
@@ -1012,6 +1141,14 @@ public class AugList<T> implements Iterable<T> {
     }
 
     /**
+     * @return  This AugList, shuffled into a random order. Can shuffle to itself.
+     */
+    public AugList<T> shuffleSelf() {
+        this.ls = shuffleCopy().ls;
+        return this;
+    }
+
+    /**
      * Skips elements until it finds the first element to fail the given {@code predicate}, then returns all remaining elements.
      * @param   predicate
      *          The predicate that elements are compared against.
@@ -1111,9 +1248,54 @@ public class AugList<T> implements Iterable<T> {
      * @apiNote Custom method that I would like to believe has been implemented somewhere in Java or C#, but I am unable to find any such method in my limited search.
      */
     public AugList<T> swap(int index1, int index2) {
+        if (index1 < 0 || index1 >= size() || index2 < 0 || index2 >= size()) {
+            throw new IndexOutOfBoundsException("Indices must be in bounds.");
+        }
+        // If the indices are the same, then swapping can be skipped.
+        if (index1 == index2) {
+            return this;
+        }
         T temp = ls.get(index1);
         ls.set(index1, ls.get(index2));
         ls.set(index2, temp);
+        return this;
+    }
+
+    /**
+     * Swaps the given element with a random element.
+     * @param   index
+     *          The index of the item to swap.
+     * @return  This AugList with the given element swapped into a random position.
+     * @throws  IndexOutOfBoundsException
+     *          If {@code Index < 0 || Index >= this.size()}
+     */
+    public AugList<T> swapRandom(int index) {
+        if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException("Index must be within bounds.");
+        }
+        AugList<Integer> availableIndices = new AugList<Integer>();
+        for (int i = 0; i < size(); i++) {
+            availableIndices.add(i);
+        }
+        availableIndices.remove(index);
+        int index2 = availableIndices.removeRandom();
+        swap(index, index2);
+        return this;
+    }
+
+    /**
+     * Swaps two elements at random.
+     * @return  This AugList with 2 random elements swapped.
+     */
+    public AugList<T> swapRandom() {
+        AugList<Integer> availableIndices = new AugList<Integer>();
+        for (int i = 0; i < size(); i++) {
+            availableIndices.add(i);
+        }
+        int index1 = availableIndices.removeRandom();
+        availableIndices.remove(index1);
+        int index2 = availableIndices.removeRandom();
+        swap(index1, index2);
         return this;
     }
 
@@ -1245,6 +1427,18 @@ public class AugList<T> implements Iterable<T> {
     }
 
     /**
+     * Removes a random element.
+     * @throws  NoSuchElementException
+     *          {@code this.size() == 0}
+     * @return  {@code this}
+     * @apiNote Stream-based alternative to {@code this.removeRandom()}.
+     */
+    public AugList<T> withoutRandom() {
+        removeRandom();
+        return this;
+    }
+
+    /**
      * Removes all items in this list that satisfy the given {@code filter}.
      * @param   filter
      *          The condition that, if an element passes it, causes its deletion.
@@ -1264,6 +1458,7 @@ public class AugList<T> implements Iterable<T> {
     //  *          How long the AugList should be.
     //  * @throws  IllegalArgumentException
     //  *          {@code size < 0}
+    //  * @deprecated
     //  */
     // public AugList(T fill, int size) {
     //     if (size < 0) {
