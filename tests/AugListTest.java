@@ -516,29 +516,36 @@ public class AugListTest implements MultiTest {
         h.add("World");
         h.add("!");
         assertTrue(new AugList<String>(h).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From TreeSet<String> (Which implements Iterable<T>)
+        // From TreeSet<T> (Which implements Iterable<T>)
         TreeSet<String> t = new TreeSet<String>();
         assertTrue(new AugList<String>(t).equals("/"));
         t.add("Hello");
         t.add("World");
         t.add("!");
         assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From any class that implements Deque<String> (Which implements Iterable<T>)
+        // From any class that implements Deque<T> (Which implements Iterable<T>)
         ArrayDeque<String> ad = new ArrayDeque<String>();
         assertTrue(new AugList<String>(ad).equals("/"));
         ad.add("Hello");
         ad.add("World");
         ad.add("!");
         assertTrue(new AugList<String>(ad).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From a PriorityQueue<String> (Which implements Iterable<T>)
+        // From a PriorityQueue<T> (Which implements Iterable<T>)
         PriorityQueue<String> pq = new PriorityQueue<String>();
         assertTrue(new AugList<String>(pq).equals("/"));
         pq.add("Hello");
         pq.add("World");
         pq.add("!");
         assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From a Stream<T>
         Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
         assertTrue(new AugList<Integer>(s).equals("[1, *null*]"));
+        // From a set of values and counts
+        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 3, 4, 2)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
+        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"), new AugList<Integer>(1, 3, 4, 2)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
+        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 3, 4, 2, 999)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
+        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 0, 4, 0)), "[a, cd, cd, cd, cd]");
+        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, -999, 4, -7)), "[a, cd, cd, cd, cd]");
     }
 
     @Test

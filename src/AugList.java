@@ -95,6 +95,29 @@ public class AugList<T> implements Iterable<T> {
         this.ls = new AugList<T>(iterable.iterator()).ls;
     }
 
+    /**
+     * Creates a new AugList with each value repeated as many times as its associated count.
+     * @param   values
+     *          The values to use. If there are more values than counts, ignores values without counts.
+     * @param   counts
+     *          How many times each value should be repeated. If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
+     */
+    public AugList(AugList<T> values, AugList<Integer> counts) {
+        while (values.size() > counts.size()) {
+            counts.add(0);
+        }
+        while (counts.size() > values.size()) {
+            counts.removeLast();
+        }
+        counts.oneToOneMap(count -> count > 0 ? count : 0);
+        ls = new ArrayList<T>() {};
+        for (int i = 0; i < values.size(); i++) {
+            for (int j = 0; j < counts.get(i); j++) {
+                ls.add(values.get(i));
+            }
+        }
+    }
+
     {
         // /**
         //  * Create an AugList from the given ArrayList<T> {@code arrayList}
