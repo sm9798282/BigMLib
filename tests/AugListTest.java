@@ -77,15 +77,21 @@ public class AugListTest implements MultiTest {
         testFilterCopy();
         testFilterSelf();
         testForEach();
+        testFragment();
         testGet();
         testGetLast();
+        testGetRandom();
         testHashCode();
         testIndexOf();
         testInitSpecial();
         testInsert();
         testInsertAll();
         testInsertAllVarargs();
+        testInsertAllAtRandom();
+        testInsertAllAtRandomVarargs();
+        testInsertAtRandom();
         testIsEmpty();
+        testIsEqual();
         testIsRearrangement();
         testIterator();
         testLastIndexOf();
@@ -103,29 +109,37 @@ public class AugListTest implements MultiTest {
         testRemoveAtIndex();
         testRemoveIf();
         testRemoveLast();
+        testRemoveRandom();
         testReversed();
+        testSample();
         testSet();
         testSetDifference();
         testSetIntersection();
         testSetUnion();
         testSize();
+        testShuffleCopy();
+        testShuffleSelf();
         testSkipWhile();
         testSort();
         testSpliterator();
         testStream();
+        testSwap();
+        testSwapRandom();
+        testSwapRandomNoParam();
         testSubList();
         testSubListToEnd();
         testTakeWhile();
         //testToArrayGivenGenerator();
         testToArrayGivenType();
         testToString();
-        // testTrimToSize();
+        //testTrimToSize();
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
         testWithoutIndex();
         testWithoutIndex();
         testWithoutLast();
+        testWithoutRandom();
         testWithoutWhere();
     }
 
@@ -434,6 +448,31 @@ public class AugListTest implements MultiTest {
     }
 
     @Test
+    public void testFragment() {
+        setupTestData();
+        AugList<AugList<Double>> frag = testDataDouble.fragment();
+        int currFList = 0, currFListIndex = 0;
+        for (int i = 0; i < testDataDouble.size(); i++) {
+            assertTrue(frag.get(currFList).get(currFListIndex) == testDataDouble.get(i));
+            currFListIndex++;
+            assertTrue(frag.get(currFList).size() != 0 && frag.get(currFList).size() != testDataDouble.size());
+            if (frag.get(currFList).size() <= currFListIndex) {
+                currFList++;
+                currFListIndex = 0;
+            }
+        }
+        assertTrue(currFList <= testDataDouble.size());
+        // To trigger fragment's special case branch, making 100 calls without generating exceptions should be sufficient.
+        for (int i = 0; i < 100; i++) {
+            try {
+                testDataDouble.fragment();
+            } catch (Exception e) {
+                assertTrue(false);
+            }
+        }
+    }
+
+    @Test
     public void testGet() {
         setupTestData();
         assertTrue(testDataDouble.get(0) == 1.0);
@@ -462,6 +501,14 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> {
             new AugList<Integer>().getLast();
         });
+    }
+
+    @Test
+    public void testGetRandom() {
+        setupTestData();
+        assertTrue(testDataDouble.contains(testDataDouble.getRandom()));
+        assertTrue(testDataInt.contains(testDataInt.getRandom()));
+        assertTrue(testDataStr.contains(testDataStr.getRandom()));
     }
 
     @Test
@@ -597,6 +644,48 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    @Test
+    public void testInsertAllAtRandom() {
+        setupTestData();
+        AugList<Double> expectedALD = testDataDouble.clone().addAll(new AugList<Double>(7.0));
+        testDataDouble.insertAllAtRandom(new AugList<Double>(7.0));
+        assertTrue(expectedALD.isRearrangement(testDataDouble));
+        AugList<String> expectedALS = testDataStr.clone().addAll(new AugList<String>("!", "qwerty"));
+        testDataStr.insertAllAtRandom(new AugList<String>("!", "qwerty"));
+        assertTrue(expectedALS.isRearrangement(testDataStr));
+        AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
+        testDataInt.insertAllAtRandom(new AugList<Integer>(25, 125, 625));
+        assertTrue(expectedALI.isRearrangement(testDataInt));
+    }
+
+    @Test
+    public void testInsertAllAtRandomVarargs() {
+        setupTestData();
+        AugList<Double> expectedALD = testDataDouble.clone().addAll(new AugList<Double>(7.0));
+        testDataDouble.insertAllAtRandom(7.0);
+        assertTrue(expectedALD.isRearrangement(testDataDouble));
+        AugList<String> expectedALS = testDataStr.clone().addAll(new AugList<String>("!", "qwerty"));
+        testDataStr.insertAllAtRandom("!", "qwerty");
+        assertTrue(expectedALS.isRearrangement(testDataStr));
+        AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
+        testDataInt.insertAllAtRandom(25, 125, 625);
+        assertTrue(expectedALI.isRearrangement(testDataInt));
+    }
+
+    @Test
+    public void testInsertAtRandom() {
+        setupTestData();
+        AugList<Double> expectedALD = testDataDouble.clone().add(7.0);
+        testDataDouble.insertAtRandom(7.0);
+        assertTrue(testDataDouble.isRearrangement(expectedALD));
+        AugList<String> expectedALS = testDataStr.clone().add("!");
+        testDataStr.insertAtRandom("!");
+        assertTrue(testDataStr.isRearrangement(expectedALS));
+        AugList<Integer> expectedALI = testDataInt.clone().add(25);
+        testDataInt.insertAtRandom(25);
+        assertTrue(testDataInt.isRearrangement(expectedALI));
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testIsEmpty() {
@@ -609,15 +698,53 @@ public class AugListTest implements MultiTest {
     }
 
     @Test
+    public void testIsEqual() {
+        setupTestData();
+        assertEquals(testDataDouble, testDataDouble);
+        assertEquals(testDataInt, testDataInt);
+        assertEquals(testDataStr, testDataStr);
+        assertNotEquals(testDataDouble, testDataInt);
+        assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
+        assertNotEquals(testDataDouble, "[1, 2, 7.11, -2.5, 3.1415926]");
+        assertEquals(testDataDouble, testDataDouble.clone());
+        assertEquals(testDataDouble, new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926));
+        assertNotEquals(testDataInt, new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0));
+        assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        AugList<Double> shuffled = testDataDouble.shuffleCopy();
+        if (shuffled.equals(testDataDouble)) {
+            shuffled.swap(0, 1);
+        }
+        assertNotEquals(testDataDouble, shuffled);
+    }
+
+    // As all 3 of isRearrangement(), shuffleSelf() and shuffleCopy() are tested here,
+    // making testShuffleSelf() and testShuffleCopy() call testIsRearrangement()
+    // preserves the integrity of the tests whilst saving file size.
+
+    @Test
     public void testIsRearrangement() {
         setupTestData();
+        assertTrue(testDataDouble.isRearrangement(testDataDouble));
         assertTrue(testDataDouble.isRearrangement(testDataDouble.shuffleCopy()));
         assertTrue(testDataStr.isRearrangement(testDataStr.shuffleCopy()));
         assertTrue(testDataInt.isRearrangement(testDataInt.shuffleCopy()));
+        AugList<Double> tddClone = testDataDouble.clone();
+        assertTrue(tddClone.isRearrangement(testDataDouble.shuffleSelf()));
+        // If a list could not shuffle to itself, it would need checking.
         assertFalse(testDataDouble.isRearrangement(new AugList<Double>()));
         assertFalse(new AugList<Double>().isRearrangement(testDataDouble));
         assertTrue(new AugList<Double>().isRearrangement(new AugList<Double>()));
         assertFalse(new AugList<Double>(1.0).isRearrangement(new AugList<Double>(2.0)));
+    }
+
+    @Test
+    public void testShuffleCopy() {
+        testIsRearrangement();
+    }
+
+    @Test
+    public void testShuffleSelf() {
+        testIsRearrangement();
     }
 
     @Test
@@ -975,6 +1102,55 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> { (new AugList<String>()).removeLast(); });
     }
 
+    @Test
+    public void testRemoveRandom() {
+        setupTestData();
+        AugList<Double> tddClone = testDataDouble.clone();
+        AugList<AugList<Double>> validStates = new AugList<AugList<Double>>(
+            new AugList<Double>(2.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, -2.5)
+        );
+        Double removed = testDataDouble.removeRandom();
+        Integer stateIndex = -1;
+        /*
+         * Starting with 
+         * [1.0, 2.0, 7.11, -2.5, 3.1415926], 
+         * the possible states after a random deletion are:
+         * 
+         * testDataDouble                       removed
+         * [     2.0, 7.11, -2.5, 3.1415926],   1.0
+         * [1.0,      7.11, -2.5, 3.1415926],   2.0
+         * [1.0, 2.0,       -2.5, 3.1415926],   7.11
+         * [1.0, 2.0, 7.11,       3.1415926],   -2.5
+         * [1.0, 2.0, 7.11, -2.5           ],   3.1415926
+         * 
+         * Looking at the removed column, it is identical to tddClone.
+         * So, by taking the 5 valid testDataDouble states and putting them into another AugList (validStates),
+         * Indexing of the expected list state and its associated removed item is made very simple.
+         */
+        if (testDataDouble.get(0) != 1.0) {
+            stateIndex = 0;
+        }
+        else if (testDataDouble.get(1) != 2.0) {
+            stateIndex = 1;
+        }
+        else if (testDataDouble.get(2) != 7.11) {
+            stateIndex = 2;
+        }
+        else if (testDataDouble.get(3) != -2.5) {
+            stateIndex = 3;
+        }
+        else {
+            stateIndex = 4;
+        }
+        assertTrue(validStates.get(stateIndex).equals(testDataDouble));
+        assertTrue(tddClone.get(stateIndex).equals(removed));
+        assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().removeRandom(); });
+    }
+
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testReversed() {
@@ -982,6 +1158,20 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.reversed().equals("[3.1415926, -2.5, 7.11, 2.0, 1.0]"));
         assertTrue(testDataStr.reversed().equals("[lazy dog, the, over, jumps, fox, brown, quick, The]"));
         assertTrue(testDataInt.reversed().equals("[43, -56, 145, 117, -24, 19, 11, 7]"));
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    @Test
+    public void testSample() {
+        setupTestData();
+        assertTrue(testDataDouble.sample(5, false).isRearrangement(testDataDouble));
+        assertTrue(testDataDouble.sample(0, false).equals("/"));
+        assertTrue(testDataDouble.containsAll(testDataDouble.sample(1, false)));
+        // Technically speaking this assertion could fail, but the probability of the such is .8^100000000, a value so small it is effectively 0.
+        // (Plus, as the sample algorithm is only psuedo-random, I imagine that this assertion passing can be proven as either guaranteed or not.)
+        assertTrue(testDataDouble.sample(100000000, true).contains(1.0));
+        assertThrows(IllegalArgumentException.class, () -> { testDataStr.sample(10000000, false); });
+        assertThrows(IllegalArgumentException.class, () -> { testDataInt.sample(-10, false); });
     }
 
     @SuppressWarnings("unlikely-arg-type")
@@ -1139,6 +1329,55 @@ public class AugListTest implements MultiTest {
 
     @SuppressWarnings("unlikely-arg-type")
     @Test
+    public void testSwap() {
+        setupTestData();
+        assertTrue(testDataDouble.swap(0, 0).equals(testDataDouble));
+        assertTrue(testDataDouble.swap(0, 1).equals("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataInt.swap(1, 0).equals("[11, 7, 19, -24, 117, 145, -56, 43]"));
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(-1, 1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(9999, 1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(1, -1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(1, 9999); });
+    }
+
+    @Test
+    public void testSwapRandom() {
+        setupTestData();
+        AugList<Double> tddClone = testDataDouble.clone();
+        int discrepancies = 0;
+        testDataDouble.swapRandom(0);
+        assertTrue(testDataDouble.get(0) != 1.0);
+        for (int i = 1; i < testDataDouble.size(); i++) {
+            if (testDataDouble.get(i) != tddClone.get(i)) {
+                discrepancies++;
+                assertTrue(testDataDouble.get(i) == 1.0);
+            }
+        }
+        assertTrue(discrepancies == 1);
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(999); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(-1); });
+    }
+
+    @Test
+    public void testSwapRandomNoParam() {
+        setupTestData();
+        AugList<Double> tddClone = testDataDouble.clone();
+        AugList<Integer> swappedIndices = new AugList<Integer>();
+        int discrepancies = 0;
+        testDataDouble.swapRandom();
+        for (int i = 0; i < testDataDouble.size(); i++) {
+            if (testDataDouble.get(i) != tddClone.get(i)) {
+                discrepancies++;
+                swappedIndices.add(i);
+            }
+        }
+        assertTrue(discrepancies == 2);
+        assertTrue(testDataDouble.get(swappedIndices.get(0)) == tddClone.get(swappedIndices.get(1)));
+        assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void testSubList() {
         setupTestData();
         assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subList(1, 0); });
@@ -1270,6 +1509,53 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutWhere(i -> 18 <= i && i <= 20).equals("[7, 11, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).equals(testDataInt));
 	}
+
+    @Test
+	public void testWithoutRandom() {
+        setupTestData();
+        AugList<AugList<Double>> validStates = new AugList<AugList<Double>>(
+            new AugList<Double>(2.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, -2.5)
+        );
+        AugList<Double> tddWithout = testDataDouble.withoutRandom();
+        Integer stateIndex = -1;
+        /*
+         * Starting with 
+         * [1.0, 2.0, 7.11, -2.5, 3.1415926], 
+         * the possible states after a random deletion are:
+         * 
+         * tddWithout
+         * [     2.0, 7.11, -2.5, 3.1415926],
+         * [1.0,      7.11, -2.5, 3.1415926],
+         * [1.0, 2.0,       -2.5, 3.1415926],
+         * [1.0, 2.0, 7.11,       3.1415926],
+         * [1.0, 2.0, 7.11, -2.5           ],
+         * 
+         * Looking at the removed column, it is identical to tddClone.
+         * So, by taking the 5 valid testDataDouble states and putting them into another AugList (validStates),
+         * Indexing of the expected list state and its associated removed item is made very simple.
+         */
+        if (testDataDouble.get(0) != 1.0) {
+            stateIndex = 0;
+        }
+        else if (testDataDouble.get(1) != 2.0) {
+            stateIndex = 1;
+        }
+        else if (testDataDouble.get(2) != 7.11) {
+            stateIndex = 2;
+        }
+        else if (testDataDouble.get(3) != -2.5) {
+            stateIndex = 3;
+        }
+        else {
+            stateIndex = 4;
+        }
+        assertTrue(validStates.get(stateIndex).equals(tddWithout));
+        assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().withoutRandom(); });
+    }
 
     // @Test
     // public void testEnsureCapacity() {
