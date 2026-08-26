@@ -149,7 +149,7 @@ public class AugList<T> implements Iterable<T> {
         return this;
     }
 
-    // ArrayList.addLast is not implemented as ArrayList.add performs the same task
+    // ArrayList<T>.addLast is not implemented as ArrayList.add performs the same task
 
     /**
          * Finds all indices at which the given element can be found.
@@ -444,7 +444,7 @@ public class AugList<T> implements Iterable<T> {
             
             // If they are, are the sequences identical?
             for (int i = 0; i < ls.size(); i++) {
-                if (ls.get(i) != oAsAugList.get(i)) {
+                if (!ls.get(i).equals(oAsAugList.get(i))) {
                     return false;
                 }
             }
@@ -693,7 +693,7 @@ public class AugList<T> implements Iterable<T> {
      * @return  The list intersection (A∩B), or an AugList with elements that appear in both lists. 
      *          <p>i.e. [1,1,2]∩[1,2,3] = [1,2], [1,1,1,2]∩[1,1,2,3] = [1,1,2].
      *          <p>Output is a list, which may be a set.
-     * @apiNote Custom method similar to the C# function {@code IEnumerable<T>.Intersect()}
+     * @apiNote Custom method similar to the C# function {@code IEnumerable<T>.Intersect()}.
      */
     public AugList<T> listIntersection(AugList<T> listB) {
         if (this.equals(listB)) {
@@ -994,7 +994,7 @@ public class AugList<T> implements Iterable<T> {
     }
 
     /**
-     * @return  A new AugList which is a shuffled copy of this AugList.
+     * @return  A new AugList which is a shuffled copy of this AugList. Can shuffle to itself.
      */
     public AugList<T> shuffleCopy() {
         Random r = new Random();
@@ -1283,6 +1283,7 @@ public class AugList<T> implements Iterable<T> {
     //  * @param   minCapacity
     //  *          The minimum capacity this AugList is desired to have.
     //  * @apiNote Encapsulates {@code ArrayList<T>.ensureCapacity()}.
+    //  * @deprecated
     //  */
     // public void ensureCapacity(int minCapacity) {
     //     ls.ensureCapacity(minCapacity);
@@ -1291,6 +1292,7 @@ public class AugList<T> implements Iterable<T> {
     // Was a part of an attempted change to .Equals() that went nowhere.
     // /**
     //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
+    //  * @deprecated
     //  */
     // private class TypeFinder {
     //     // This only works if we don't force a parameter on the AugList.
@@ -1312,6 +1314,7 @@ public class AugList<T> implements Iterable<T> {
     //  * @return  The value at that index (which will be the default value if {@code index >= this.size()})
     //  * @throws  IllegalArgumentException
     //  *          If {@code index < 0}
+    //  * @deprecated
     //  */
     // public T getAndAppendIfEmpty(int index) {
     //     if (index < 0) {
@@ -1344,6 +1347,7 @@ public class AugList<T> implements Iterable<T> {
      *           <p>Then they must be equivalent.
      *           <p>Any such relation is called an equivalence relation.
      *           <p>(Notably any such EqRel is a one to one mapping.)
+     * @deprecated
      */
     // public boolean isEqRel(AugList<T> augListB) {
         // if (ls.size() != augListB.size()) {

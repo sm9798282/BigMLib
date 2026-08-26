@@ -37,7 +37,6 @@ public class AugListTest implements MultiTest {
             // [1.0, 2.0, 7.11, -2.5, 3.1415926]
             // [The, quick, brown, fox, jumps, over, the, lazy dog]
             // [7, 11, 19, -24, 117, 145, -56, 43]
-            // [+ Fire (+1), + Water (2.0x)]
         //}
     }
 
@@ -113,7 +112,7 @@ public class AugListTest implements MultiTest {
         testToArrayGivenType();
 
         testToString();
-//         testTrimToSize();
+        //testTrimToSize();
 
         testWithout();
         testWithoutAll();
