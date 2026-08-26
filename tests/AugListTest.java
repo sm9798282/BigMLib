@@ -131,6 +131,8 @@ public class AugListTest implements MultiTest {
         testTakeWhile();
         //testToArrayGivenGenerator();
         testToArrayGivenType();
+        //TODO
+        testToCollection();
         testToString();
         //testTrimToSize();
         testWithout();

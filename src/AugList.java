@@ -1108,6 +1108,23 @@ public class AugList<T> implements Iterable<T> {
      *  )
      */
 
+    //TODO
+    /**
+     * Retains elements that appear in both this and the given collection.
+     * If an element occurs multiple times in this, each copy is kept if at least one copy is present in the given collection.
+     * @param   collection
+     *          
+     * @return  this
+     * @throws  ClassCastException
+     *          At least one element cannot be cast into this AugList's base type
+     * @throws  NullPointerException
+     *          {@code collection.equals(null)}
+     * 
+     */
+    public AugList<T> retainAll(Collection<? super T> collection) {
+        
+    }
+
     /**
      * @return  A new AugList with its elements in reverse order.
      * @apiNote Encapsulates {@code List<T>.reversed()}.
@@ -1440,6 +1457,18 @@ public class AugList<T> implements Iterable<T> {
      */
     public T[] toArray(T[] arrType) {
         return ls.toArray(arrType);
+    }
+
+    /**
+     * Casts this AugList to a Collection.
+     * @return  This AugList, as a Collection.
+     */
+    public Collection<T> toCollection() {
+        Collection<T> ret = new ArrayList<T>() {};
+        for (int i = 0; i < size(); i++) {
+            ret.add(get(i));
+        }
+        return ret;
     }
 
     // Returns this AugList as a string. Example outputs: "/", "[1,2,3,4]", "[a,b,c,d]"
