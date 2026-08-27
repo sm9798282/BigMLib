@@ -91,7 +91,6 @@ public class AugListTest implements MultiTest {
         testInsertAllAtRandomVarargs();
         testInsertAtRandom();
         testIsEmpty();
-        testIsEqual();
         testIsRearrangement();
         testIterator();
         testLastIndexOf();
@@ -382,6 +381,21 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Double>().equals(new AugList<String>()));
         assertFalse(new AugList<Double>().equals(""));
         assertFalse(new AugList<Double>(7.0).equals(7.0));
+        assertEquals(testDataDouble, testDataDouble);
+        assertEquals(testDataInt, testDataInt);
+        assertEquals(testDataStr, testDataStr);
+        assertNotEquals(testDataDouble, testDataInt);
+        assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
+        assertNotEquals(testDataDouble, "[1, 2, 7.11, -2.5, 3.1415926]");
+        assertEquals(testDataDouble, testDataDouble.clone());
+        assertEquals(testDataDouble, new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926));
+        assertNotEquals(testDataInt, new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0));
+        assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        AugList<Double> shuffled = testDataDouble.shuffleCopy();
+        if (shuffled.equals(testDataDouble)) {
+            shuffled.swap(0, 1);
+        }
+        assertNotEquals(testDataDouble, shuffled);
     }
 
     @SuppressWarnings("unlikely-arg-type")
@@ -694,27 +708,7 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataStr.isEmpty());
         assertFalse(testDataInt.isEmpty());
         assertTrue(testDataInt.clear().isEmpty());
-        assertTrue(new AugList().isEmpty());
-    }
-
-    @Test
-    public void testIsEqual() {
-        setupTestData();
-        assertEquals(testDataDouble, testDataDouble);
-        assertEquals(testDataInt, testDataInt);
-        assertEquals(testDataStr, testDataStr);
-        assertNotEquals(testDataDouble, testDataInt);
-        assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
-        assertNotEquals(testDataDouble, "[1, 2, 7.11, -2.5, 3.1415926]");
-        assertEquals(testDataDouble, testDataDouble.clone());
-        assertEquals(testDataDouble, new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926));
-        assertNotEquals(testDataInt, new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0));
-        assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        AugList<Double> shuffled = testDataDouble.shuffleCopy();
-        if (shuffled.equals(testDataDouble)) {
-            shuffled.swap(0, 1);
-        }
-        assertNotEquals(testDataDouble, shuffled);
+        assertTrue(new AugList<Integer>().isEmpty());
     }
 
     // As all 3 of isRearrangement(), shuffleSelf() and shuffleCopy() are tested here,
