@@ -4,7 +4,9 @@
 
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
+- Change testAdd family of tests to check the returned AugList
 - Test pulling from dev to a d- branch
+- Demonstrate the unfixable problems with `equals()` in tests
 
 ## Possible features
 
@@ -21,6 +23,8 @@
 
 - Parameters that take `AugList<T>` changed to take any `Iterable<T>`
 - Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.
+- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right.
+- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`)
 - Statistics Library with features from R and SAS
 - `interface UI` with methods like `getBool()`, `getInt()`, `getDouble()`, `getStr()`, `writeStr()`
 - `CLI implements UI`

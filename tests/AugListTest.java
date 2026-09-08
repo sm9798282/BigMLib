@@ -25,6 +25,10 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.stream.Stream;
 
+/**
+ * A JUnit 3.x powered automatic tester for {@link src.AugList}.
+ * @see src.AugList
+ */
 public class AugListTest implements MultiTest {
 
     private AugList<Double> testDataDouble;
@@ -35,6 +39,9 @@ public class AugListTest implements MultiTest {
     final ArrayList<String> ARRLISTSTR = new ArrayList<String>(Arrays.asList("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog"));
     final ArrayList<Integer> ARRLISTINT = new ArrayList<Integer>(Arrays.asList(7, 11, 19, -24, 117, 145, -56, 43));
 
+    /**
+     * @see src.AugList#AugList(Object...)
+     */
     @Override
     public void setupTestData() {
         //if (testDataDouble == null)
@@ -72,7 +79,6 @@ public class AugListTest implements MultiTest {
         testCountsOfElements();
         testDistinctCopy();
         testDistinctSelf();
-        // testEnsureCapacity();
         testEquals();
         testFilterCopy();
         testFilterSelf();
@@ -126,12 +132,9 @@ public class AugListTest implements MultiTest {
         testSwapRandom();
         testSwapRandomNoParam();
         testSubList();
-        testSubListToEnd();
         testTakeWhile();
-        //testToArrayGivenGenerator();
         testToArrayGivenType();
         testToString();
-        //testTrimToSize();
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
@@ -140,8 +143,16 @@ public class AugListTest implements MultiTest {
         testWithoutLast();
         testWithoutRandom();
         testWithoutWhere();
+        //testEnsureCapacity();
+        //testSubListToEnd();
+        //testToArrayGivenGenerator();
+        //testTrimToSize();
     }
 
+    /**
+     * JUnit tester for Single Append
+     * @see src.AugList#add(Object)
+     */
     @Test
     public void testAdd() {
         setupTestData();
@@ -153,6 +164,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
     }
 
+    /**
+     * JUnit tester for Bulk Append
+     * @see src.AugList#addAll(AugList)
+     */
     @Test
     public void testAddAll() {
         setupTestData();
@@ -164,6 +179,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
+    /**
+     * JUnit tester for Bulk Varargs Append
+     * @see src.AugList#addAll(Object...)
+     */
     @Test
     public void testAddAllVarargs() {
         setupTestData();
@@ -175,6 +194,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
+    /**
+     * JUnit tester for Single Prepend
+     * @see src.AugList#addFirst()
+     */
     @Test
     public void testAddFirst() {
         setupTestData();
@@ -186,6 +209,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.toString().equals("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
     }
 
+    /**
+     * JUnit tester for finding all indices of a given object
+     * @see src.AugList#allIndicesOf(Object)
+     */
     @SuppressWarnings("unlikely-arg-type")
     // A string is a type which has the possibility of equivalence to an AugList, so the compiler warning can be suppressed.
     @Test
@@ -198,6 +225,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.add(7).allIndicesOf(7).equals("[0, 8]"));
     }
 
+    /**
+     * JUnit tester for Mass Satisfaction (∀, All) 
+     * @see src.AugList#allSatisfy(java.util.function.Predicate)
+     */
     @Test
     public void testAllSatisfy() {
         setupTestData();
@@ -209,6 +240,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.allSatisfy(i -> 0 < i && i < 100));
     }
 
+    /**
+     * JUnit tester for Existence (∃, Exists)
+     * @see src.AugList#anySatisfy(java.util.function.Predicate)
+     */
     @Test
     public void testAnySatisfy() {
         setupTestData();
@@ -220,6 +255,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.anySatisfy(i -> 4 < i && i < 6));
     }
 
+    /**
+     * JUnit tester for Bulk Function application
+     * @see src.AugList#applyAll(java.util.function.Function)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testApplyAll() {
@@ -229,6 +268,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.applyAll(i -> 2 * i).equals("[14, 22, 38, -48, 234, 290, -112, 86]"));
     }
 
+    /**
+     * JUnit tester for List Subdivision
+     * @see src.AugList#chunk(int)
+     */
     @Test
     public void testChunk() {
         setupTestData();
@@ -242,6 +285,10 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Emptying
+     * @see src.AugList#clear()
+     */
     @Test
     public void testClear() {
         setupTestData();
@@ -253,6 +300,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.size() == 0);
     }
 
+    /**
+     * JUnit tester for Cloning
+     * @see src.AugList#clone()
+     */
     @Test
     public void testClone() {
         setupTestData();
@@ -265,6 +316,10 @@ public class AugListTest implements MultiTest {
         assertNotSame(testDataInt, testDataInt.clone());
     }
 
+    /**
+     * JUnit tester for Single Containment (a ∈ A)
+     * @see src.AugList#contains(Object)
+     */
     @Test
     public void testContains() {
         setupTestData();
@@ -276,6 +331,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.contains(17));
     }
 
+    /**
+     * JUnit tester for Mass Containment (A ⊆ B)
+     * @see src.AugList#containsAll(AugList)
+     */
     @Test
     public void testContainsAll() {
         setupTestData();
@@ -290,6 +349,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.containsAll(new AugList<Integer>(7, 11, 17)));
     }
 
+    /**
+     * JUnit tester for Varargs Mass Containment (A ⊆ B)
+     * @see src.AugList#containsAll(Object...)
+     */
     @Test
     public void testContainsAllVarargs() {
         setupTestData();
@@ -304,6 +367,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.containsAll(7, 11, 17));
     }
 
+    /**
+     * JUnit tester for Any Contains (∃a ∈ A: a ∈ B)
+     * @see src.AugList#containsAny(AugList)
+     */
     @Test
     public void testContainsAny(){
         setupTestData();
@@ -313,6 +380,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataDouble.containsAny(new AugList<Double>()));
     }
 
+    /**
+     * JUnit tester for Varargs Any Contains (∃a ∈ A: a ∈ B)
+     * @see src.AugList#containsAny(Object...)
+     */
     @Test
     public void testContainsAnyVarargs() {
         setupTestData();
@@ -322,6 +393,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataDouble.containsAny());
     }
 
+    /**
+     * JUnit tester for Frequency
+     * @see src.AugList#countsOfElements()
+     */
     @Test
     public void testCountsOfElements() {
         setupTestData();
@@ -335,6 +410,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.countsOfElements().get(12.0) == null);
     }
 
+    /**
+     * JUnit tester for Duplicate Discarding
+     * @see src.AugList#distinctCopy()
+     */
     @Test
     public void testDistinctCopy() {
         setupTestData();
@@ -346,6 +425,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.distinctCopy().toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 8, 119]"));
     }
 
+    /**
+     * JUnit tester for Duplicate Discarding
+     * @see src.AugList#distinctSelf()
+     */
     @Test
     public void testDistinctSelf() {
         setupTestData();
@@ -358,6 +441,11 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr, "[the, quick, brown, fox, jumps, over, lazy dog]");
     }
 
+    /**
+     * JUnit tester for Equality
+     * @see src.AugList#equals(Object)
+     * @see src.AugList#AugList()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
@@ -398,6 +486,10 @@ public class AugListTest implements MultiTest {
         assertNotEquals(testDataDouble, shuffled);
     }
 
+    /**
+     * JUnit tester for filtering
+     * @see src.AugList#filterCopy(java.util.function.Predicate)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testFilterCopy() {
@@ -413,6 +505,10 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataInt, TESTDATAINTCOPY);
     }
 
+    /**
+     * JUnit tester for filtering
+     * @see src.AugList#filterSelf(java.util.function.Predicate)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testFilterSelf() {
@@ -428,6 +524,10 @@ public class AugListTest implements MultiTest {
         assertNotEquals(testDataInt, TESTDATAINTCOPY);
     }
 
+    /**
+     * JUnit tester for function application
+     * @see src.AugList#forEach(java.util.function.Consumer)
+     */
     @Test
     public void testForEach() {
         setupTestData();
@@ -461,6 +561,10 @@ public class AugListTest implements MultiTest {
         testDataInt.forEach(System.out::println);
     }
 
+    /**
+     * JUnit tester for Random List Subdivision
+     * @see src.AugList#fragment()
+     */
     @Test
     public void testFragment() {
         setupTestData();
@@ -486,6 +590,10 @@ public class AugListTest implements MultiTest {
         }
     }
 
+    /**
+     * JUnit tester for Reading/Loading
+     * @see src.AugList#get(int)
+     */
     @Test
     public void testGet() {
         setupTestData();
@@ -506,6 +614,10 @@ public class AugListTest implements MultiTest {
         });
     }
 
+    /**
+     * JUnit tester for Reading/Loading the Tail
+     * @see src.AugList#getLast(int)
+     */
     @Test
     public void testGetLast() {
         setupTestData();
@@ -517,6 +629,10 @@ public class AugListTest implements MultiTest {
         });
     }
 
+    /**
+     * JUnit tester for Reading/Loading at Random
+     * @see src.AugList#getRandom()
+     */
     @Test
     public void testGetRandom() {
         setupTestData();
@@ -525,6 +641,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.contains(testDataStr.getRandom()));
     }
 
+    /**
+     * JUnit tester for Hashcodes.
+     * @see src.AugList#hashCode()
+     */
     @Test
     public void testHashCode() {
         setupTestData();
@@ -533,6 +653,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.hashCode() == ARRLISTINT.hashCode());
     }
 
+    /**
+     * JUnit tester for Index finding
+     * @see src.AugList#indexOf(Object)
+     */
     @Test
     public void testIndexOf() {
         setupTestData();
@@ -548,6 +672,16 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.indexOf(711) == -1);
     }
 
+    /**
+     * @see src.AugList#AugList()
+     * @see src.AugList#AugList(Stream)
+     * @see src.AugList#AugList(Spliterator)
+     * @see src.AugList#AugList(Iterable)
+     * @see src.AugList#AugList(Iterator)
+     * @see src.AugList#AugList(Enumeration)
+     * @see src.AugList#AugList(Object...)
+     * @see src.AugList#AugList(AugList, AugList)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testInitSpecial() {
@@ -609,6 +743,10 @@ public class AugListTest implements MultiTest {
         assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, -999, 4, -7)), "[a, cd, cd, cd, cd]");
     }
 
+    /**
+     * JUnit tester for Single Insertion
+     * @see src.AugList#insert(int, Object)
+     */
     @Test
     public void testInsert() {
         setupTestData();
@@ -625,6 +763,10 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Bulk Insertion
+     * @see src.AugList#insertAll(int, AugList)
+     */
     @Test
     public void testInsertAll() {
         setupTestData();
@@ -641,6 +783,10 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Varargs Bulk Insertion
+     * @see src.AugList#insertAll(int, Object...)
+     */
     @Test
     public void testInsertAllVarargs() {
         setupTestData();
@@ -658,6 +804,10 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Random Bulk Insertion
+     * @see src.AugList#insertAllAtRandom()
+     */
     @Test
     public void testInsertAllAtRandom() {
         setupTestData();
@@ -672,6 +822,10 @@ public class AugListTest implements MultiTest {
         assertTrue(expectedALI.isRearrangement(testDataInt));
     }
 
+    /**
+     * JUnit tester for Random Varargs Bulk Insertion
+     * @see src.AugList#insertAllAtRandom()
+     */
     @Test
     public void testInsertAllAtRandomVarargs() {
         setupTestData();
@@ -686,6 +840,10 @@ public class AugListTest implements MultiTest {
         assertTrue(expectedALI.isRearrangement(testDataInt));
     }
 
+    /**
+     * JUnit tester for Random Single Insertion
+     * @see src.AugList#insertAtRandom()
+     */
     @Test
     public void testInsertAtRandom() {
         setupTestData();
@@ -700,7 +858,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.isRearrangement(expectedALI));
     }
 
-    @SuppressWarnings("rawtypes")
+    /**
+     * JUnit tester for Emptiness check (A = ∅)
+     * @see src.AugList#isEmpty()
+     */
     @Test
     public void testIsEmpty() {
         setupTestData();
@@ -715,6 +876,10 @@ public class AugListTest implements MultiTest {
     // making testShuffleSelf() and testShuffleCopy() call testIsRearrangement()
     // preserves the integrity of the tests whilst saving file size.
 
+    /**
+     * JUnit tester for Rearrangement test
+     * @see src.AugList#isRearrangement()
+     */
     @Test
     public void testIsRearrangement() {
         setupTestData();
@@ -731,16 +896,28 @@ public class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>(1.0).isRearrangement(new AugList<Double>(2.0)));
     }
 
+    /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleCopy()
+     */
     @Test
     public void testShuffleCopy() {
         testIsRearrangement();
     }
 
+    /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleSelf()
+     */
     @Test
     public void testShuffleSelf() {
         testIsRearrangement();
     }
 
+    /**
+     * JUnit tester for {@link Iterator} "cast"
+     * @see src.AugList#iterator()
+     */
     @Test
     public void testIterator() {
         setupTestData();
@@ -765,6 +942,10 @@ public class AugListTest implements MultiTest {
         // and check each pair is identical.
     }
 
+    /**
+     * JUnit tester for Last Index finding
+     * @see src.AugList#lastIndexOf()
+     */
     @Test
     public void testLastIndexOf() {
         setupTestData();
@@ -780,6 +961,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.lastIndexOf(711) == -1);
     }
 
+    /**
+     * JUnit tester for "List Difference"
+     * @see src.AugList#listDifference()
+     */
     @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
     @Test
     public void testListDifference() {
@@ -798,6 +983,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.listDifference(new AugList<String>("the", "fox", "lazy", "dog")).equals("[quick, brown, jumps, over, the, lazy dog]"));
     }
 
+    /**
+     * JUnit tester for "List Intersection"
+     * @see src.AugList#listIntersection()
+     */
     @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
     @Test
     public void testListIntersection() {
@@ -817,6 +1006,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.listIntersection(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, fox]"));
     }
     
+    /**
+     * JUnit tester for {@link ListIterator} "Cast"
+     * @see src.AugList#listIterator()
+     */
     @Test
     public void testListIterator() {
         setupTestData();
@@ -870,6 +1063,10 @@ public class AugListTest implements MultiTest {
         // and check for each pair, all methods act identically across both copies.
     }
 
+    /**
+     * JUnit tester for {@link ListIterator} "Cast"
+     * @see src.AugList#listIterator(int)
+     */
     @Test
     public void testListIteratorFromIndex() {
         setupTestData();
@@ -923,6 +1120,10 @@ public class AugListTest implements MultiTest {
         // and check for each pair, all methods act identically across both copies.
     }
 
+    /**
+     * JUnit tester for "List Union"
+     * @see src.AugList#listUnion()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testListUnion() {
@@ -942,6 +1143,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.listUnion(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, quick, brown, fox, jumps, over, the, lazy dog, lazy, dog]"));
     }
 
+    /**
+     * JUnit tester for Function Application
+     * @see src.AugList#oneToOneMap()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testOneToOneMap() {
@@ -952,6 +1157,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.oneToOneMap(i -> i % 2 == 0).countsOfElements().get(true) == 2);
     }
 
+    /**
+     * JUnit tester for pairing
+     * @see src.AugList#pairUp()
+     */
     @Test
     public void testPairUp() {
         setupTestData();
@@ -970,6 +1179,10 @@ public class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>(2.0, 3.0).pairUp(new AugList<Double>(null, 2.0)).elements().asIterator().hasNext());
     }
 
+    /**
+     * JUnit tester for {@link Stream ParallelStream} "Cast"
+     * @see src.AugList#parallelStream()
+     */
     @Test
     public void testParallelStream() {
         setupTestData();
@@ -987,6 +1200,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.parallelStream().iterator().hasNext() == ARRLISTINT.parallelStream().iterator().hasNext());
     }
 
+    /**
+     * JUnit tester for Single Removal
+     * @see src.AugList#remove()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
@@ -1008,6 +1225,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataInt.remove(null));
     }
     
+    /**
+     * JUnit tester for Bulk Removal
+     * @see src.AugList#removeAll(src.AugList)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAll() {
@@ -1028,6 +1249,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
+    /**
+     * JUnit tester for Varargs Bulk Removal
+     * @see src.AugList#removeAll(Object...)
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAllVarargs() {
@@ -1046,6 +1271,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
+    /**
+     * JUnit tester for Single Targeted Removal
+     * @see src.AugList#removeAt()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAtIndex() {
@@ -1061,6 +1290,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
+    /**
+     * JUnit tester for Selective Removal
+     * @see src.AugList#removeIf()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveIf() {
@@ -1081,6 +1314,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
+    /**
+     * JUnit tester for Stack Popping
+     * @see src.AugList#removeLast()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveLast() {
@@ -1096,6 +1333,10 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> { (new AugList<String>()).removeLast(); });
     }
 
+    /**
+     * JUnit tester for Random Removal
+     * @see src.AugList#removeRandom()
+     */
     @Test
     public void testRemoveRandom() {
         setupTestData();
@@ -1145,6 +1386,10 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().removeRandom(); });
     }
 
+    /**
+     * JUnit tester for Reversal
+     * @see src.AugList#reversed()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testReversed() {
@@ -1154,6 +1399,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.reversed().equals("[43, -56, 145, 117, -24, 19, 11, 7]"));
     }
 
+    /**
+     * JUnit tester for Sampling
+     * @see src.AugList#sample()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSample() {
@@ -1168,6 +1417,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IllegalArgumentException.class, () -> { testDataInt.sample(-10, false); });
     }
 
+    /**
+     * JUnit tester for Setting/Writing
+     * @see src.AugList#set()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSet() {
@@ -1177,6 +1430,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.equals("[42.0, 2.0, 7.11, -2.5, 3.1415926]"));
     }
 
+    /**
+     * JUnit tester for Set Difference
+     * @see src.AugList#setDifference()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetDifference() {
@@ -1196,6 +1453,10 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr.setDifference(new AugList<String>("the", "fox", "lazy", "dog")), ("[quick, brown, jumps, over, lazy dog]"));
     }
 
+    /**
+     * JUnit tester for Set Intersection
+     * @see src.AugList#setIntersection()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetIntersection() {
@@ -1215,6 +1476,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.setIntersection(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, fox]"));
     }
 
+    /**
+     * JUnit tester for Set Union
+     * @see src.AugList#setUnion()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetUnion() {
@@ -1235,6 +1500,10 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr.setUnion(new AugList<String>("the", "fox", "lazy", "dog")), ("[the, quick, brown, fox, jumps, over, lazy dog, lazy, dog]"));
     }
 
+    /**
+     * JUnit tester for Length
+     * @see src.AugList#size()
+     */
     @Test
     public void testSize() {
         setupTestData();
@@ -1243,6 +1512,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.size() == 8);
     }
 
+    /**
+     * JUnit tester for Conditional Omittance (Forwards)
+     * @see src.AugList#skipWhile()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSkipWhile() {
@@ -1252,6 +1525,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataStr.skipWhile(s -> s.length() != 9).equals("/"));
     }
 
+    /**
+     * JUnit tester for sorting
+     * @see src.AugList#sort()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSort() {
@@ -1284,6 +1561,10 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataDouble, ("[2.0, 1.0, 7.11, 3.1415926, -2.5]"));
     }
 
+    /**
+     * JUnit tester for {@link Spliterator} "Cast"
+     * @see src.AugList#spliterator()
+     */
     @Test
     public void testSpliterator() {
         setupTestData();
@@ -1307,6 +1588,10 @@ public class AugListTest implements MultiTest {
         // is to take the spliterators and check functionality is identical.
     }
 
+    /**
+     * JUnit tester for {@link Stream} "cast"
+     * @see src.AugList#stream()
+     */
     @Test
     public void testStream() {
         setupTestData();
@@ -1321,6 +1606,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.stream().iterator().hasNext() == ARRLISTINT.stream().iterator().hasNext());
     }
 
+    /**
+     * JUnit tester for Swapping
+     * @see src.AugList#swap()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSwap() {
@@ -1334,6 +1623,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(1, 9999); });
     }
 
+    /**
+     * JUnit tester for Partial Random Swapping
+     * @see src.AugList#swapRandom(int)
+     */
     @Test
     public void testSwapRandom() {
         setupTestData();
@@ -1352,6 +1645,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(-1); });
     }
 
+    /**
+     * JUnit tester for Full Random Swapping
+     * @see src.AugList#swapRandom()
+     */
     @Test
     public void testSwapRandomNoParam() {
         setupTestData();
@@ -1370,6 +1667,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
     }
 
+    /**
+     * JUnit tester for Sublist
+     * @see src.AugList#subList()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSubList() {
@@ -1382,17 +1683,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(-1, 0); });
     }
 
-    @SuppressWarnings("unlikely-arg-type")
-    @Test
-    public void testSubListToEnd() {
-        setupTestData();
-        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subListToEnd(-1); });
-        assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subListToEnd(999); });
-        assertEquals(testDataDouble.subListToEnd(1), ("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.subListToEnd(0).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.subListToEnd(3).equals("[-2.5, 3.1415926]"));
-    }
-
+    /**
+     * JUnit tester for Conditional Collection
+     * @see src.AugList#takeWhile()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testTakeWhile() {
@@ -1403,6 +1697,10 @@ public class AugListTest implements MultiTest {
         assertEquals(testDataStr.takeWhile(s -> s.length() != 9), (testDataStr));
     }
 
+    /**
+     * JUnit tester for Array Casting
+     * @see src.AugList#toArray()
+     */
     @Test
     public void testToArrayGivenType() {
         setupTestData();
@@ -1412,6 +1710,10 @@ public class AugListTest implements MultiTest {
         assertTrue(tDStrArr[2] == "red");
     }
 
+    /**
+     * JUnit tester for {@link String} representation (Or String casting)
+     * @see src.AugList#toString()
+     */
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testToString() {
@@ -1427,6 +1729,10 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(null, null).equals("[*null*, *null*]"));
     }
 
+    /**
+     * JUnit tester for Single Removal
+     * @see src.AugList#without()
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithout() {
@@ -1441,6 +1747,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.without(null).equals("[7, 11, -24, 117, 145, -56, 43]"));
 	}
 
+    /**
+     * JUnit tester for Bulk Removal
+     * @see src.AugList#withoutAll(src.AugList)
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutAll() {
@@ -1455,6 +1765,10 @@ public class AugListTest implements MultiTest {
         assertTrue((new AugList<Integer>(1, 2).withoutAll(new AugList<Integer>()).equals("[1, 2]")));
 	}
 
+    /**
+     * JUnit tester for Varargs Bulk Removal
+     * @see src.AugList#withoutAll(Object...)
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutAllVarargs() {
@@ -1469,6 +1783,10 @@ public class AugListTest implements MultiTest {
         assertTrue((new AugList<Integer>(1, 2).withoutAll().equals("[1, 2]")));
 	}
 
+    /**
+     * JUnit tester for Targeted Removal
+     * @see src.AugList#withoutIndex()
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutIndex() {
@@ -1480,6 +1798,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutIndex(2).equals("[7, 11, -24, 117, 145, -56, 43]"));
 	}
 
+    /**
+     * JUnit tester for Tail Removal
+     * @see src.AugList#withoutLast()
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutLast() {
@@ -1490,6 +1812,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutLast().equals("[7, 11, 19, -24, 117, 145, -56]"));
 	}
 
+    /**
+     * JUnit tester for Conditional Removal
+     * @see src.AugList#withoutWhere()
+     */
 	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutWhere() {
@@ -1504,6 +1830,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).equals(testDataInt));
 	}
 
+    /**
+     * JUnit tester for Random Removal
+     * @see src.AugList#withoutRandom()
+     */
     @Test
 	public void testWithoutRandom() {
         setupTestData();
@@ -1551,6 +1881,12 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().withoutRandom(); });
     }
 
+    // #region Deprecated tests
+    
+    /**
+     * JUnit tester for Capacity Increase
+     * @see src.AugList#ensureCapacity()
+     */
     // @Test
     // public void testEnsureCapacity() {
     //     setupTestData();
@@ -1559,10 +1895,31 @@ public class AugListTest implements MultiTest {
     //     // This test is an auto-pass.
     // }
 
+    /**
+     * JUnit tester for Sublist
+     * @see src.AugList#subListToEnd()
+     */
+    // @SuppressWarnings("unlikely-arg-type")
+    // @Test
+    // public void testSubListToEnd() {
+    //     setupTestData();
+    //     assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subListToEnd(-1); });
+    //     assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subListToEnd(999); });
+    //     assertEquals(testDataDouble.subListToEnd(1), ("[2.0, 7.11, -2.5, 3.1415926]"));
+    //     assertTrue(testDataDouble.subListToEnd(0).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+    //     assertTrue(testDataDouble.subListToEnd(3).equals("[-2.5, 3.1415926]"));
+    // }
+
+    /**
+     * JUnit tester for Capacity Decrease
+     * @see src.AugList#trimToSize()
+     */
     // @Test
     // public void testTrimToSize() {
     //     setupTestData();
     //     // There is no way to see how this method performs (due to being type void and the relevant field being private)
     //     // So this test auto-succeeds
     // }
+    
+    //#endregion
 }

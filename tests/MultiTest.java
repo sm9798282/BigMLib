@@ -7,7 +7,7 @@ import org.junit.Test;
  */
 public interface MultiTest {
     /**
-     * Initialise the data used in tests.
+     * Initialises the data used for testing.
      */
     public void setupTestData();
 
