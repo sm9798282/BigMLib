@@ -27,24 +27,24 @@ import java.util.stream.Stream;
 /**
  * <h1>AugList<T></h1>
  *
- * A decorator of an ArrayList which provides implementations of many commonly used procedures and commonly required tasks.
- * <p>Draws from a variety of sources, such as C# methods, statistics, set theory and more.
+ * A decorator of an {@link ArrayList} which provides implementations of many commonly used procedures and commonly required tasks.
+ * <p>Draws inspiration from a variety of sources, such as C# methods, statistics, functional and declarative programming, set theory and more.
  *
  * <h2>Notable Changes</h2>
  *
  * <h3>Return type changes</h3>
  *
- * - {@code Boolean} {@link List#add(T)}, {@code Object} {@link Object#clone()} and {@code List<T>} {@link List#subList(int, int)}
+ * - {@code boolean} {@link List#add(T)}, {@code Object} {@link Object#clone()} and {@code List<T>} {@link List#subList(int, int)}
  * changed to have a return type of {@code AugList<T>}.
  *
  * <h3>Overrides</h3>
  *
- * - Overrides {@link #equals equals()} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
- * - Overrides {@link #toString toString()} to provide a more legible overview of the contents.
+ * - Overrides {@link #equals} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
+ * - Overrides {@link #toString} to provide a more legible overview of the contents.
  *
  * <h3>Overloads</h3>
  *
- * - Constructors will take any {@code ? implements} {@link Iterable}, {@link Spliterator}, or {@link Stream}.</p>
+ * - Constructors will take any {@code ? implements} {@link Iterable}, {@link Iterator}, {@link Spliterator}, or {@link Stream}.</p>
  * - Varargs constructor i.e. {@code new AugList<Integer>(1, 2, 3, 4)}.</p>
  * - Constructor and paired value-count overloads i.e. {@code new AugList<String>(new AugList<Integer>(5, 2), new AugList<String>("a", "bc"))}.</p>
  * - Adds varargs overloads for select bulk-processing methods, such as {@link #addAll(T...)}, {@link #containsAll(T...)} and {@link #removeAll(Object...)}.
@@ -55,7 +55,7 @@ import java.util.stream.Stream;
  *
  * <h3>Additions</h3>
  *
- * Adds the following methods:
+ * Adds the following methods:<p>
  * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
  * - {@link #applyAll(Function)}, {@link #oneToOneMap(Function)},</p>
  * - {@link #chunk(int)}, {@link #fragment(int)},</p>
@@ -77,15 +77,34 @@ import java.util.stream.Stream;
  * - {@link #sample(int, boolean)},</p>
  * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
  *
+ * <h3>Encapsulations</h3>
+ * 
+ * {@link AugList} internally uses an {@link ArrayList} to store its elements.
+ * <p>Most, but not all {@link ArrayList} methods have been encapsulated without further alteration.
+ * <p>(See "Deprecated" for the unimplemented encapsulations, and "Return type changes", "Overrides" and "Replacements" for altered methods.)
+ * 
+ * The encapsulated methods are:<p>
+ * - {@link #contains(T)},
+ * - {@link #forEach(Consumer)},
+ * - {@link #get(int)}, {@link #getLast()}, {@link #set(int, Object)},
+ * - {@link #hashCode()},
+ * - {@link #indexOf(Object)}, {@link #lastIndexOf(Object)},
+ * - {@link #isEmpty()}, {@link #size()},
+ * - {@link #iterator()}, {@link #listIterator()}, {@link #listIterator(int)}, {@link #spliterator()},
+ * - {@link #parallelStream()}, {@link #stream()},
+ * - {@link #remove(Object)}, {@link #removeAt(int)}, {@link #removeIf(Predicate)}, {@link #removeLast()},
+ * - {@link #reversed()},
+ * - {@link #toArray(Object[])}
+ * 
  * <h3>Deprecated</h3>
  *
  * Due to these methods falling under one of the following categories, they have been commented out / left unimplemented:</p>
  * 1: have identical functionality under another name:</p>
  * - {@link List#replaceAll()},</p>
  * 2: are / have been made redundant by other methods:</p>
- * - {@link List#addLast()}, {@link List#removeFirst()}, {@link #subListToEnd()},</p>
+ * - {@link List#addLast()}, {@link List#removeFirst()}, {@code AugList<T>.subListToEnd()},</p>
  * 3: are impractical to use: </p>
- * - {@link List#toArray()}, {@code List.toArray(IntFunction<T[]>)},</p>
+ * - {@link List#toArray()}, {@link List#toArray(java.util.function.IntFunction)},</p>
  * 4: have no meaningful impact on internal state:</p>
  * - {@link ArrayList#ensureCapacity()}, {@link ArrayList#trimToSize()}</p>
  * @see     tests.AugListTest
@@ -108,7 +127,6 @@ public class AugList<T> implements Iterable<T> {
         this.ls = new ArrayList<T>() {};
     }
 
-    
     /**
      * Creates a new {@link AugList} from the given {@link T}[].
      * @param       elements
@@ -351,8 +369,7 @@ public class AugList<T> implements Iterable<T> {
      * @see     #oneToOneMap(Function)
      * @see     #forEach(Consumer)
      * @see     tests.AugListTest#testApplyAll()
-     * @note    Functionality is, to my knowledge, not implemented in Java or C#.
-     *          Inspired by the C# function {@code List<T>.ConvertAll(Converter<T, TOutput>)}.
+     * @note    Inspired by the C# function {@code List<T>.ConvertAll(Converter<T, TOutput>)}.
      * @tags    Mutator
      */
     public AugList<T> applyAll(Function<? super T, T> func) {
