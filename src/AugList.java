@@ -39,8 +39,8 @@ import java.util.stream.Stream;
  *
  * <h3>Overrides</h3>
  *
- * - Overrides {@link #equals} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
- * - Overrides {@link #toString} to provide a more legible overview of the contents.
+ * - Overrides {@link Object#equals(Object)} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
+ * - Overrides {@link Object#toString()} to provide a more legible overview of the contents.
  *
  * <h3>Overloads</h3>
  *
@@ -51,15 +51,16 @@ import java.util.stream.Stream;
  *
  * <h3>Replacements</h3>
  *
- * - Replaced {@link List#replaceAll()} with {@link AugList#oneToOneMap(Function)}
+ * - Replaced {@link List#replaceAll(java.util.function.UnaryOperator)} with {@link AugList#oneToOneMap(Function)}
  *
  * <h3>Additions</h3>
  *
  * Adds the following methods:<p>
+ * - {@link #allIndicesOf(Object)},</p>
  * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
  * - {@link #applyAll(Function)}, {@link #oneToOneMap(Function)},</p>
  * - {@link #chunk(int)}, {@link #fragment(int)},</p>
- * - {@link #containsAny(Predicate)},</p>
+ * - {@link #containsAny(AugList)}, {@link #containsAny(T...)}</p>
  * - {@link #countsOfElements()},</p>
  * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
  * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
@@ -77,7 +78,7 @@ import java.util.stream.Stream;
  * - {@link #sample(int, boolean)},</p>
  * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
  *
- * <h3>Encapsulations</h3>
+ * <h3>Encapsulations</h3> 
  * 
  * {@link AugList} internally uses an {@link ArrayList} to store its elements.
  * <p>Most, but not all {@link ArrayList} methods have been encapsulated without further alteration.
@@ -94,7 +95,7 @@ import java.util.stream.Stream;
  * - {@link #parallelStream()}, {@link #stream()},
  * - {@link #remove(Object)}, {@link #removeAt(int)}, {@link #removeIf(Predicate)}, {@link #removeLast()},
  * - {@link #reversed()},
- * - {@link #toArray(Object[])}
+ * - {@link #toArray(T[])}
  * 
  * <h3>Deprecated</h3>
  *
@@ -298,7 +299,7 @@ public class AugList<T> implements Iterable<T> {
         return this;
     }
 
-    // ArrayList<T>.addLast(T) is not implemented as ArrayList<T>.insert(0, T) performs the same task
+    // ArrayList<T>.addLast(T) is not implemented as AugList<T>.insert(0, T) performs the same task
 
     /**
      * Finds all indices at which the given element can be found.
