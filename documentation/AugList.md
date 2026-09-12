@@ -131,5 +131,5 @@ Provided with AugList V2 are the following:
 
 ## See Also
 
-`tests/AugListTest.java`
-PLANNED `src/ALFactory.java`
+- `tests/AugListTest.java`
+- PLANNED `src/ALFactory.java`

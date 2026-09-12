@@ -50,10 +50,17 @@ Methods are categorised by their `@tags`:
 Separately:
 
 - References to other Java methods and classes generally are now annotated `@link` (as opposed to `@code`)
-- `@apiNote` and `@implNote` annotations replaced with custom `@note`
+- `@apiNote` and `@implNote` annotations replaced with `@note`
 - New section annotated with `@overloads` links to all overloads of a method
-- `@see` section links to similar non-overload methods a nd tests
-- Minor documentation errors fixed (e.g. `containsAny(T...)` contained typo "id contained", `hashCode()`'s `@apiNote` having `getLast()`'s description, `insertAll(int, AugList<T>)` having `addAll(AugList<T>)`'s parameter description, `set(int, T)` was reported to throw `OutOfRangeException` when it actually throws `IndexOutOfBoundsException`, many of the `without` family of functions talking about encapsulating methods they did not actually encapsulate)
+- `@see` section links to related methods and tests
+- Minor documentation errors fixed (e.g:
+
+  1) `containsAny(T...)` contained typo "id contained",
+  2) `hashCode()`'s `@apiNote` having `getLast()`'s description,
+  3) `insertAll(int, AugList<T>)` having `addAll(AugList<T>)`'s parameter description,
+  4) `set(int, T)` was reported to throw `OutOfRangeException` when it actually throws `IndexOutOfBoundsException`,
+  5) Many of the `without` family of functions talking about encapsulating methods they did not actually encapsulate)
+
 - Documentation wording has been standardised across methods
 
 ## Known problems
