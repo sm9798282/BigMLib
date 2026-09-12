@@ -7,6 +7,10 @@ Lots of features in newer languages - C# for instance - simply do not have an an
 AugList Version 1, started 2026-03-06 and finished 2026-05-22, was built as an answer to this problem.
 Further revisions were made with the aim to expand on the initial vision - such as the latest version, V2.
 
+## Dependencies
+
+- Java JVM
+
 ## Features
 
 AugList decorates an ArrayList, and thus encapsulates or modifies many of its methods.
@@ -18,6 +22,8 @@ The main benefits to AugList are:
 - Bulk operations
 - Set theory operations
 - Methods inspired by Functional and Declarative Programming
+
+## Feature List
 
 Provided with AugList V2 are the following:
 
@@ -126,3 +132,4 @@ Provided with AugList V2 are the following:
 ## See Also
 
 `tests/AugListTest.java`
+PLANNED `src/ALFactory.java`
