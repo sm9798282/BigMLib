@@ -1,14 +1,17 @@
 package src;
 
+import java.util.AbstractCollection;
 //import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 //import java.util.Deque;
 import java.util.Enumeration;
 //import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -1108,21 +1111,22 @@ public class AugList<T> implements Iterable<T> {
      *  )
      */
 
-    //TODO
+    //TODO: Add correct annotations upon merge into d-documentation
     /**
-     * Retains elements that appear in both this and the given collection.
+     * Retains elements that appear in both this and the given {@link Collection}.
      * If an element occurs multiple times in this, each copy is kept if at least one copy is present in the given collection.
      * @param   collection
-     *          
-     * @return  this
+     *          The collection in question.
+     * @return  {@code this}
      * @throws  ClassCastException
-     *          At least one element cannot be cast into this AugList's base type
+     *          At least one element cannot be cast into this {@link AugList}'s parameterized type {@link T}.
      * @throws  NullPointerException
      *          {@code collection.equals(null)}
      * 
      */
-    public AugList<T> retainAll(Collection<? super T> collection) {
-        
+    public AugList<T> retainAll(Collection<?> collection) {
+        ls.retainAll(collection);
+        return this;
     }
 
     /**
@@ -1459,9 +1463,10 @@ public class AugList<T> implements Iterable<T> {
         return ls.toArray(arrType);
     }
 
+    //TODO: Annotate in line with methods on d-documentation
     /**
-     * Casts this AugList to a Collection.
-     * @return  This AugList, as a Collection.
+     * Casts this {@link AugList} to a {@link Collection}.
+     * @return  This {@link AugList}, as a {@link Collection}.
      */
     public Collection<T> toCollection() {
         Collection<T> ret = new ArrayList<T>() {};

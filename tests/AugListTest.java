@@ -37,16 +37,13 @@ public class AugListTest implements MultiTest {
 
     @Override
     public void setupTestData() {
-        //if (testDataDouble == null)
-        //{
-            testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
-            testDataStr = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
-            testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
-            // As strings, the test data is:
-            // [1.0, 2.0, 7.11, -2.5, 3.1415926]
-            // [The, quick, brown, fox, jumps, over, the, lazy dog]
-            // [7, 11, 19, -24, 117, 145, -56, 43]
-        //}
+        testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
+        testDataStr = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
+        testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
+        // As strings, the test data is:
+        // [1.0, 2.0, 7.11, -2.5, 3.1415926]
+        // [The, quick, brown, fox, jumps, over, the, lazy dog]
+        // [7, 11, 19, -24, 117, 145, -56, 43]
     }
 
     @Test
@@ -110,6 +107,7 @@ public class AugListTest implements MultiTest {
         testRemoveIf();
         testRemoveLast();
         testRemoveRandom();
+        testRetainAll();
         testReversed();
         testSample();
         testSet();
@@ -1155,6 +1153,25 @@ public class AugListTest implements MultiTest {
 
     @SuppressWarnings("unlikely-arg-type")
     @Test
+    public void testRetainAll() {
+        // TODO: Find out bugs
+        setupTestData();
+        testDataStr.oneToOneMap(s -> s.toUpperCase());
+        assertTrue(testDataStr.retainAll(new AugList<String>("THE").toCollection()).equals("[THE, THE]"));
+        setupTestData();
+        testDataStr.oneToOneMap(s -> s.toUpperCase());
+        assertTrue(testDataStr.retainAll(new AugList<String>("THE", "QUICK", "OVER").toCollection()).equals("[THE, QUICK, OVER, THE]"));
+        setupTestData();
+        testDataStr.oneToOneMap(s -> s.toUpperCase());
+        assertTrue(testDataStr.retainAll(new AugList<String>("THE", "ALEPH").toCollection()).equals("[THE, THE]"));
+        setupTestData();
+        assertTrue(testDataStr.retainAll(new AugList<String>().toCollection()).equals("/"));
+        assertThrows(NullPointerException.class, () -> { testDataStr.retainAll(null); });
+        assertThrows(ClassCastException.class, () -> { testDataDouble.retainAll(testDataStr.toCollection()); });
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    @Test
     public void testReversed() {
         setupTestData();
         assertTrue(testDataDouble.reversed().equals("[3.1415926, -2.5, 7.11, 2.0, 1.0]"));
@@ -1418,6 +1435,35 @@ public class AugListTest implements MultiTest {
         String[] tDStrArr = testDataStr.toArray(new String[] { });
         tDStrArr[2] = "red";
         assertTrue(tDStrArr[2] == "red");
+    }
+
+    @Test
+    public void testToCollection() {
+        setupTestData();
+        String collStr = testDataDouble.toCollection().getClass().toGenericString();
+        // A class string is formatted in the following manner:
+        //      <MODIFIERS> <VISIBILITY> class <CLASSNAME>$<OTHER>
+        // i.e. public class Object
+        //      final class java.util.ArrayList$ArrayListSpliterator
+        //      static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>
+        // Lambda and anonymous expressions get a number, so an example for collStr is:
+        //      class src.AugList$18
+        //      
+        assertTrue(collStr.contains("class src.AugList$"));
+        AugList<Character> collAL = new AugList<Character>();
+        for (int i = 0; i < collStr.toCharArray().length; i++) {
+            collAL.add(collStr.toCharArray()[i]);
+        }
+        collAL.removeIf(ch -> (ch + "").toUpperCase() != (ch + "").toLowerCase());
+        collAL.forEach(ch -> {
+            try {
+                Integer.valueOf((ch + ""));
+            } catch (Exception e) {
+                System.out.println(ch);
+                System.out.println(collAL);
+                assertTrue(false);
+            }
+        });
     }
 
     @SuppressWarnings("unlikely-arg-type")
