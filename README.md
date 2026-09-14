@@ -10,4 +10,9 @@ Refer to the documentation folder for further details on each class / interface 
 
 ## Licensing
 
-This Library is supplied under a __modified__ GNU LGPL v2.1 License. Please see the LICENSE file for more information.
+This Library is supplied under a __modified__ GNU LGPL v2.1 License.
+The current License version is V3. In summary, it adds:
+
+- The Author reserves the right to change the License if they notify users.
+
+Please see the LICENSE file for more information.
