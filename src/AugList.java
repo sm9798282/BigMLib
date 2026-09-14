@@ -25,48 +25,132 @@ import java.util.function.Predicate;
 //import java.lang.reflect.ParameterizedType;
 import java.util.stream.Stream;
 
+// TODO: Add d-classAndInterface changes to AugList desc
+
 /**
- * An augmented ArrayList which implements most ArrayList methods.
- * <p>(Does not implement {@code addLast()}, {{@code ensureCapacity()}, {@code getFirst()}, {@code trimToSize()} & {@code removeFirst()})
- * <p>Changes:
- * <p>{@code boolean add()} (which always returned {@code true}) has been altered to {@code AugList<T> add()}.</p>
- * <p>{@code clone()} and {@code subList()} produce an {@code AugList<T>} rather than an {@code List<T>}.</p>
- * <p>Overrides {@code isEquivalent()}, which is more lenient than {@code ArrayList.isEquivalent()} and can match AugLists, Lists and Strings.
- * Notably this means {@code this.isEquivalent(this.clone())}.</p>
- * <p>Overrides {@code toString()} to provide a more legible overview of the contents.
- * <p>Adds constructors from {@code List<T>} and varargs.</p>
- * <p>Adds varargs variations of {@code addAll}, {@code containsAll}.</p>
- * <p>Adds {@code allSatisfy}, {@code anySatisfy}, {@code distinct}, {@code filter}, {@code getAndAppendIfEmpty}, {@code pairUp},
- * {@code setDifference}, {@code setIntersect}, {@code setUnion}, {@code subListToEnd}, {@code skipWhile}, {@code takeWhile}</p>
- * <p>Decorates an ArrayList.
+ * <h1>AugList<T></h1>
+ *
+ * A decorator of an {@link ArrayList} which provides implementations of many commonly used procedures and commonly required tasks.
+ * <p>Draws inspiration from a variety of sources, such as C# methods, statistics, functional and declarative programming, set theory and more.
+ *
+ * <h2>Notable Changes</h2>
+ *
+ * <h3>Return type changes</h3>
+ *
+ * - {@code boolean} {@link List#add(T)}, {@code Object} {@link Object#clone()} and {@code List<T>} {@link List#subList(int, int)}
+ * changed to have a return type of {@code AugList<T>}.
+ *
+ * <h3>Overrides</h3>
+ *
+ * - Overrides {@link Object#equals(Object)} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
+ * - Overrides {@link Object#toString()} to provide a more legible overview of the contents.
+ *
+ * <h3>Overloads</h3>
+ *
+ * - Constructors will take any {@code ? implements} {@link Iterable}, {@link Iterator}, {@link Spliterator}, or {@link Stream}.</p>
+ * - Varargs constructor i.e. {@code new AugList<Integer>(1, 2, 3, 4)}.</p>
+ * - Constructor and paired value-count overloads i.e. {@code new AugList<String>(new AugList<Integer>(5, 2), new AugList<String>("a", "bc"))}.</p>
+ * - Adds varargs overloads for select bulk-processing methods, such as {@link #addAll(T...)}, {@link #containsAll(T...)} and {@link #removeAll(Object...)}.
+ *
+ * <h3>Replacements</h3>
+ *
+ * - Replaced {@link List#replaceAll(java.util.function.UnaryOperator)} with {@link AugList#oneToOneMap(Function)}
+ *
+ * <h3>Additions</h3>
+ *
+ * Adds the following methods:<p>
+ * - {@link #allIndicesOf(Object)},</p>
+ * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
+ * - {@link #applyAll(Function)}, {@link #oneToOneMap(Function)},</p>
+ * - {@link #chunk(int)}, {@link #fragment(int)},</p>
+ * - {@link #containsAny(AugList)}, {@link #containsAny(T...)}</p>
+ * - {@link #countsOfElements()},</p>
+ * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
+ * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
+ * - {@link #forEach(Consumer)},</p>
+ * - {@link #isRearrangement()},</p>
+ * - {@link #listDifference(AugList)}, {@link #listIntersection(AugList)}, {@link #listUnion(AugList)},</p>
+ * - {@link #pairUp(AugList)},</p>
+ * - {@code #retainAll(java.util.Collection)}, {@code #toCollection()},</p>
+ * - {@link #setDifference(AugList)}, {@link #setIntersection(AugList)}, {@link #setUnion(AugList)},</p>
+ * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},</p>
+ * - {@link #swap(int, int)}, {@link swapRandom(int)}, {@link #swapRandom()},</p>
+ * - {@link #without(T)}, {@link #withoutAll(AugList)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
+ * - {@link #getRandom()}, {@link #removeRandom()},</p>
+ * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(AugList)}, {@link #insertAllAtRandom(T...)},</p>
+ * - {@link #sample(int, boolean)},</p>
+ * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
+ *
+ * <h3>Encapsulations</h3> 
+ * 
+ * {@link AugList} internally uses an {@link ArrayList} to store its elements.
+ * <p>Most, but not all {@link ArrayList} methods have been encapsulated without further alteration.
+ * <p>(See "Deprecated" for the unimplemented encapsulations, and "Return type changes", "Overrides" and "Replacements" for altered methods.)
+ * 
+ * The encapsulated methods are:<p>
+ * - {@link #contains(T)},
+ * - {@link #forEach(Consumer)},
+ * - {@link #get(int)}, {@link #getLast()}, {@link #set(int, Object)},
+ * - {@link #hashCode()},
+ * - {@link #indexOf(Object)}, {@link #lastIndexOf(Object)},
+ * - {@link #isEmpty()}, {@link #size()},
+ * - {@link #iterator()}, {@link #listIterator()}, {@link #listIterator(int)}, {@link #spliterator()},
+ * - {@link #parallelStream()}, {@link #stream()},
+ * - {@link #remove(Object)}, {@link #removeAt(int)}, {@link #removeIf(Predicate)}, {@link #removeLast()},
+ * - {@link #reversed()},
+ * - {@link #toArray(T[])}
+ * 
+ * <h3>Deprecated</h3>
+ *
+ * Due to these methods falling under one of the following categories, they have been commented out / left unimplemented:</p>
+ * 1: have identical functionality under another name:</p>
+ * - {@link List#replaceAll()},</p>
+ * 2: are / have been made redundant by other methods:</p>
+ * - {@link List#addLast()}, {@link List#removeFirst()}, {@code AugList<T>.subListToEnd()},</p>
+ * 3: are impractical to use: </p>
+ * - {@link List#toArray()}, {@link List#toArray(java.util.function.IntFunction)},</p>
+ * 4: have no meaningful impact on internal state:</p>
+ * - {@link ArrayList#ensureCapacity()}, {@link ArrayList#trimToSize()}</p>
+ * @see     tests.AugListTest
+ * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
+ * @version 2
  */
 public class AugList<T> implements Cloneable, Iterable<T> {
     /**
-     * The ArrayList that this AugList decorates.
+     * The {@link ArrayList} that this {@link AugList} decorates.
      */
     private ArrayList<T> ls;
 
     /**
-     * Creates an empty, non-null AugList
+     * Creates a new, empty, non-null {@link AugList}.
+     * @see         tests.AugListTest#testEquals()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList() {
         this.ls = new ArrayList<T>() {};
     }
 
-    @SafeVarargs
     /**
-     * Create an AugList from the given T[] {@code a}
-     * @param   a
-     *          An array of objects that this AugList will have
+     * Creates a new {@link AugList} from the given {@link T}[].
+     * @param       elements
+     *              The varargs array of objects that will make up this {@link AugList}.
+     * @see         tests.AugListTest#setupTestData()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
-    public AugList(T... a) {
-        this.ls = new AugList<T>(Arrays.asList(a)).ls;
+    @SafeVarargs
+    public AugList(T... elements) {
+        this.ls = new ArrayList<T>(Arrays.asList(elements));
     }
 
     /**
-     * Create a new AugList from an Enumeration over some sequence.
-     * @param   enumeration
-     *          The Enumeration object to source the input from.
+     * Creates a new {@link AugList} from the given {@link Enumeration}.
+     * @param       enumeration
+     *              The {@link Enumeration} object to source the elements for this {@link AugList} from.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList(Enumeration<T> enumeration) {
         this.ls = new ArrayList<T>() {};
@@ -76,9 +160,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Create a new AugList from an Iterator over some sequence.
-     * @param   iterator
-     *          The iterator object to source the input from.
+     * Creates a new {@link AugList} from the given {@link Iterator} over some sequence.
+     * @param       iterator
+     *              The {@link Iterator} object to source the elements for this {@link AugList} from.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
+     * @tags        Constructor
      */
     public AugList(Iterator<T> iterator) {
         this.ls = new ArrayList<T>() {};
@@ -88,20 +175,28 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a new AugList with the elements of the class that implements the given Iterable<T>.
-     * @param   iterable
-     *          The iterable from which to source the elements for this AugList.
+     * Creates a new {@link AugList} from the given {@code ? implements} {@link Iterable}.
+     * @param       iterable
+     *              The {@link Iterable} object to source the elements for this {@link AugList} from.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList(Iterable<T> iterable) {
         this.ls = new AugList<T>(iterable.iterator()).ls;
     }
 
     /**
-     * Creates a new AugList with each value repeated as many times as its associated count.
-     * @param   values
-     *          The values to use. If there are more values than counts, ignores values without counts.
-     * @param   counts
-     *          How many times each value should be repeated. If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
+     * Creates a new {@link AugList} from the given value-count pairs.
+     * @param       values
+     *              The values to use.
+     *              If there are more values than counts, ignores values without counts.
+     * @param       counts
+     *              How many times each value should be repeated.
+     *              If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList(AugList<T> values, AugList<Integer> counts) {
         while (values.size() > counts.size()) {
@@ -119,75 +214,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         }
     }
 
-    {
-        // /**
-        //  * Create an AugList from the given ArrayList<T> {@code arrayList}
-        //  * @param   arrayList
-        //  *          The list of objects that this AugList will have
-        //  */
-        // public AugList(ArrayList<T> arrayList) {
-        //     this.ls = arrayList;
-        // }
-
-        // /**
-        //  * Create an AugList from the given ArrayList<T> {@code ls}
-        //  * @param   ls
-        //  *          The list of objects that this AugList will have
-        //  */
-        // public AugList(List<T> ls) {
-        //     this.ls = new ArrayList<T>(ls);
-        // }
-
-        // /**
-        //  * Create an AugList from the given AugList<T> {@code augList}
-        //  * @param   augList
-        //  *          The list of objects that this AugList will have
-        //  */
-        // public AugList(AugList<T> augList) {
-        //     this.ls = new ArrayList<T>(augList.ls);
-        // }
-
-        // /**
-        //  * Creates a new AugList with the elements of the provided ArrayDeque.
-        //  * @param   deque
-        //  *          The deque from which to source the elements for this AugList.
-        //  */
-        // public AugList(Deque<T> deque) {
-        //     this.ls = new AugList<T>(deque.iterator()).ls;
-        // }
-
-        // /**
-        //  * Creates a new AugList with the elements of the provided HashSet.
-        //  * @param   prioQueue
-        //  *          The HashSet from which to source the elements for this AugList.
-        //  */
-        // public AugList(PriorityQueue<T> prioQueue) {
-        //     this.ls = new AugList<T>(prioQueue.iterator()).ls;
-        // }
-
-        // /**
-        //  * Creates a new AugList with the elements of the provided HashSet.
-        //  * @param   hashSet
-        //  *          The HashSet from which to source the elements for this AugList.
-        //  */
-        // public AugList(HashSet<T> hashSet) {
-        //     this.ls = new AugList<T>(hashSet.iterator()).ls;
-        // }
-
-        // /**
-        //  * Creates a new AugList with the elements of the provided TreeSet.
-        //  * @param   treeSet
-        //  *          The TreeSet from which to source the elements for this AugList.
-        //  */
-        // public AugList(TreeSet<T> treeSet) {
-        //     this.ls = new AugList<T>(treeSet.iterator()).ls;
-        // }
-    }
-
     /**
-     * Create a new AugList from an Spliterator over some sequence.
-     * @param   spliterator
-     *          The Spliterator object to source the input from.
+     * Creates a new {@link AugList} from the given {@link Spliterator}.
+     * @param       spliterator
+     *              The {@link Spliterator} object to source the elements for this {@link AugList} from.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList(Spliterator<T> spliterator) {
         this.ls = new ArrayList<T>() {};
@@ -195,9 +228,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Create a new AugList from a Stream.
-     * @param   stream
-     *          The Stream to source the input from.
+     * Creates a new {@link AugList} from the given {@link Stream}.
+     * @param       stream
+     *              The {@link Stream} object to source the elements for this {@link AugList} from.
+     * @see         tests.AugListTest#testInitSpecial()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
      */
     public AugList(Stream<T> stream) {
         // if (stream.anyMatch(e -> e == null)) {
@@ -207,36 +243,44 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Appends {@code e} to the end of this AugList.
+     * Appends the given element to the end of this {@link AugList}.
      *
-     * @param   e
-     *          The element to be appended to this list.
-     * @return  This list, with the given element appended to it.
-     * @apiNote Modifies {@code ArrayList<T>.add(T)}: Returns {@code this}, not {@code void}.
+     * @param   element
+     *          The element in question.
+     * @return  This {@link AugList}, with the given element appended to it.
+     * @see     tests.AugListTest#testAdd()
+     * @note    Replaces {@link List#add(T)}: Returns {@code this}, not {@code void}.
+     * @tags    Mutator
      */
-    public AugList<T> add(T e) {
-        ls.add(e);
+    public AugList<T> add(T element) {
+        ls.add(element);
         return this;
     }
     
     /**
-     * Appends all items in {@code pAugList} to this AugList.
-     * @param   pAugList
-     *          The AugList to append onto the end of this AugList.
-     * @return  This list, with the given elements appended to it.
-     * @apiNote Modifies {@code ArrayList<T>.addAll(Collection<? extends T>)}: Returns {@code this}, not {@code void}.
+     * Appends all given elements to this {@link AugList}.
+     * @param       elements
+     *              The elements in question.
+     * @return      This {@link AugList}, with the given elements appended to it.
+     * @see         tests.AugListTest#testAddAll()
+     * @note        Replaces {@link ArrayList#addAll()}: Returns {@code this}, not {@code void}.
+     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...)}
+     * @tags        Mutator
      */
-    public AugList<T> addAll(AugList<T> pAugList) {
-        ls.addAll(pAugList.ls);
+    public AugList<T> addAll(AugList<T> elements) {
+        ls.addAll(elements.ls);
         return this;
     }
 
     /**
-     * Appends all items in {@code elements} to this AugList.
-     * @param   elements
-     *          The elements to append onto the end of this AugList.
-     * @return  This AugList, with the given items appended to it.
-     * @apiNote Custom overload of {@code ArrayList<T>.addAll()}.
+     * Appends all given elements to this {@link AugList}.
+     * @param       elements
+     *              The elements in question.
+     * @return      This {@link AugList}, with the given elements appended to it.
+     * @see         tests.AugListTest#testAddAllVarargs()
+     * @note        Varargs variant for {@link ArrayList#addAll()}.
+     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...)}
+     * @tags        Mutator
      */
     @SafeVarargs
     public final AugList<T> addAll(T... elements) {
@@ -245,30 +289,36 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Prepends {@code e} onto this AugList.
-     * @param   e
-     *          The element to prepend
-     * @return  This list, with the given element prepended to it.
-     * @apiNote Modifies {@code ArrayList<T>.addFirst(T)}: Returns {@code this}, not {@code void}.
+     * Prepends the given element to this {@link AugList}.
+     * @param   element
+     *          The element in question.
+     * @return  This {@link AugList}, with the given element prepended to it.
+     * @see     tests.AugListTest#testAddFirst()
+     * @note    Replaces {@link ArrayList#addFirst(T)}: Returns {@code this}, not {@code void}.
+     * @tags    Mutator
      */
-    public AugList<T> addFirst(T e) {
-        ls.addFirst(e);
+    public AugList<T> addFirst(T element) {
+        ls.addFirst(element);
         return this;
     }
 
-    // ArrayList<T>.addLast is not implemented as ArrayList.add performs the same task
+    // ArrayList<T>.addLast(T) is not implemented as AugList<T>.insert(0, T) performs the same task
 
     /**
-         * Finds all indices at which the given element can be found.
-         * @param   e
-         *          The element to find.
-         * @return  A new AugList with the indices at which it can be found.
-         * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
-         */
-    public AugList<Integer> allIndicesOf(T e) {
+     * Finds all indices at which the given element can be found.
+     * @param   element
+     *          The element in question.
+     * @return  A new {@link AugList} with the indices at which it can be found.
+     * @see     #indexOf(Object)
+     * @see     #lastIndexOf(Object)
+     * @see     tests.AugListTest#testAllIndicesOf()
+     * @note    Based upon the C# method {@code List<T>.FindAll(Predicate<T>)} with a Predicate that returns true when an element is equal to the target.
+     * @tags    Creator
+     */
+    public AugList<Integer> allIndicesOf(T element) {
         AugList<Integer> ret = new AugList<Integer>();
         for (int i = 0; i < ls.size(); i++) {
-            if (ls.get(i).equals(e)) {
+            if (ls.get(i).equals(element)) {
                 ret.add(i);
             }
         }
@@ -276,15 +326,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns {@code true} if the {@code predicate} passes for all elements.
-     * @param   predicate
-     *          The predicate which all elements must pass.
-     * @return  {@code true} if all elements satisfy the {@code predicate}, and {@code false} otherwise.
-     * @apiNote Custom method which implements the functionality of C# functions {@code IEnumerable<T>.All()} and {@code List<T>.TrueForAll()}.
+     * Sees if all elements pass the given condition.
+     * @param   condition
+     *          The condition in question.
+     * @return  {@code true} if all elements satisfy the condition, and {@code false} otherwise.
+     * @see     #anySatisfy(Predicate)
+     * @see     tests.AugListTest#testAllSatisfy()
+     * @note    Based upon the C# methods {@code IEnumerable<T>.All()} and {@code List<T>.TrueForAll()}.
+     * @tags    Terminator
      */
-    public boolean allSatisfy(Predicate<? super T> predicate) {
+    public boolean allSatisfy(Predicate<? super T> condition) {
         for (T e : ls) {
-            if (!predicate.test(e)) {
+            if (!condition.test(e)) {
                 return false;
             }
         }
@@ -292,15 +345,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns {@code true} if the {@code predicate} passes for any element.
-     * @param   predicate
-     *          The predicate which at least 1 of the elements must pass.
-     * @return  {@code true} if any elements satisfies the {@code predicate}, and {@code false} otherwise.
-     * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
+     * Sees if any element passes the given condition.
+     * @param   condition
+     *          The condition in question.
+     * @return  {@code true} if any element satisfies the condition, and {@code false} otherwise.
+     * @see     #allSatisfy(Predicate)
+     * @see     tests.AugListTest#testAnySatisfy()
+     * @note    Inspired by {@link #allSatisfy(Predicate)}.
+     * @tags    Terminator
      */
-    public boolean anySatisfy(Predicate<? super T> predicate) {
+    public boolean anySatisfy(Predicate<? super T> condition) {
         for (T e : ls) {
-            if (predicate.test(e)) {
+            if (condition.test(e)) {
                 return true;
             }
         }
@@ -308,13 +364,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Applies the provided function on this AugList.
-     * <p>For a non-destructive method, use {@code this.oneToOneMap()}.</p>
-     * <p>For a method with return type void, use {@code this.forEach()}.</p>
+     * Applies the given {@link Function} to all elements of this {@link AugList}
+     * <p>For a Terminator method, use {@link #forEach()}.</p>
+     * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   func
-     * @return  This AugList, with each element having been transformed.
-     * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
-     *          <p>Functionality is comparable to the C# function {@code List<T>.ConvertAll()}.</p>
+     *          The {@link Function} in question.
+     * @return  This {@link AugList}, with each element transformed as according to the function.
+     * @see     #oneToOneMap(Function)
+     * @see     #forEach(Consumer)
+     * @see     tests.AugListTest#testApplyAll()
+     * @note    Inspired by the C# function {@code List<T>.ConvertAll(Converter<T, TOutput>)}.
+     * @tags    Mutator
      */
     public AugList<T> applyAll(Function<? super T, T> func) {
         for (int i = 0; i < ls.size(); i++) {
@@ -324,13 +384,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a new AugList of AugLists where each entry has at most {@code size} elements.
+     * Creates a new {@link AugList} of AugLists where each entry has at most {@code size} elements.
      * @param   size
-     *          The maximum size of a chunk.
-     * @return  This AugList split into smaller AugLists with a maximum length of {@code size}.
+     *          The maximum size of a chunk. The final chunk may be smaller than this size.
+     * @return  This {@link AugList} split into smaller AugLists with a maximum length of {@code size}.
      * @throws  IllegalArgumentException
      *          {@code size <= 0}
-     * @apiNote Custom method that implements the functionality of C# function {@code List<T>.Chunk()}.
+     * @see     #fragment()
+     * @see     tests.AugListTest#testChunk()
+     * @note    Based upon the C# method {@code List<T>.Chunk(int)}.
+     * @tags    Creator
      */
     public AugList<AugList<T>> chunk(int size) {
         if (size <= 0) {
@@ -349,9 +412,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Clears this AugList.
-     * @return  This empty AugList<T>.
-     * @apiNote Modifies {@code ArrayList<T>.clear()}: Returns {@code this}, not {@code void}.
+     * Clears this {@link AugList}.
+     * @return  This {@link AugList}, emptied.
+     * @see     tests.AugListTest#testClear()
+     * @note    Replaces {@link List#clear()}: Returns {@code this}, not {@code void}.
+     * @tags    Mutator
      */
     public AugList<T> clear()
     {
@@ -361,8 +426,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // Notably, works differently to ArrayList<T>.clone() in that the return type is an AugList<T>.
     /**
-     * @return  A clone of this AugList with the same contents as this one, but with a different memory address.
-     * @apiNote Pseudo-Overrides {@code ArrayList<T>.clone()} and has {@code AugList<T>} return type.
+     * @return  A new {@code AugList} with identical contents as this one.
+     * @see     tests.AugListTest#testClone()
+     * @note    Replaces {@link Object#clone()}: Return type {@link AugList} (as opposed to {@link Object})
+     * @tags    Creator
      */
     public AugList<T> clone() {
         AugList<T> clone = new AugList<T>() {};
@@ -373,25 +440,35 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Attempts to find {@code e} and returns {@code true} if so.
-     * @param   e
+     * Sees if this {@link AugList} contains the given element.
+     * @param   element
      *          The element to search for.
-     * @return  {@code true} if {@code e} exists within this AugList.
-     * @apiNote Encapsulates {@code ArrayList<T>.contains(T)}.
+     * @return  {@code true} if found, and {@code false} otherwise
+     * @see     #containsAll(AugList)
+     * @see     #containsAny(AugList)
+     * @see     tests.AugListTest#testContains()
+     * @note    Encapsulates {@link List#contains(T)}.
+     * @tags    Terminator
      */
-    public boolean contains(T e) {
-        return ls.contains(e);
+    public boolean contains(T element) {
+        return ls.contains(element);
     }
     
     /**
-     * Attempts to find all elements in {@code pAugList} inside this AugList and returns {@code true} if so.
-     * @param   pAugList
-     *          The AugList of elements to find.
-     * @return  {@code true} if all elements in {@code pAugList} are found.
-     * @apiNote Pseudo-overrides {@code AbstractCollection<T>.containsAll(Collection<?>)}
+     * Sees if this {@link AugList} contains all the given elements.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code true} if all elements are found, and {@code false} otherwise.
+     * @see         #contains(Object)
+     * @see         #containsAny(AugList)
+     * @see         #containsAny(T...)
+     * @see         tests.AugListTest#testContainsAll()
+     * @note        Replaces {@link java.util.Collection#containsAll(java.util.Collection)}
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}
+     * @tags        Terminator
      */
-    public boolean containsAll(AugList<T> pAugList) {
-        for (T e : pAugList) {
+    public boolean containsAll(AugList<T> elements) {
+        for (T e : elements) {
             if (!ls.contains(e)) {
                 return false;
             }
@@ -400,12 +477,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Attempts to find all elements in {@code elements} inside this AugList and returns {@code true} if so.
-     * @param   elements
-     *          The elements to find.
-     * @return  {@code true} if all elements in {@code elements} are found.
-     * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
-     *          <p>Functionality can be replicated with {@code this.allSatisfy(e -> this.contains(e))}.</p>
+     * Sees if this {@link AugList} contains all the given elements.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code true} if all elements are found, and {@code false} otherwise.
+     * @see         #contains(Object)
+     * @see         #containsAny(AugList)
+     * @see         #containsAny(T...)
+     * @see         tests.AugListTest#testContainsAllVarargs()
+     * @note        Varargs overload for {@link #containsAll(AugList)}.
+     *              <p>Functionality can be replicated with {@code this.allSatisfy(e -> this.contains(e))}.</p>
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @tags        Terminator
      */
     @SafeVarargs
     public final boolean containsAll(T... elements) {
@@ -418,12 +501,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Attempts to find if any element in {@code elements} is inside this AugList and returns {@code true} if so.
-     * @param   elements
-     *          The elements to find.
-     * @return  {@code true} if any of the elements in {@code elements} are found.
-     * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
-     *          <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
+     * Sees if this {@link AugList} contains any of the given elements.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code true} if any element is found, and {@code false} if not.
+     * @see         #contains(Object)
+     * @see         #containsAll(AugList)
+     * @see         #containsAll(T...)
+     * @see         tests.AugListTest#testContainsAny()
+     * @note        Inspired by {@link #containsAll(AugList)}.
+     *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @tags        Terminator
      */
     public final boolean containsAny(AugList<T> elements) {
         for (T e : elements) {
@@ -435,12 +524,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Attempts to find if any element in {@code elements} id inside this AugList and returns {@code true} if so.
-     * @param   elements
-     *          The elements to find.
-     * @return  {@code true} if any of the elements in {@code elements} are found.
-     * @apiNote Custom method with functionality that is, to my knowledge, not implemented in Java or C#.
-     *          <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
+     * Sees if this {@link AugList} contains any of the given elements.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code true} if any element is found, and {@code false} if not.
+     * @see         #contains(Object)
+     * @see         #containsAll(AugList)
+     * @see         #containsAll(T...)
+     * @see         tests.AugListTest#testContainsAnyVarargs()
+     * @note        Varargs overload of {@link #containsAny(AugList)}
+     *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @tags        Terminator
      */
     @SafeVarargs
     public final boolean containsAny(T... elements) {
@@ -454,9 +549,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Counts the number of times each element appears and returns a Hashtable with the results.
-     * @return  A Hashtable pairing each element with number of occurrences.
+     * @return  A {@link Hashtable} that pairs each element with its frequency.
+     * @see     tests.AugListTest#testCountsOfElements()
+     * @tags    Converter
      */
-    public Hashtable<T,Integer> countsOfElements() {
+    public Hashtable<T, Integer> countsOfElements() {
         Hashtable<T,Integer> ret = new Hashtable<T, Integer>() {};
         for (int i = 0; i < ls.size(); i++) {
             T key = ls.get(i);
@@ -471,9 +568,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a new AugList which is a copy of this AugList, except without duplicates.
-     * @return  A new AugList with only the distinct elements in this AugList.
-     * @apiNote Custom method that implements the functionality of C# function {@code IEnumerable<T>.Distinct()};
+     * Makes an {@link AugList} from this one, but without duplicates.
+     * <p>For a Mutator method, use {@link #distinctSelf()}.</p>
+     * @return  A new {@link AugList} with only the distinct elements in this AugList.
+     *          Mathematically speaking, the result is also a set.
+     * @see     #distinctSelf()
+     * @see     tests.AugListTest#testDistinctCopy()
+     * @note    Based off the C# function {@code IEnumerable<T>.Distinct()};
+     * @tags    Creator
      */
     public AugList<T> distinctCopy() {
         AugList<T> ret = new AugList<T>() {};
@@ -486,10 +588,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Changes this AugList so it only contains one copy of each item.
-     * <p>For obtaining a non-destructive copy, use {@code distinctCopy()}.</p>
+     * Changes this {@link AugList} to contain exactly one copy of each item.
+     * <p>For a Creator method, use {@link #distinctCopy()}.</p>
      * @return  This AugList, with each element being distinct from each other.
-     * @apiNote Custom method similar to C# function {@code IEnumerable<T>.Distinct()}, but changes this list instead of creating a new one.
+     *          Mathematically speaking, the result is also a set.
+     * @see     #distinctCopy()
+     * @see     tests.AugListTest#testDistinctSelf()
+     * @note    Inspired by {@link #distinctCopy()}.
+     * @tags    Mutator
      */
     public AugList<T> distinctSelf() {
         AugList<T> ret = new AugList<T>() {};
@@ -502,14 +608,26 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ret;
     }
 
-    
-    /**
-     * This method will accept an input if it is STRICTLY equal: Use isRearrangement() for a more lenient Equality comparer.
+    /** 
+     * Sees if the given {@link Object} may be equal to this {@link AugList}.
+     * <p> If the Object in question is any of the following, it can be matched:
+     * - {@link AugList}: Same length and Elements are equal for each index.
+     * - {@code ? implements} {@link List}: Passes {@link List#equals(Object)}.
+     * - {@link String}: Equal to the result of {@link AugList#toString()}.
+     * @param   o
+     *          The object in question.
+     * @see     #isRearrangement(AugList)
+     * @see     tests.AugListTest#testEquals()
+     * @return  {@code true} if equivalent, and {@code false} otherwise.
+     * @note    Breaks the contract that states that two equal objects have equal {@link #hashCode() hashcodes},
+     *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
+     * @tags    Terminator
      */
-    
     public boolean isEquivalent(Object o) {
         if (o instanceof AugList) {
-            @SuppressWarnings({ "rawtypes" }) // Suppress the unchecked cast caution as o is already an AugList under the hood.
+            @SuppressWarnings({ "rawtypes" })
+            // Suppress the rawtypes caution as o is an AugList.
+            // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
             AugList oAsAugList = (AugList) o;
             // We know o is an AugList:
             // Firstly, are the lists the same size?
@@ -568,17 +686,20 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a new AugList that only contains the elements that satisfy {@code predicate}.
-     * <p>To also change the underlying values, use {@code filterSelf()}.
-     * @param   predicate
-     *          The condition an element must pass to be included.
-     * @return  A new AugList with elements that satisfy the {@code predicate}.
-     * @apiNote Custom method that implements the functionality of C# function {@code IEnumerable<T>.Where()};
+     * Creates a new {@link AugList} with exactly the elements that satisfy the given filter.
+     * <p>For a Mutator method, use {@link #filterSelf()}.
+     * @param   condition
+     *          The condition in question.
+     * @return  A new {@link AugList} with elements that satisfy the given filter.
+     * @see     #filterSelf()
+     * @see     tests.AugListTest#testFilterCopy()
+     * @note    Based off the C# function {@code IEnumerable<T>.Where()}
+     * @tags    Creator
      */
-    public AugList<T> filterCopy(Predicate<? super T> predicate) {
+    public AugList<T> filterCopy(Predicate<? super T> condition) {
         AugList<T> ret = new AugList<T>() {};
         for (T e : ls) {
-            if (predicate.test(e)) {
+            if (condition.test(e)) {
                 ret.add(e);
             }
         }
@@ -586,17 +707,20 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Alters this AugList to only contains the elements that satisfy {@code predicate}.
-     * <p>For a non-destructive method, use {@code filterCopy()}.
-     * @param   predicate
-     *          The condition an element must pass to be included.
-     * @return  This AugList, containing only elements that satisfy the {@code predicate}.
-     * @apiNote Custom method similar to C# function {@code IEnumerable<T>.Where()}, but changes this list instead of creating a new one.
+     * Changes this {@link AugList} to contain exactly the elements that satisfy the given filter.
+     * <p>For a Creator method, use {@link #filterCopy()}.
+     * @param   condition
+     *          The condition in question.
+     * @return  This {@link AugList} with elements that satisfy the given filter.
+     * @see     #filterCopy()
+     * @see     tests.AugListTest#testFilterSelf()
+     * @note    Based off the C# function {@code IEnumerable<T>.Where()}
+     * @tags    Mutator
      */
-    public AugList<T> filterSelf(Predicate<? super T> predicate) {
+    public AugList<T> filterSelf(Predicate<? super T> condition) {
         AugList<T> ret = new AugList<T>() {};
         for (T e : ls) {
-            if (predicate.test(e)) {
+            if (condition.test(e)) {
                 ret.add(e);
             }
         }
@@ -605,23 +729,32 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Performs the given void {@code action} to each element.
-     * <p>For returning a set of values, use {@code this.oneToOneMap()}.</p>
-     * <p>For changing the underlying values, use {@code this.applyAll()}.</p>
+     * Supplies the given {@link Consumer} all elements of this {@link AugList}.
+     * <p>For a Mutator method, use {@link #applyAll()}.</p>
+     * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   action
      *          The action to perform.
      * @throws  NullPointerException
      *          If the specified action is {@code null}.
-     * @apiNote Encapsulates {@code ArrayList<T>.forEach(Consumer<? super E>)}.
+     * @see     #applyAll(Function)
+     * @see     #oneToOneMap(Function)
+     * @see     tests.AugListTest#testForEach()
+     * @note    Encapsulates {@code ArrayList<T>.forEach(Consumer<? super E>)}.
+     * @tags    Terminator
      */
     public void forEach(Consumer<? super T> action) {
         ls.forEach(action);
     }
 
     /**
-     * Fragments this AugList into irregularly sized fragments. Preserves order. Always partitions into at least 2 lists, and no list is empty.
+     * Fragments this {@link AugList} into irregularly sized fragments.
+     * Preserves order.
+     * Always partitions into at least 2 lists, and no list is empty.
      * @return  This AugList fragmented into randomly sized shards.
-     * @apiNote Randomized variant of {@code AugList<T>.chunk()}.
+     * @see     #chunk(int)
+     * @see     tests.AugListTest#testFragment()
+     * @note    Randomized variant of {@link #chunk()}.
+     * @tags    Creator
      */
     public AugList<AugList<T>> fragment() {
         AugList<AugList<T>> ret = new AugList<AugList<T>>(new AugList<T>());
@@ -643,13 +776,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // Ideally I would add the ability to index with [].
     // However, I don't believe the such is even possible in Java.
     /**
-     * Returns the element at {@code index}.
+     * Returns the element at the given {@code index}.
      * @param   index
      *          Index of the element to return.
      * @return  The element at {@code index}.
      * @throws  IndexOutOfBoundsException
-     *          The index is out of array bounds.
-     * @apiNote Encapsulates {@code ArrayList<T>.get(int)}.
+     *          {@code index < 0 || index >= this.size()}
+     * @see     #getLast()
+     * @see     #getRandom()
+     * @see     #set(int, T)
+     * @see     tests.AugListTest#testGet()
+     * @note    Encapsulates {@link List#get(int)}
+     * @tags    Terminator
      */
     public T get(int index) {
         return ls.get(index);
@@ -660,26 +798,36 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     
     // ArrayList<T>.getLast() has just enough of a fringe usage that it is implemented; Typing ArrayList<T>.get(ArrayList<T>.size() - 1) is a little arduous.
     /**
-     * @return  The last item in this AugList.
+     * Gets the final element of this {@link AugList}.
+     * @return  The last item in this {@link AugList}.
      * @throws  NoSuchElementException
-     *          This AugList is empty.
-     * @apiNote Encapsulates {@code AbstractCollection<T>.getLast()}.
+     *          {@code this.size() == 0}
+     * @see     #get(int)
+     * @see     tests.AugListTest#testGetLast()
+     * @note    Encapsulates {@link List#getLast()}.
+     * @tags    Terminator
      */
     public T getLast() {
         return ls.getLast();
     }
 
     /**
-     * @return  A random item in this AugList.
-     * @apiNote Randomized variant of {@code AugList<T>.get()}.
+     * @return  A random element of this {@link AugList}.
+     * @see     #get(int)
+     * @see     tests.AugListTest#testGetRandom()
+     * @note    Randomized variant of {@link #get()}.
+     * @tags    Terminator
      */
     public T getRandom() {
         return ls.get((new Random()).nextInt(ls.size()));
     }
 
     /**
-     * @return  The hash code of the underlying ArrayList.
-     * @apiNote Encapsulates {@code ArrayList<T>.getLast()}.
+     * @return  The hashcode of the decorated {@link ArrayList}.
+     * @see     tests.AugListTest#testHashCode()
+     * @note    Encapsulates {@link List#hashCode()}.
+     *          Note that objects that satisfy {@link #equals(Object)} may not have an equal hashcode, in violation of the general contract.
+     * @tags    Terminator
      */
     public int hashCode() {
         return ls.hashCode();
@@ -690,54 +838,83 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The object to search for.
      * @return  The index of the first occurrence of {@code o}, or -1 if it is not present.
-     * @apiNote Encapsulates {@code ArrayList<T>.indexOf()}.
+     * @note    Encapsulates {@link ArrayList#indexOf()}.
+     * @see     #allIndicesOf(Object)
+     * @see     #lastIndexOf(Object)
+     * @see     tests.AugListTest#testIndexOf()
+     * @tags    Terminator
      */
     public int indexOf(Object o) {
         return ls.indexOf(o);
     }
 
     /**
-     * Inserts {@code e} at the specified position in this list, shifting other elements along if necessary.
+     * Inserts the given element at the given index.
      * @param   index
-     *          Index at which the specified element is to be inserted.
-     * @param   e
-     *          Element to be inserted
+     *          The index in question.
+     * @param   element
+     *          The element in question.
      * @throws  IndexOutOfBoundsException
-     *          The provided index is out of array bounds.
-     * @return  This list, with the given element inserted at the given index.
-     * @apiNote Modifies {@code ArrayList<T>.add(int, T)}: Returns {@code this}, not {@code void}.
+     *          {@code index < 0 || index >= this.size()}
+     * @return  This {@link AugList}, with the given element inserted at the given index.
+     * @see     #insertAll(int, AugList)
+     * @see     #insertAll(int, Object...)
+     * @see     #insertAtRandom(Object)
+     * @see     tests.AugListTest#testInsert()
+     * @note    Replaces {@link ArrayList#add(int, T)}: Returns {@code this}, not {@code true}.
+     * @tags    Mutator
      */
-    public AugList<T> insert(int index, T e) {
-        ls.add(index, e);
+    public AugList<T> insert(int index, T element) {
+        ls.add(index, element);
         return this;
     }
 
     /**
-     * Inserts all items in {@code pAugList} to this AugList at the provided {@code index}.
-     * @param   index
-     *          Index at which the specified element is to be inserted.
-     * @param   pAugList
-     *          The AugList to append onto the end of this AugList.
-     * @throws  IndexOutOfBoundsException
-     *          The provided index is out of array bounds.
-     * @return  This list, with the given elements inserted at the given index.
-     * @apiNote Modifies {@code ArrayList<T>.addAll(int, Collection<? extends T>)}: Returns {@code this}, not {@code void}.
+     * In VSCode, links are usually coloured (Teal Class)(Green Hashtag)(Yellow Method)(Light Blue Params)
+     * If the parameters are not set up correctly, though, the method also turns Light Blue.
+     * (For example, {@link ArrayList#addAll(int, Collection)} would produce a light blue method.)
+     * Light blue method links cannot be ctrl+clicked on hover.
+     * However, hovering over the method does produce a useable link.
      */
-    public AugList<T> insertAll(int index, AugList<T> pAugList) {
-        ls.addAll(index, pAugList.ls);
+    /**
+     * Inserts the given elements at the given index.
+     * @param       index
+     *              The index in question.
+     * @param       elements
+     *              The {@link AugList} of elements in question.
+     * @throws      IndexOutOfBoundsException
+     *              {@code index < 0 || index >= this.size()}
+     * @return      This {@link AugList}, with the given elements inserted at the given index.
+     * @see         #insert(int, Object)
+     * @see         #insertAllAtRandom(AugList)
+     * @see         #insertAllAtRandom(T...) 
+     * @see         tests.AugListTest#testInsertAll()
+     * @note        Replaces {@link ArrayList#addAll(int, java.util.Collection)}:
+     *              Elements parameter type changed to AugList, returns {@code this}, not {@code true}.
+     * @overloads   {@link #insertAll(int, T...)}
+     * @tags        Mutator
+     */
+    public AugList<T> insertAll(int index, AugList<T> elements) {
+        ls.addAll(index, elements.ls);
         return this;
     }
 
     /**
-     * Inserts all items in {@code pAugList} to this AugList at the provided {@code index}.
-     * @param   index
-     *          Index at which the specified element is to be inserted.
-     * @param   elements
-     *          The elements to append onto the end of this AugList.
-     * @throws  IndexOutOfBoundsException
-     *          The provided index is out of array bounds.
-     * @return  This AugList, with the given items inserted into it at the given location.
-     * @apiNote Custom overload of {@code ArrayList<T>.addAll()}.
+     * Inserts the given elements at the given index.
+     * @param       index
+     *              The index in question.
+     * @param       elements
+     *              The elements in question.
+     * @throws      IndexOutOfBoundsException
+     *              {@code index < 0 || index >= this.size()}
+     * @return      This {@link AugList}, with the given elements inserted at the given index.
+     * @see         #insert(int, Object)
+     * @see         #insertAllAtRandom(AugList)
+     * @see         #insertAllAtRandom(T...)
+     * @see         tests.AugListTest#testInsertAllVarargs()
+     * @note        Varargs overload of {@link #insertAll(int, AugList)}
+     * @overloads   {@link #insertAll(int, AugList)}
+     * @tags        Mutator
      */
     @SafeVarargs
     public final AugList<T> insertAll(int index, T... elements) {
@@ -746,25 +923,37 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Inserts all items in {@code otherAugList} to this AugList at random.
-     * @param   otherAugList
-     *          The AugList to shuffle into this AugList.
-     * @return  This list, with the given elements inserted at random.
-     * @apiNote Custom code, albeit simple in nature. 
+     * Inserts the given elements to this {@link AugList} at random.
+     * @param       elements
+     *              The elements in question.
+     * @return      This {@link AugList}, with the given elements inserted at random.
+     * @see         #insertAll(int, AugList)
+     * @see         #insertAll(T...)
+     * @see         #insertAtRandom(Object)
+     * @see         tests.AugListTest#testInsertAllAtRandom()
+     * @note        Randomized bulk non-varargs variant of {@link #insert(int, Object)}
+     * @overloads   {@link #insertAllAtRandom(T...)}
+     * @tags        Mutator
      */
-    public AugList<T> insertAllAtRandom(AugList<T> otherAugList) {
-        for (int i = 0; i < otherAugList.size(); i++) {
-            insertAtRandom(otherAugList.get(i));
+    public AugList<T> insertAllAtRandom(AugList<T> elements) {
+        for (int i = 0; i < elements.size(); i++) {
+            insertAtRandom(elements.get(i));
         }
         return this;
     }
 
     /**
-     * Inserts all items in {@code otherAugList} to this AugList at random.
-     * @param   elements
-     *          The AugList to shuffle into this AugList.
-     * @return  This list, with the given elements inserted at random.
-     * @apiNote Randomized variant of {@code AugList<T>.insertAll()}
+     * Inserts the given elements to this {@link AugList} at random.
+     * @param       elements
+     *              The elements in question.
+     * @return      This {@link AugList}, with the given elements inserted at random.
+     * @see         #insertAll(int, AugList)
+     * @see         #insertAll(T...)
+     * @see         #insertAtRandom(Object)
+     * @see         tests.AugListTest#testInsertAllAtRandomVarargs()
+     * @note        Randomized bulk varargs variant of {@link #insert(int, Object)}
+     * @overloads   {@link #insertAllAtRandom(AugList)}
+     * @tags        Mutator
      */
     @SafeVarargs
     public final AugList<T> insertAllAtRandom(T... elements) {
@@ -775,161 +964,224 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Inserts {@code e} at a random position in this list, shifting other elements along if necessary.
-     * @param   e
-     *          Element to be inserted
+     * Inserts the given element at random.
+     * @param   element
+     *          The element in question.
      * @return  This list, with the given element inserted somewhere into this AugList.
-     * @implNote Randomized variant of {@code AugList<T>.insert(T, int)}
+     * @see     #insert(int, Object)
+     * @see     #insertAllAtRandom(AugList)
+     * @see     #insertAllAtRandom(T...)
+     * @see     tests.AugListTest#testInsertAtRandom()
+     * @note    Randomized variant of {@link #insert(T, int)}
+     * @tags    Mutator
      */
-    public AugList<T> insertAtRandom(T e) {
-        ls.add((new Random()).nextInt(ls.size()), e);
+    public AugList<T> insertAtRandom(T element) {
+        ls.add((new Random()).nextInt(ls.size()), element);
         return this;
     }
 
     /**
-     * @return  {@code true} if there are exactly 0 elements inside this AugList.
-     * @apiNote Encapsulates {@code ArrayList<T>.isEmpty()}.
+     * Returns {@code true} if this {@link AugList} is empty.
+     * @return  {@code this.size() == 0}.
+     * @see     #size()
+     * @see     tests.AugListTest#testIsEmpty()
+     * @note    Encapsulates {@link List#isEmpty()}.
+     * @tags    Terminator
      */
     public boolean isEmpty() {
         return ls.isEmpty();
     }
 
     /**
-     * Compares whether or not two lists have the same elements. (Order does not matter)
-     * <p>For a stricter equality function, use {@code this.isEquivalent()}.</p>
-     * @param   otherAL
-     *          The second list to compare against.
-     * @return  {@code true} if the lists match; {@code false} otherwise.
-     * @apiNote Custom method with functionality that, to my knowledge, is not implemented in Java or C#.
+     * Compares whether or not two {@link AugList AugLists} have the same elements. (Order does not matter)
+     * <p>For a stricter equality function, use {@link #equals()}.</p>
+     * @param   augListB
+     *          The second {@link AugList} to compare against.
+     * @return  {@code true} if the lists are rearrangements; {@code false} otherwise.
+     * @see     tests.AugListTest#testIsRearrangement()
+     * @note    Functionality is, to my knowledge, not implemented in Java or C#.
+     * @tags    Terminator
      */
-    public boolean isRearrangement(AugList<T> otherAL) {
-        if (ls.size() != otherAL.size()) {
+    public boolean isRearrangement(AugList<T> augListB) {
+        if (ls.size() != augListB.size()) {
             // If the two lists are different lengths, there is no world in which they are rearrangements of eachother.
             // So rather than wasting compute time, we can terminate early.
             return false;
         }
-        AugList<T> augListA = this.clone();
-        AugList<T> augListB = otherAL.clone();
+        AugList<T> CloneA = this.clone();
+        AugList<T> CloneB = augListB.clone();
         // Notably this for loop does not reassign i for each loop.
-        for (int i = 0; i < augListA.size();) {
-            if (!augListB.contains(augListA.get(i))) {
+        for (int i = 0; i < CloneA.size();) {
+            if (!CloneB.contains(CloneA.get(i))) {
                 return false;
             }
-            augListB.remove(augListA.get(i));
-            augListA.remove(augListA.get(i));
+            CloneB.remove(CloneA.get(i));
+            CloneA.remove(CloneA.get(i));
         }
         return true;
     }
 
     /**
-     * @return  An iterator over this AugList that goes in sequence
-     * @apiNote Encapsulates {@code ArrayList<T>.iterator()}.
+     * @return  Returns a <i>fail-fast</i> {@link Iterator} over this {@link AugList} in sequence.
+     * @see     #listIterator()
+     * @see     #spliterator()
+     * @see     tests.AugListTest#testIterator()
+     * @note    Encapsulates {@link List#iterator()}.
+     * @tags    Converter
      */
     public Iterator<T> iterator() {
         return ls.iterator();
     }
 
     /**
-     * Returns the index of the final occurrence of object {@code o}, or -1 if it is not in this list.
+     * Returns the index of the final occurrence of the given object, or -1 if not present.
      * @param   o
      *          The object to search for.
-     * @return  The index of the final occurrence of {@code o}, or -1 if it is not present.
-     * @apiNote Encapsulates {@code ArrayList<T>.lastIndexOf()}.
+     * @return  The index of the final occurrence of {@code o}, or -1 if not present.
+     * @see     #allIndicesOf(Object)
+     * @see     #indexOf(Object)
+     * @see     tests.AugListTest#testLastIndexOf()
+     * @note    Encapsulates {@link ArrayList#lastIndexOf()}.
+     * @tags    Terminator
      */
     public int lastIndexOf(Object o) {
         return ls.lastIndexOf(o);
     }
 
     /**
-     * Returns the list difference between this and the provided {@code pAugList}. (i.e. A\B)
-     * <p>The result is a new AugList.
-     * @param   listB
-     *          The list of items to remove.
-     * @return  The list difference (A\B).
-     *          <p>i.e. [1,2]\[1] = [2], [1,1,2]\[1,3] = [1,2], [1,1,2]\[1,1,3] = [2]
-     *          <p>Output is a list, which may be a set.
-     * @apiNote Custom method tangentially inspired by the C# functions {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
+     * Returns the "list difference" between this (A) and the given {@link AugList} (B).
+     * <p>For a method that calculates the set difference, use {@link #setDifference(AugList)}.
+     * <p>For methods with similar functionality, see {@link #removeAll(AugList)} and {@code #retainAll(java.util.Collection)} 
+     * @param   augListB
+     *          The {@link AugList} in question, with which to take the difference of.
+     * @return  The "list difference", "A\`B".
+     *          <p>i.e. [1,2]\`[1] = [2], 
+     *                  [2]\`[1,2] = [], 
+     *                  [1,1,2]\`[1,3] = [1,2],
+     *                  [1,1,2]\`[1,1,3] = [2],
+     *                  [1,1]\`[] = [1,1]
+     *          <p>Output is a list, which may be a mathematical set.
+     * @see     #listIntersection(AugList)
+     * @see     #listUnion(AugList)
+     * @see     #setDifference(AugList)
+     * @see     #removeAll(AugList)
+     * @see     java.util.Collection#retainAll(java.util.Collection)
+     * @see     tests.AugListTest#testListDifference()
+     * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
+     *          <p>"List Difference" and "A\`B" are not mathematically endorsed terminology.
+     *          Works similarly, but not identically, to {@link java.util.Collection#retainAll(java.util.Collection)}
+     * @tags    Creator
      */
-    public AugList<T> listDifference(AugList<T> listB) {
+    public AugList<T> listDifference(AugList<T> augListB) {
         AugList<T> ret = this.clone();
-        for (int i = 0; i < listB.size(); i++) {
-            if (ret.contains(listB.get(i))) {
-                ret.remove(listB.get(i));
+        for (int i = 0; i < augListB.size(); i++) {
+            if (ret.contains(augListB.get(i))) {
+                ret.remove(augListB.get(i));
             }
         }
         return ret;
     }
 
     /**
-     * Returns the list intersection between this and the provided {@code pAugList}. (I.e. A∩B)
-     * <p>The result is a new AugList.
-     * @param   listB
-     *          The list of items to intersect with.
-     * @return  The list intersection (A∩B), or an AugList with elements that appear in both lists. 
-     *          <p>i.e. [1,1,2]∩[1,2,3] = [1,2], [1,1,1,2]∩[1,1,2,3] = [1,1,2].
-     *          <p>Output is a list, which may be a set.
-     * @apiNote Custom method similar to the C# function {@code IEnumerable<T>.Intersect()}.
+     * Returns the "list intersection" between this (A) and the given {@link AugList} (B).
+     * <p>For a method that calculates the set intersection, use {@link #setIntersection(AugList)}.
+     * @param   augListB
+     *          The {@link AugList} in question, with which to take the intersection of.
+     * @return  The "list intersection", "A∩`B".
+     *          <p>i.e. [1,1,2]∩`[1,2,3] = [1,2],
+     *                  [1,2,3]∩`[1,1,2] = [1,2],
+     *                  [1,1,1,2]∩`[1,1,2,3] = [1,1,2],
+     *                  []∩`[1,1,3,7] = [].
+     *          <p>Output is a list, which may be a mathematical set.
+     * @see     #listDifference(AugList)
+     * @see     #listUnion(AugList)
+     * @see     #setIntersection(AugList)
+     * @see     tests.AugListTest#testListIntersection()
+     * @note    Based upon the C# method {@code IEnumerable<T>.Intersect()}.
+     *          <p>"List Intersection" and "A∩`B" are not mathematically endorsed terminology.
+     * @tags    Creator
      */
-    public AugList<T> listIntersection(AugList<T> listB) {
-        if (this.isEquivalent(listB)) {
-            return listB;
+    public AugList<T> listIntersection(AugList<T> augListB) {
+        if (this.equals(augListB)) {
+            return augListB;
         }
-        listB = listB.clone();
-        // As listIntersection needs to alter the state of listB,
-        // the state of listB could change outside of scope.
-        // This behaviour is not intended, hence replace listB with a clone of itself.
+        augListB = augListB.clone();
+        // As listIntersection needs to alter the state of B,
+        // the state of B could change outside of scope.
+        // This behaviour is not intended, hence replace B with a clone of itself.
         AugList<T> ret = new AugList<T>() {};
         for (T e : ls) {
-            if (listB.contains(e)) {
+            if (augListB.contains(e)) {
                 ret.add(e);
-                listB.remove(e);
+                augListB.remove(e);
             }
         }
         return ret;
     }
 
     /**
-     * @return  A ListIterator over this AugList that goes in sequence
-     * @apiNote Encapsulates {@code ArrayList<T>.listIterator()}.
+     * Returns a <i>fail-fast</i> {@link ListIterator} over this {@link AugList} in proper sequence.
+     * @return      A {@link ListIterator} over this {@link AugList}.
+     * @see         #iterator()
+     * @see         #spliterator()
+     * @see         tests.AugListTest#testListIterator()
+     * @note        Encapsulates {@link List#listIterator()}.
+     * @overloads   {@link #listIterator(int)}
+     * @tags        Converter
      */
     public ListIterator<T> listIterator() {
         return ls.listIterator();
     }
 
     /**
-     * Creates a ListIterator starting at {@code index}
-     * @param   index
-     *          The index this ListIterator starts at.
-     * @return  A ListIterator over this AugList that goes in sequence and starts at {@code index}
-     * @apiNote Encapsulates {@code ArrayList<T>.listIterator(int)}.
+     * Returns a <i>fail-fast</i> {@link ListIterator} over this {@link AugList} in proper sequence, starting at the given index.
+     * @param       index
+     *              The index the {@link ListIterator} will start at.
+     * @see         #iterator()
+     * @see         #spliterator()
+     * @see         tests.AugListTest#testListIteratorFromIndex()
+     * @return      A {@link ListIterator} over this {@link AugList} starting at the given index.
+     * @note        Encapsulates {@link List#listIterator(int)}.
+     * @overloads   {@link #listIterator()}
+     * @tags        Converter
      */
     public ListIterator<T> listIterator(int index) {
         return ls.listIterator(index);
     }
 
     /**
-     * Returns the list union between this and the provided {@code pAugList}. (i.e. AUB)
-     * <p>The result is a new AugList.
-     * @param   listB
-     *          The list of items to union with.
-     * @return  The list union (AUB).
-     *          <p>i.e. [1,1,2]U[1,2,3] = [1,1,2,3], [1,1,1,2]U[1,1,2,3] = [1,1,1,2,3].
-     *          <p>Output is a list, which may be a set. DOES NOT PRESERVE ORDER.
-     * @apiNote Custom method similar to the C# function {@code IEnumerable<T>.Union()}
+     * Returns the "list union" between this (A) and the given {@link AugList} (B).
+     * <p>For a method that calculates the set union, use {@link #setUnion(AugList)}.
+     * @param   augListB
+     *          The {@link AugList} in question, with which to take the union on.
+     * @return  The "list union" , "AU`B".
+     *          <p>i.e. [1,1,2]U`[1,2,3] = [1,1,2,3],
+     *                  [1,1,1,2]U`[1,1,2,3] = [1,1,1,2,3],
+     *                  [1,2]U`[1,3] = [1,2,3],
+     *                  [1,3]U`[] = [1,3],
+     *                  []U`[1,3] = [1,3].
+     *          <p>Output is a list, which may be a set.
+     * @see     #listDifference(AugList)
+     * @see     #listIntersection(AugList)
+     * @see     #setUnion(AugList)
+     * @see     tests.AugListTest#testListUnion()
+     * @note    Based on the C# method {@code IEnumerable<T>.Union()}.
+     *          <p>"List Union" and "AU`B" are not mathematically endorsed terminology.
+     * @tags    Creator
      */
-    public AugList<T> listUnion(AugList<T> listB) {
+    public AugList<T> listUnion(AugList<T> augListB) {
         // Hashtable<T, Integer> listACounts = this.countsOfElements();
         // Hashtable<T, Integer> listBCounts = listB.countsOfElements();
         AugList<T> ret = this.clone();
-        listB = listB.clone();
-        // As listIntersection needs to alter the state of listB,
-        // the state of listB could change outside of scope.
-        // This behaviour is not intended, hence replace listB with a clone of itself.
+        augListB = augListB.clone();
+        // As listUnion needs to alter the state of B,
+        // the state of B could change outside of scope.
+        // This behaviour is not intended, hence replace B with a clone of itself.
         for (int i = 0; i < ret.size(); i++) {
-            listB.remove(ret.get(i));
+            augListB.remove(ret.get(i));
         }
-        for (int i = 0; i < listB.size(); i++) {
-            ret.add(listB.get(i));
+        for (int i = 0; i < augListB.size(); i++) {
+            ret.add(augListB.get(i));
         }
         return ret;
     }
@@ -937,101 +1189,138 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // Object.notify() and Object.notifyAll() cannot be overridden and so are not implemented
 
     /**
-     * Creates a new {@code AugList<U>} where each item has been transformed according to the supplied {@code func}
+     * Creates a new {@link AugList} with each element having the {@link Function} applied on it.
+     * <p>For a Mutator method, use {@link #applyAll()}.</p>
+     * <p>For a Terminator method, use {@link #forEach()}.</p>
      * @param   <U>
      *          The type of the resultant elements.
      * @param   func
-     *          The function to apply.
-     * @return  An {@code AugList<U>} with each item transformed according to {@code func}.
-     * @apiNote Custom method that implements functionality of the C# function {@code IEnumerable<T>.ConvertAll()}
+     *          The {@link Function} to apply.
+     * @throws  NullPointerException
+     *          If the specified function is {@code null}.
+     * @return  A new {@link AugList}, with each element transformed as according to the function.
+     * @see     #applyAll(Function)
+     * @see     #forEach(Consumer)
+     * @see     tests.AugListTest#testOneToOneMap()
+     * @note    Replaces {@link ArrayList#forEach(Consumer)}.
+     * @tags    Creator
      */
     public <U> AugList<U> oneToOneMap(Function<? super T, U> func) {
         AugList<U> ret = new AugList<U>();
-        for (T e : ls) {
-            ret.add(func.apply(e));
+        for (T element : ls) {
+            ret.add(func.apply(element));
         }
         return ret;
     }
 
     /**
-     * Creates a Hashtable where each element in this AugList is paired with its corresponding entry in {@code pAugList}
+     * Creates a {@link Hashtable} where each element in this {@link AugList} is paired with its corresponding entry in the given {@link AugList}.
      * @param   <U>
-     *          The type of {@code AugList2}.
-     * @param   AugList2
-     *          The list of items to pair up.
-     * @return  A hashtable that pairs up elements,
-     *          or an empty Hashtable if either
-     *          1) the lengths do not match, or
-     *          2) at least 1 entry in either list is null.
-     * @apiNote Custom method that implements functionality of the C# function {@code IEnumerable<T>.Zip()}.
+     *          The type of elements in {@code AugListB}.
+     * @param   augListB
+     *          The {@link AugList} in question.
+     * @return  A {@link HashTable} that pairs up elements,
+     *          or an empty {@link Hashtable} if either
+     *          <p>- the lengths do not match, or
+     *          - at least 1 entry in either list is {@code null}.
+     * @see     tests.AugListTest#testPairUp()
+     * @note    Based on the C# function {@code IEnumerable<T>.Zip()}.
+     * @tags    Converter
      */
-    public <U> Hashtable<T,U> pairUp(AugList<U> AugList2) {
+    public <U> Hashtable<T,U> pairUp(AugList<U> augListB) {
         Hashtable<T,U> ret = new Hashtable<T,U>() {};
-        if (ls.size() != AugList2.size() || this.anySatisfy(e -> e == null) || AugList2.anySatisfy(e -> e == null)) {
+        if (ls.size() != augListB.size() || this.anySatisfy(e -> e == null) || augListB.anySatisfy(e -> e == null)) {
             return ret;
         }
         for (int i = 0; i < ls.size(); i++) {
-            ret.put(ls.get(i), AugList2.get(i));
+            ret.put(ls.get(i), augListB.get(i));
         }
         return ret;
     }
 
     /**
-     * @return  A Stream Object with this AugList as its elements.
-     * @apiNote Encapsulates {@code ArrayList<T>.parallelStream()}.
+     * Returns a Parallel {@link Stream} that contains this {@link AugList}'s elements.
+     * @return  A {@link Stream} with this {@link AugList} as its source.
+     * @see     #stream()
+     * @see     tests.AugListTest#testParallelStream()
+     * @note    Encapsulates {@link ArrayList#parallelStream()}.
+     * @tags    Converter
      */
     public Stream<T> parallelStream() {
         return ls.parallelStream();
     }
 
     /**
-     * Attempts to remove {@code o} from this AugList.
+     * Attempts to remove the first occurrence of the given {@link Object} from this {@link AugList}, if present.
+     * <p>For a Mutator method, see {@link #without(Object)}.
      * @param   o
-     *          The object to remove if present.
-     * @return  {@code true} if removed, and {@code false} if not.
-     * @apiNote Encapsulates {@code ArrayList<T>.remove(Object)}.
-     * @implNote See {@code this.without(Object)} for a Stream-oriented approach.
+     *          The {@link Object} to remove if present.
+     * @return  {@code true} if removed, and {@code false} if it was not present.
+     * @see     #removeAll(AugList)
+     * @see     #removeAll(T...)
+     * @see     #removeAt(int)
+     * @see     #removeIf(Predicate)
+     * @see     #removeLast()
+     * @see     #removeRandom()
+     * @see     #without()
+     * @see     tests.AugListTest#testRemove()
+     * @note    Encapsulates {@link ArrayList#remove(Object)}.
+     * @tags    Terminator
      */
     public boolean remove(Object o) {
         return ls.remove(o);
     }
 
     /**
-     * Removes all items in {@code pAugList}, if present, from this AugList.
-     * <p>For a non-destructive method, use {@code ListDifference()}.
-     * @param   pAugList
-     *          The list of items to remove from this AugList.
-     * @return  {@code true} if at least 1 item was removed.
-     * @apiNote Pseudo-overrides {@code ArrayList<T>.removeAll(Collection<c?>)}.
-     * @implNote See {@code this.withoutAll(AugList<T>)} for a Stream-oriented approach.
+     * Attempts to remove the first instance of each of the supplied elements, if present, from this {@link AugList}.
+     * <p>For a Mutator method, see {@link #withoutAll(AugList)}.
+     * <p>For methods with similar functionality, use {@link #listDifference(AugList)} and {@code #retainAll(java.util.Collection)}.
+     * @param       elements
+     *              The elements to remove in question.
+     * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @see         #withoutAll(AugList)
+     * @see         #remove(Object)
+     * @see         #listDifference(AugList)
+     * @see         java.util.Collection#retainAll(java.util.Collection)
+     * @see         tests.AugListTest#testRemoveAll()
+     * @note        Replaces {@link List#removeAll(java.util.Collection)}.
+     * @overloads   {@link #removeAll(T...)}
+     * @tags        Terminator
      */
-    public boolean removeAll(AugList<T> pAugList) {
+    public boolean removeAll(AugList<T> elements) {
         boolean ret = false;
-        for (int i = 0; i < pAugList.size(); i++) {
-            if (ls.contains(pAugList.get(i))) {
+        for (int i = 0; i < elements.size(); i++) {
+            if (ls.contains(elements.get(i))) {
                 ret = true;
-                ls.remove(pAugList.get(i));
+                ls.remove(elements.get(i));
             }
         }
         return ret;
     }
 
     /**
-     * Removes all items in {@code varargs}, if present, from this AugList.
-     * <p>For a non-destructive method, use {@code ListDifference()}.
-     * @param   varargs
-     *          The list of items to remove from this AugList.
-     * @return  {@code true} if at least 1 item was removed.
-     * @apiNote Overloads {@code ArrayList<T>.removeAll(Collection<c?>)}.
-     * @implNote See {@code this.withoutAll(T...)} for a Stream-oriented approach.
+     * Attempts to removes the first instance of each of the supplied elements, if present, from this {@link AugList}.
+     * <p>For a Mutator method, see {@link #withoutAll(T...)}.
+     * <p>For methods with similar functionality, use {@link #listDifference(AugList)} and {@code #retainAll(java.util.Collection)}.
+     * @param       elements
+     *              The elements to remove in question.
+     * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @see         #withoutAll(T...)
+     * @see         #remove(Object)
+     * @see         #listDifference(AugList)
+     * @see         java.util.Collection#retainAll(java.util.Collection)
+     * @see         tests.AugListTest#testRemoveAllVarargs()
+     * @note        Varargs variant of {@link #removeAll(AugList)}.
+     * @overloads   {@link #removeAll(AugList)}
+     * @tags        Terminator
      */
     @SafeVarargs
-    public final boolean removeAll(T... varargs) {
+    public final boolean removeAll(T... elements) {
         boolean ret = false;
-        for (int i = 0; i < varargs.length; i++) {
-            if (ls.contains(varargs[i])) {
+        for (int i = 0; i < elements.length; i++) {
+            if (ls.contains(elements[i])) {
                 ret = true;
-                ls.remove(varargs[i]);
+                ls.remove(elements[i]);
             }
         }
         return ret;
@@ -1039,14 +1328,20 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // Works the same as a pop operation from a stack, except can pop any element rather than the top element.
     /**
-     * Removes the item at the given {@code index}, and shifts indices as necessary.
+     * Removes the element at the given index.
+     * <p>For a Mutator method, see {@link #withoutIndex(int)}.
      * @param   index
-     *          The index of the target item to remove.
-     * @return  The item that was removed
+     *          The index in question.
+     * @return  The element that was removed.
      * @throws  IndexOutOfBoundsException
-     *          The index is not in array bounds.
-     * @apiNote Encapsulates {@code ArrayList<T>.remove(int)}.
-     * @implNote See {@code this.withoutIndex(int)} for a Stream-oriented approach.
+     *          {@code index < 0 || index >= this.size()}
+     * @see     #remove(Object)
+     * @see     #removeLast()
+     * @see     #removeRandom()
+     * @see     #withoutIndex(int)
+     * @see     tests.AugListTest#testRemoveAtIndex()
+     * @note    Encapsulates {@code ArrayList<T>.remove(int)}.
+     * @tags    Terminator
      */
     public T removeAt(int index) {
         return ls.remove(index);
@@ -1055,37 +1350,49 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // ArrayList<T>.removeFirst() is redundant because of ArrayList<T>.remove(0) so is not implemented
 
     /**
-     * Removes all items in this list that satisfy the given {@code filter}.
+     * Removes all elements in this list that satisfy the given {@code filter}.
+     * <p>For a Mutator method, see {@link #withoutWhere(Predicate)}.
      * @param   filter
-     *          The condition that, if an element passes it, causes its deletion.
-     * @return  {@code true} if at least 1 item was removed.
-     * @apiNote Encapsulates {@code ArrayList<T>.removeIf(Predicate<? super T>)}.
-     * @implNote See {@code this.withoutWhere(Predicate<? super T>)} for a Stream-oriented approach.
+     *          The condition in question.
+     * @return  {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @throws  NullPointerException
+     *          The given filter is {@code null}.
+     * @see     #remove(Object)
+     * @see     #withoutWhere(Predicate)
+     * @see     tests.AugListTest#testRemoveIf()
+     * @note    Encapsulates {@link List#removeIf(Predicate)}.
+     * @tags    Terminator
      */
     public boolean removeIf(Predicate<? super T> filter) {
         return ls.removeIf(filter);
     }
 
     /**
-     * Pops the final item in this AugList.
-     * @return  The final item in this AugList.
+     * Pops the final element in this {@link AugList}.
+     * <p>For a Mutator method, see {@link #withoutLast()}.
+     * @return  The final element, if it exists.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
-     * @apiNote Encapsulates {@code ArrayList<T>.removeLast()}.
-     * @implNote See {@code this.withoutLast()} for a Stream-oriented approach.
+     * @see     #remove(Object)
+     * @see     #withoutLast()
+     * @see     tests.AugListTest#testRemoveLast()
+     * @note    Encapsulates {@link List#removeLast()}.
+     * @tags    Terminator
      */
     public T removeLast() {
         return ls.removeLast();
     }
 
-    // Works the same as a pop operation from a stack, except can pop any element rather than the top element.
     /**
-     * Removes a random item, shifting indices of other elements if necessary
-     * @return  The item that was removed
+     * Removes a random element.
+     * @return  The item that was removed.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
-     * @apiNote Custom code, albeit simple in nature.
-     * @implNote See {@code this.withoutRandom()} for a Stream-oriented approach.
+     * @see     #remove(Object)
+     * @see     #withoutRandom()
+     * @see     tests.AugListTest#testRemoveRandom()
+     * @note    Randomized variant of {@link #removeAt(int)}.
+     * @tags    Terminator
      */
     public T removeRandom() {
         if (size() == 0) {
@@ -1123,15 +1430,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * @return  A new AugList with its elements in reverse order.
-     * @apiNote Encapsulates {@code List<T>.reversed()}.
+     * Returns a new reversed-order {@link AugList}.
+     * @return  A new {@link AugList} with the same elements as this one, but in reverse order.
+     * @see     tests.AugListTest#testReversed()
+     * @note    Encapsulates {@link List#reversed()}.
+     * @tags    Creator
      */
     public AugList<T> reversed() {
         return new AugList<T>(ls.reversed());
     }
 
     /**
-     * Takes {@code size} random samples of this AugList
+     * Takes {@code size} random samples of this {@link AugList}.
      * @param   size
      *          The size of the sample to take
      * @param   withReplacements
@@ -1139,7 +1449,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  A random sample of the given size.
      * @throws  IllegalArgumentException
      *          {@code (!withReplacements && size > this.size()) || size < 0}
-     * @apiNote Randomized variant of {@code AugList<T>.subList(int, int)} when not using {@code withReplacements} 
+     * @see     #subList(int, int)
+     * @see     tests.AugListTest#testSample()
+     * @note    Randomized variant of {@link #subList(int, int)} when not using {@code withReplacements}.
+     * @tags    Creator
      */
     public AugList<T> sample(int size, boolean withReplacements) {
         if (!withReplacements && size > size()) {
@@ -1161,29 +1474,43 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Sets the given {@code index} to {@code e}.
+     * Sets the given index to the given element.
      * @param   index
-     *          The index of the element to replace.
-     * @param   e
-     *          The element to replace the current element.
-     * @return  The item previously at {@code index}.
-     * @throws  OutOfRangeException
-     *          The index is out of array bounds.
-     * @apiNote Encapsulates {@code ArrayList<T>.set()}.
+     *          The index in question
+     * @param   element
+     *          The element in question
+     * @return  The replaced element.
+     * @throws  IndexOutOfBoundsException
+     *          {@code index < 0 || index >= this.size()}
+     * @see     tests.AugListTest#testSet()
+     * @note    Encapsulates {@link List#set()}.
+     * @tags    Mutator
      */
-    public T set(int index, T e) {
-        return ls.set(index, e);
+    public T set(int index, T element) {
+        return ls.set(index, element);
     }
 
     /**
-     * Returns the set difference between this and the provided {@code pAugList}. (i.e. A\B)
-     * <p>The result is a new AugList.
+     * Returns the set difference between this (A) and the provided set (B). (i.e. A\B)
+     * <p>For a method that calculates the "List difference", see {@link #listDifference(AugList)}
      * @param   setB
-     *          The set of items to remove. (If is not a Set, will be turned into one first.)
+     *          The set of elements to take the difference with.
+     *          (If not already a mathematical set, will be turned into one first.)
      * @return  The set difference (A\B).
-     *          <p>i.e. [1,2]\[1,3] = [2], [1,1,2]\[2] = [1]
-     *          <p>Output is a set.
-     * @apiNote Custom method tangentially inspired by the C# functions {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
+     *          <p>i.e. {1,2}\{1} = {2}, 
+     *                  {2}\{1,2} = {}, 
+     *                  [1,1,2]\{1,3} = {1,2},
+     *                  [1,1,2]\[1,1,3] = {2},
+     *                  [1,1]\{} = {1}
+     *                  {1,2}\{1,3} = {2}, 
+     *                  [1,1,2]\{2} = {1}
+     *          <p>Output is a mathematical set.
+     * @see     #setIntersection(AugList)
+     * @see     #setUnion(AugList)
+     * @see     #listDifference(AugList)
+     * @see     tests.AugListTest#testSetDifference()
+     * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
+     * @tags    Creator
      */
     public AugList<T> setDifference(AugList<T> setB) {
         AugList<T> ret = this.distinctCopy();
@@ -1197,23 +1524,31 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the set intersection between this and the provided {@code pAugList}. (I.e. A∩B)
-     * <p>The result is a new AugList.
+     * Returns the set intersection between this (A) and the given {@link AugList} (B). (I.e. A∩B)
+     * <p>For a method that calculates the "List Intersection", see {@link #listIntersection(AugList)}.
      * @param   setB
-     *          The set of items to intersect with. (If is not a Set, will be turned into one first.)
+     *          The set of elements to take the intersection with. 
+     *          (If not already a mathematical set, will be turned into one first.)
      * @return  The set intersection (A∩B), or an AugList with elements that appear in both sets. 
-     *          <p>i.e. [1,1,2]∩[1,2,3] = [1,2], [1,1,1,2]∩[1,1,2,3] = [1,2].
-     *          <p>Output is a set.
-     * @apiNote Custom method based on the C# function {@code IEnumerable<T>.Intersect()}.
+     *          <p>i.e. [1,1,2]∩[1,2,3] = {1,2}, 
+     *                  [1,1,1,2]∩[1,1,2,3] = {1,2},
+     *                  {}∩[1,1,3,7] = {}.
+     *          <p>Output is a mathematical set.
+     * @see     #setDifference(AugList)
+     * @see     #setUnion(AugList)
+     * @see     #listIntersection(AugList)
+     * @see     tests.AugListTest#testSetIntersection()
+     * @note    Based on the C# method {@code IEnumerable<T>.Intersect()}.
+     * @tags    Creator
      */
     public AugList<T> setIntersection(AugList<T> setB) {
         if (this.isEquivalent(setB)) {
             return setB;
         }
         setB = setB.distinctCopy();
-        // As listIntersection needs to alter the state of listB,
-        // the state of listB could change outside of scope.
-        // This behaviour is not intended, hence replace listB with a clone of itself.
+        // As setIntersection needs to alter the state of B,
+        // the state of B could change outside of scope.
+        // This behaviour is not intended, hence replace B with a clone of itself.
         AugList<T> ret = new AugList<T>() {};
         for (T e : ls) {
             if (setB.contains(e)) {
@@ -1225,25 +1560,36 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the set union between this and the provided {@code setB}. (i.e. AUB)
-     * <p>The result is a new AugList.
-     * @param   SetB
-     *          The set of items to union with. (If not one already, is made into one first.)
+     * Returns the set union between this and the given set. (i.e. AUB)
+     * <p>For a method that returns the "List Union", see {@link #listUnion(AugList)}.
+     * @param   setB
+     *          The set of elements to union with. (If not one already, is made into one first.)
      * @return  The set union (AUB).
-     *          <p>i.e. [0,1,2]U[1,2,3] = [0,1,2,3], [1,1,1,2]U[1,1,2,3] = [1,2,3].
-     *          <p>Output is a set.
-     * @apiNote Custom method based on the C# function {@code IEnumerable<T>.Union()}.
+     *          <p>i.e. {0,1,2}U{1,2,3} = {0,1,2,3},
+     *                  [1,1,1,2]U[1,1,2,3] = {1,2,3}.
+     *          <p>Output is a mathematical set.
+     * @see     #setDifference(AugList)
+     * @see     #setIntersection(AugList)
+     * @see     #listUnion(AugList)
+     * @see     tests.AugListTest#testSetUnion()
+     * @note    Based on the C# function {@code IEnumerable<T>.Union()}.
+     * @tags    Creator
      */
-    public AugList<T> setUnion(AugList<T> SetB) {
+    public AugList<T> setUnion(AugList<T> setB) {
         AugList<T> ret = new AugList<T>() {};
         ret.addAll(this.distinctCopy());
-        ret.addAll(SetB.distinctCopy().filterSelf(e -> !ret.contains(e)));
+        ret.addAll(setB.distinctCopy().filterSelf(e -> !ret.contains(e)));
         //ret.filterSelf(x -> ret.allIndicesOf(x).size() == 1); // Removes duplicates
         return ret;
     }
 
     /**
-     * @return  A new AugList which is a shuffled copy of this AugList. Can shuffle to itself.
+     * Creates a new shuffled {@link AugList}. Can shuffle to itself.
+     * <p>For a Mutator method, see {@link #shuffleSelf()}.
+     * @return  A new {@link AugList} which is a shuffled copy of this one.
+     * @see     #shuffleSelf()
+     * @see     tests.AugListTest#testShuffleCopy()
+     * @tags    Creator
      */
     public AugList<T> shuffleCopy() {
         Random r = new Random();
@@ -1261,7 +1607,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * @return  This AugList, shuffled into a random order. Can shuffle to itself.
+     * Shuffles this {@link AugList}. Can shuffle to itself.
+     * <p>For a Creator method, see {@link #shuffleCopy()}.
+     * @return  This {@link AugList}, shuffled into a random order.
+     * @see     #shuffleCopy()
+     * @see     tests.AugListTest#testShuffleSelf()
+     * @tags    Mutator
      */
     public AugList<T> shuffleSelf() {
         this.ls = shuffleCopy().ls;
@@ -1269,16 +1620,19 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Skips elements until it finds the first element to fail the given {@code predicate}, then returns all remaining elements.
-     * @param   predicate
-     *          The predicate that elements are compared against.
-     * @return  Elements beyond and including the first to fail the given {@code predicate}.
-     * @apiNote Custom method based on the C# method {IEnumerable<T>.skipWhile()}.
+     * Skips elements until the first element to fail the given condition, then returns the failing and all proceeding elements.
+     * @param   condition
+     *          The condition in question.
+     * @return  A new {@link AugList} with elements beyond and including the first to fail the given condition.
+     * @see     #takeWhile(Predicate)
+     * @see     tests.AugListTest#testSkipWhile()
+     * @note    Based on the C# method {IEnumerable<T>.skipWhile()}.
+     * @tags    Creator
      */
-    public AugList<T> skipWhile(Predicate<? super T> predicate) {
+    public AugList<T> skipWhile(Predicate<? super T> condition) {
         AugList<T> ret = new AugList<T>() {};
         for (int i = 0; i < ls.size(); i++) {
-            if (!predicate.test(ls.get(i))) {
+            if (!condition.test(ls.get(i))) {
                 for (int j = i; j < ls.size(); j++) {
                     ret.add(ls.get(j));
                 }
@@ -1289,83 +1643,88 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * @return  The size of this AugList.
-     * @apiNote Encapsulates {@code ArrayList<T>.size()}.
+     * Returns the number of elements within this {@link AugList}
+     * @return  The size of this {@link AugList}.
+     * @see     tests.AugListTest#testSize()
+     * @note    Encapsulates {@link List#size()}.
+     * @tags    Terminator
      */
     public int size() {
         return ls.size();
     }
 
     /**
-     * Sorts this AugList according to the given Comparator.
-     * @param   c
-     *          The comparator to sort by.
-     * @return  This AugList, sorted according to the given Comparator.
-     * @apiNote Pseudo-overrides {@code ArrayList<T>.sort()}, returns {@code this} rather than void.
+     * Sorts this AugList according to the given {@link Comparator}.
+     * @param   comparator
+     *          The {@link Comparator} in question.
+     * @return  This {@link AugList}, sorted according to the given {@link Comparator}.
+     * @see     tests.AugListTest#testSort()
+     * @note    Replaces {@link List#sort()}, returns {@code this} rather than {@code void}.
+     * @tags    Mutator
      */
-    public AugList<T> sort(Comparator<? super T> c) {
-        ls.sort(c);
+    public AugList<T> sort(Comparator<? super T> comparator) {
+        ls.sort(comparator);
         return this;
     }
 
     /**
-     * @return  A spliterator over this AugList, which can traverse and split this AugList up.
-     * @apiNote Encapsulates {@code ArrayList<T>.spliterator()}.
+     * @return  A <i>late-binding, fail-fast</i> {@link Spliterator} over this {@link AugList} in proper sequence.
+     * @see     #iterator()
+     * @see     #listIterator()
+     * @see     tests.AugListTest#testSpliterator()
+     * @note    Encapsulates {@link List#spliterator()}.
+     * @tags    Converter
      */
     public Spliterator<T> spliterator() {
         return ls.spliterator();
     }
 
     /**
-     * @return  A stream with the elements of this AugList.
-     * @apiNote Encapsulates {@code Collection<T>.stream()}.
+     * Returns a sequential {@link Stream} with this {@link AugList} as its source.
+     * @return  A sequential {@link Stream} with the elements of this {@link AugList}.
+     * @see     #parallelStream()
+     * @see     tests.AugListTest#testStream()
+     * @note    Encapsulates {@link java.util.Collection#stream()}.
+     * @tags    Converter
      */
     public Stream<T> stream() {
         return ls.stream();
     }
 
-    // Works slightly differently to ArrayList<T>.subList().
     /**
-     * (Augmented ArrayList<T>.subList())
-     * Returns a new AugList with exactly the elements between the provided indices, incl-exclusive
+     * Returns a new {@link AugList} with exactly the elements between the provided indices, incl-exclusive
      * @param   fromIndex
      *          The start index of the sublist, inclusive.
      * @param   toIndex
      *          The end index of the sublist, exclusive.
-     * @return  A new AugList with the specified elements.
+     * @return  A new {@link AugList} with the specified elements.
      * @throws  IllegalArgumentException
      *          If {@code fromIndex > toIndex}.
      * @throws  IndexOutOfBoundsException
-     *          One or both indices are out of array bounds.
-     * @apiNote Pseudo-overrides {@code ArrayList<T>.subList()}, returning a {@code AugList<T>} rather than a {@code List<T>}.
+     *          {@code index < 0 || index >= this.size()}
+     * @see     #sample(int, boolean)
+     * @see     tests.AugListTest#testSubList()
+     * @note    Replaces {@code ArrayList<T>.subList()}, returning a {@link AugList} rather than a {@link List}.
+     * @tags    Creator
      */
     public AugList<T> subList(int fromIndex, int toIndex) {
         return new AugList<T>(ls.subList(fromIndex, toIndex));
     }
 
     /**
-     * Produces a sublist from the given index to the end of the list.
-     * @param   fromIndex
-     *          The index to start from to the end of the list.
-     * @return  A sublist from the {@code fromIndex}
-     * @throws  IndexOutOfBoundsException
-     *          {@code fromIndex > 0 || fromIndex < ls.size() + 1}
-     * @apiNote Custom method that, to my knowledge, does not have a C# or java equivalent.
-     */
-    public AugList<T> subListToEnd(int fromIndex) {
-        return subList(fromIndex, ls.size());
-    }
-
-    /**
-     * Alters this AugList by swapping the given items.
+     * Swaps the given elements. Does nothing if the given indices are equal.
      * @param   index1
-     *          Index of the first item to swap.
+     *          Index of the first element to swap.
      * @param   index2
-     *          Index of the second item to swap.
+     *          Index of the second element to swap.
      * @throws  IndexOutOfBoundsException
-     *          If {@code Index1 < 0 || Index1 >= this.size() || Index2 < 0 || Index2 >= this.size()}
-     * @return  This AugList, with the given elements swapped.
-     * @apiNote Custom method that I would like to believe has been implemented somewhere in Java or C#, but I am unable to find any such method in my limited search.
+     *          {@code Index1 < 0 || Index1 >= this.size() || Index2 < 0 || Index2 >= this.size()}
+     * @return  This {@link AugList}, with the given elements swapped.
+     * @see     #swapRandom(int)
+     * @see     #swapRandom()
+     * @see     tests.AugListTest#testSwap()
+     * @note    Inspired by the (Binary) Insertion Sort algorithm, which requires the ability to swap 2 elements.
+     * @tags    Mutator
      */
     public AugList<T> swap(int index1, int index2) {
         if (index1 < 0 || index1 >= size() || index2 < 0 || index2 >= size()) {
@@ -1382,12 +1741,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Swaps the given element with a random element.
+     * Swaps the given element with a random element. Always alters state.
      * @param   index
      *          The index of the item to swap.
-     * @return  This AugList with the given element swapped into a random position.
+     * @return  This {@link AugList} with the given element swapped into a random position.
      * @throws  IndexOutOfBoundsException
-     *          If {@code Index < 0 || Index >= this.size()}
+     *          {@code index < 0 || index >= this.size()}
+     * @see     #swap(int, int)
+     * @see     #swapRandom()
+     * @note    Semi-randomized variant of {@link #swap(int, int)}.
+     * @tags    Mutator
      */
     public AugList<T> swapRandom(int index) {
         if (index < 0 || index >= size()) {
@@ -1404,8 +1767,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Swaps two elements at random.
-     * @return  This AugList with 2 random elements swapped.
+     * Swaps two elements at random. Always alters state.
+     * @return  This {@link AugList} with 2 random elements swapped.
+     * @see     #swap(int, int)
+     * @see     #swapRandom(int)
+     * @see     tests.AugListTest#testSwapRandomNoParam()
+     * @note    Fully-randomized variant of {@link #swap(int, int)}.
+     * @tags    Mutator
      */
     public AugList<T> swapRandom() {
         AugList<Integer> availableIndices = new AugList<Integer>();
@@ -1420,17 +1788,19 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Takes elements up and until it finds the first element to fail the given {@code predicate}.
-     * @param   predicate
-     *          The predicate that elements are compared against.
-     * @return  Elements up to and including the first to fail the given {@code predicate}.
-     * @apiNote Custom method based on the C# method {IEnumerable<T>.TakeWhile()}.
+     * Takes elements up and until it finds the first element to fail the given condition.
+     * @param   condition
+     *          The condition in question.
+     * @return  Elements up to and including the first to fail the given condition.
+     * @see     #skipWhile(Predicate)
+     * @see     tests.AugListTest#testTakeWhile()
+     * @note    Based on the C# method {IEnumerable<T>.TakeWhile()}.
      */
-    public AugList<T> takeWhile(Predicate<? super T> predicate) {
+    public AugList<T> takeWhile(Predicate<? super T> condition) {
         AugList<T> ret = new AugList<T>() {};
         for (int i = 0; i < ls.size(); i++) {
             ret.add(ls.get(i));
-            if (!predicate.test(ls.get(i))) {
+            if (!condition.test(ls.get(i))) {
                 return ret;
             }
         }
@@ -1442,18 +1812,20 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // That being said, if I could instantiate an array of T (T[]), then I would encapsulate and override the toArray() method.
 
     /**
-     * Create an array copy of this AugList with the specified output type.
-     * @param   arrType
-     *          An array of type {@code T}.
-     * @return  An array copy of this AugList.
+     * Create an {@link Arrays Array} copy of this AugList with the specified output type.
+     * @param   typedArr
+     *          An {@link Arrays Array} of type {@code T}.
+     * @return  An {@link Arrays Array} copy of this {@link AugList}.
      * @throws  ArrayStoreException
      *          The type at runtime of the specified array is not a supertype of the type of every element
      * @throws  NullPointerException
-     *          The specified array is null
-     * @apiNote Encapsulates {@code ArrayList<T>.toArray(T[])}.
+     *          The specified array is {@code null}
+     * @see     tests.AugListTest#testToArrayGivenType()
+     * @note    Encapsulates {@link List#toArray(T[])}.
+     * @tags    Converter
      */
-    public T[] toArray(T[] arrType) {
-        return ls.toArray(arrType);
+    public T[] toArray(T[] typedArr) {
+        return ls.toArray(typedArr);
     }
 
     //TODO: Annotate in line with methods on d-documentation
@@ -1483,20 +1855,30 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     // Returns this AugList as a string. Example outputs: "/", "[1,2,3,4]", "[a,b,c,d]"
+    /**
+     * This {@link AugList}'s contents, as a human-legible {@link String}.
+     * @return  This, as a {@link String}.
+     * @see     tests.AugListTest#testToString()
+     * @note    Example outputs: {@code "[1, 2, 3]"}, {@code "[d, c, a]"} and {@code "[2.0, 7.11, -3.2]"}.
+     *          <p>Special cases:
+     *          - Empty lists are represented as {@code "/"}.<p>
+     *          - If this {@link AugList} contains a {@code null}, it is printed as {@code "*null*"} - i.e. {@code "[*null*, ae]"}.
+     * @tags    Terminator         
+     */
     @Override
     public String toString() {
         String ListAsString = "[";
         if (ls.size() == 0) {
             return "/";
         }
-        for (T e : ls) {
-            String eString = null;
+        for (T element : ls) {
+            String elementString = null;
             try {
-                eString = e.toString();
+                elementString = element.toString();
             } catch (Exception ex) {
-                eString = "*null*";
+                elementString = "*null*";
             }
-            ListAsString += eString + ", ";
+            ListAsString += elementString + ", ";
         }
         return ListAsString.substring(0, ListAsString.length() - 2) + "]";
     }
@@ -1504,11 +1886,21 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // Object.wait() and its parameterized overloads cannot be overridden and so are not implemented.
 
     /**
-     * Attempts to remove {@code o} from this AugList.
+     * Attempts to remove the first instance of {@code o} from this {@link AugList}, if it exists.
+     * <p>For a Terminator method, see {@link #remove(Object)}.
      * @param   o
-     *          The object to remove if present.
+     *          The {@link Object} to remove if present.
      * @return  {@code this}.
-     * @apiNote Stream-focused alternative to {@code this.remove(Object)}.
+     * @see     #withoutAll(AugList)
+     * @see     #withoutAll(T...)
+     * @see     #withoutIndex(int)
+     * @see     #withoutWhere(Predicate)
+     * @see     #withoutLast()
+     * @see     #withoutRandom()
+     * @see     #remove()
+     * @see     tests.AugListTest#testWithout()
+     * @note    Mutator variant of {@link #remove(Object)}.
+     * @tags    Mutator
      */
     public AugList<T> without(Object o) {
         ls.remove(o);
@@ -1516,48 +1908,65 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Removes all items in {@code pAugList}, if present, from this AugList.
-     * <p>For a non-destructive method, use {@code ListDifference()}.
-     * @param   pAugList
-     *          The list of items to remove from this AugList.
-     * @return  {@code this}.
-     * @apiNote Stream-focused alternative to {@code this.removeAll(AugList<T>)}.
+     * Attempts to remove the first instance of each of the supplied elements, if present, from this {@link AugList}.
+     * <p>For a Terminator method, use {@link #removeAll(AugList)}.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code this}.
+     * @see         #without(Object)
+     * @see         #removeAll(AugList)
+     * @see         tests.AugListTest#testRemoveAll()
+     * @overloads   {@link #withoutAll(T...)}
+     * @note        Mutator variant of {@link #removeAll(AugList)}.
+     * @tags        Mutator
      */
-    public AugList<T> withoutAll(AugList<T> pAugList) {
-        for (int i = 0; i < pAugList.size(); i++) {
-            if (ls.contains(pAugList.get(i))) {
-                ls.remove(pAugList.get(i));
+    public AugList<T> withoutAll(AugList<T> elements) {
+        for (int i = 0; i < elements.size(); i++) {
+            if (ls.contains(elements.get(i))) {
+                ls.remove(elements.get(i));
             }
         }
         return this;
     }
 
     /**
-     * Removes all items in {@code varargs}, if present, from this AugList.
-     * <p>For a non-destructive method, use {@code ListDifference()}.
-     * @param   varargs
-     *          The list of items to remove from this AugList.
-     * @return  {@code this}.
-     * @apiNote Stream-focused alternative to {@code this.removeAll(Collection<c?>)}.
+     * Attempts to remove the first instance of each of the supplied items, if present, from this {@link AugList}.
+     * <p>For a Terminator method, use {@link #removeAll(T...)}.
+     * @param       elements
+     *              The elements in question.
+     * @return      {@code this}.
+     * @see         #without(Object)
+     * @see         #removeAll(AugList)
+     * @see         tests.AugListTest#testWithoutAllVarargs()
+     * @overloads   {@link #withoutAll(AugList)}
+     * @note        Mutator variant of {@link #removeAll(T...)}.
+     * @tags        Mutator
      */
     @SafeVarargs
-    public final AugList<T> withoutAll(T... varargs) {
-        for (int i = 0; i < varargs.length; i++) {
-            if (ls.contains(varargs[i])) {
-                ls.remove(varargs[i]);
+    public final AugList<T> withoutAll(T... elements) {
+        for (int i = 0; i < elements.length; i++) {
+            if (ls.contains(elements[i])) {
+                ls.remove(elements[i]);
             }
         }
         return this;
     }
 
     /**
-     * Removes the item at the given {@code index}, and shifts indices as necessary.
+     * Removes the item at the given index.
+     * <p>For a Terminator method, use {@link #removeAt(int)}.
      * @param   index
-     *          The index of the target item to remove.
+     *          The index in question.
      * @return  {@code this}.
      * @throws  IndexOutOfBoundsException
-     *          The index is not in array bounds.
-     * @apiNote Stream-focused alternative to {@code this.removeAt(int)}.
+     *          {@code index < 0 || index >= this.size()}
+     * @see     #without()
+     * @see     #withoutRandom()
+     * @see     #withoutLast()
+     * @see     #removeAt()
+     * @see     tests.AugListTest#testWithoutIndex()
+     * @note    Mutator variant of {@link #removeAt(int)}.
+     * @tags    Mutator
      */
     public AugList<T> withoutIndex(int index) {
         ls.remove(index);
@@ -1568,10 +1977,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Removes the tail from this list.
-     * @return  {@code this}
+     * <p>For a Terminator method, use {@link #removeLast()}.
+     * @return  {@code this}.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
-     * @apiNote Stream-based alternative to {@code this.removeLast()}.
+     * @see     #without(Object)
+     * @see     #withoutIndex(int)
+     * @see     #removeAt(int)
+     * @see     tests.AugListTest#testWithoutLast()
+     * @note    Mutator variant of {@link #removeLast()}.
+     * @tags    Mutator
      */
     public AugList<T> withoutLast() {
         ls.removeLast();
@@ -1580,10 +1995,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Removes a random element.
+     * <p>For a Terminator method, use {@link #removeRandom()}.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
-     * @return  {@code this}
-     * @apiNote Stream-based alternative to {@code this.removeRandom()}.
+     * @return  {@code this}.
+     * @see     #without(Object)
+     * @see     #withoutIndex(int)
+     * @see     #removeRandom()
+     * @see     tests.AugListTest#testWithoutRandom()
+     * @note    Mutator variant of {@link #removeRandom()}.
+     * @tags    Mutator
      */
     public AugList<T> withoutRandom() {
         removeRandom();
@@ -1591,11 +2012,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Removes all items in this list that satisfy the given {@code filter}.
+     * Removes all elements in this list that satisfy the given filter.
+     * <p>For a Terminator method, use {@link #removeIf()}.
      * @param   filter
      *          The condition that, if an element passes it, causes its deletion.
-     * @return  {@code this}
-     * @apiNote Stream-focused alternative to {@code this.removeIf(Predicate<? super T>)}.
+     * @return  {@code this}.
+     * @see     #without(Object)
+     * @see     #removeIf(Predicate)
+     * @see     tests.AugListTest#testWithoutWhere()
+     * @note    Mutator variant of {@link #removeIf(Predicate)}.
+     * @tags    Mutator
      */
     public AugList<T> withoutWhere(Predicate<? super T> filter) {
         ls.removeIf(filter);
@@ -1745,27 +2171,245 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         //// I.e. [1,2] = [2,1]
         //// For cases in which this is not desired behaviour, please use Equal().
     //}
+    //#endregion
 
-    // I am not sure how I would call this with the correct generator.
-    // /**
-    //  * Create an array copy of this AugList via use of the given {@code generator}
-    //  * @param   generator
-    //  *          The generator by which the array will be made.
-    //  * @return  An array copy of this AugList.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.toArray(IntFunction<T[]>)}.
-    //  * @implNote I have no idea how this overload will be useful, or even how to use it.
-    //  */
-    // public T[] toArray(IntFunction<T[]> generator) {
-    //     return ls.toArray(generator);
+    //#region Niche Encapsulations
+
+    /**
+     * Increases the maximum number of elements this {@link AugList} can take to at least the given capacity.
+     * Reduces number of array resizing operations needed when handling repeated, large-scale additions to this AugList.
+     * Does nothing if capacity is already sufficient.
+     * @param       minCapacity
+     *              The minimum capacity in question.
+     * @see         tests.AugListTest#testEnsureCapacity()
+     * @note        Encapsulates {@link ArrayList#ensureCapacity(int)}.
+     *              Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Due to:
+     *              - Being impossible to write tests for
+     *              - Enabling only miniscule performance gains for repeated, exceptionally-large-scale addition operations.
+     * @tags        Terminator
+     */
+    // public void ensureCapacity(int minCapacity) {
+    //     ls.ensureCapacity(minCapacity);
     // }
 
-    // I'm pretty sure this method is redundant, so I've commented it out.
-    // /**
-    //  * Reduces the allocated storage space to this AugList to the minimum possible.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.trimToSize()}.
-    //  * @deprecated (Other methods perform the same job)
-    //  */
+    /**
+     * Reduces the allocated storage space to this {@link AugList} to the minimum possible.
+     * Only useful when dealing with deleting swaths of data from large datasets.
+     * @see         tests.AugListTest#testTrimToSize()
+     * @note        Encapsulates {@link ArrayList#trimToSize()}.
+     *              Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Due to:
+     *              - Being impossible to write tests for
+     *              - Enabling only miniscule storage space gains after large-scale deletions of data.
+     * @tags        Terminator
+     */
     // public void trimToSize() {
     //     ls.trimToSize();
     // }
+
+    /**
+     * Create an array copy of this AugList via use of the given {@code generator}
+     * @param       generator
+     *              The {@link java.util.function.IntFunction} generator in question.
+     * @return      An array copy of this AugList.
+     * @note        Encapsulates {@link ArrayList#toArray(java.util.function.IntFunction)}.
+     *              Should be fully functional if uncommented, though even calling this method may prove difficult.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Due to difficulty of use.
+     *              Classes that implement or refer to IntFunctions are very niche,
+     *              and examples on how to create and use them are non-existent,
+     *              at least from cursory research.
+     * @tags        Converter
+     */
+    // public T[] toArray(java.util.function.IntFunction<T[]> generator) {
+    //     return ls.toArray(generator);
+    // }
+
+    //#endregion
+
+    //#region Redundant methods
+    /*
+     * Methods in this section have not been given full annotation / documentation;
+     * In particular, Overloads (@overloads) have been omitted for clarity.
+     * 
+     * All methods within this section should work if uncommented.
+     * All methods within this section do not have corresponding tests.
+     */
+
+    /**
+     * Creates a new {@link AugList} from the given {@link ArrayList}.
+     * @param       arrayList
+     *              The {@link ArrayList} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(ArrayList<T> arrayList) {
+    //     this.ls = arrayList;
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@code ? implements} {@link List}.
+     * @param       list
+     *              The {@link List} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(List<T> list) {
+    //     this.ls = new ArrayList<T>(list);
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link AugList}.
+     * @param       augList
+     *              The {@link AugList} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(AugList<T> augList) {
+    //     this.ls = new ArrayList<T>(augList.ls);
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@code ? implements} {@link java.util.Deque}.
+     * @param       deque
+     *              The {@link java.util.Deque} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(java.util.Deque<T> deque) {
+    //     this.ls = new AugList<T>(deque.iterator()).ls;
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link java.util.PriorityQueue}.
+     * @param       prioQueue
+     *              The {@link java.util.PriorityQueue} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(java.util.PriorityQueue<T> prioQueue) {
+    //     this.ls = new AugList<T>(prioQueue.iterator()).ls;
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link java.util.HashSet}.
+     * @param       hashSet
+     *              The {@link HashSet} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(java.util.HashSet<T> hashSet) {
+    //     this.ls = new AugList<T>(hashSet.iterator()).ls;
+    // }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link java.util.TreeSet}.
+     * @param       treeSet
+     *              The {@link java.util.TreeSet} in question.
+     * @see         #AugList(Iterable)
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
+     * @tags        Constructor
+     */
+    // public AugList(java.util.TreeSet<T> treeSet) {
+    //     this.ls = new AugList<T>(treeSet.iterator()).ls;
+    // }
+
+    //#endregion
+
+    //#region Methods without Usecases
+    /*
+     * Whilst the methods here are not redundant, they currently have no real use case.
+     */
+
+    /**
+     * Creates a new {@link AugList} of the given length, filled with the given value.
+     * @param       fill
+     *              What to fill this {@link AugList} with.
+     * @param       size
+     *              How long the {@link AugList} should be.
+     * @throws      IllegalArgumentException
+     *              {@code size < 0}
+     * @deprecated  Due to lack of use cases, at least at current (26-09-04).
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @tags        Constructor
+     */
+    // public AugList(T fill, int size) {
+    //     if (size < 0) {
+    //         throw new IllegalArgumentException("size must be positive.");
+    //     }
+    //     for (int i = 0; i < size; i++) {
+    //         this.ls.add(fill);
+    //     }
+    // }
+
+    /**
+     * Gets the value at the given index. If the given index is out of bounds, fills the missing entries with {@code null} and returns {@code null}.
+     * @param       index
+     *              The index of the item to get.
+     * @return      The value at that index (which will be {@code null} if {@code index >= this.size()})
+     * @throws      IllegalArgumentException
+     *              If {@code index < 0}
+     * @deprecated  Due to lack of use cases, at least at current (26-09-04).
+     * @note        Should be fully functional if uncommented.
+     *              Does not have a test in {@link tests.AugListTest}.
+     * @tags        Mutator, Terminator
+     */
+    // public T getAndAppendIfEmpty(int index) {
+    //     if (index < 0) {
+    //         throw new IllegalArgumentException("index was negative.");
+    //     }
+    //     // Add empty entries until the given index if necessary.
+    //     if (index >= ls.size()) {
+    //         ArrayList<T> newLs = new ArrayList<T>(index + 1);
+    //         for (int i = 0; i < ls.size(); i++) {
+    //             newLs.set(i, ls.get(i));
+    //         }
+    //         ls = newLs;
+    //     }
+    //     return get(index);
+    // }
+    //#endregion
+
+    //#region Cut Classes
+    // Was a part of an attempted change to .Equals() that went nowhere.
+    // /**
+    //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
+    //  * @deprecated
+    //  */
+    // private class TypeFinder {
+    //     // This only works if we don't force a parameter on the AugList.
+    //     @SuppressWarnings({ "rawtypes", "unused" })
+    //     AugList genericAugList;
+    //     AugList<T> thisAugList;
+
+    //     public TypeFinder(@SuppressWarnings("rawtypes") AugList genericAugList, AugList<T> thisAugList) {
+    //         this.genericAugList = genericAugList;
+    //         this.thisAugList = thisAugList;
+    //     }
+    // }
+    //#endregion
 }
