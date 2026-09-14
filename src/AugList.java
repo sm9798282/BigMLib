@@ -1,6 +1,5 @@
 package src;
 
-import java.util.AbstractCollection;
 //import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import java.util.Enumeration;
 //import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -42,7 +40,7 @@ import java.util.stream.Stream;
  * {@code setDifference}, {@code setIntersect}, {@code setUnion}, {@code subListToEnd}, {@code skipWhile}, {@code takeWhile}</p>
  * <p>Decorates an ArrayList.
  */
-public class AugList<T> implements Iterable<T> {
+public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * The ArrayList that this AugList decorates.
      */
