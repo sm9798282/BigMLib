@@ -3,6 +3,7 @@ package src;
 //import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 //import java.util.Deque;
 import java.util.Enumeration;
@@ -23,6 +24,8 @@ import java.util.function.Predicate;
 //import java.lang.reflect.Field;
 //import java.lang.reflect.ParameterizedType;
 import java.util.stream.Stream;
+
+// TODO: Add d-classAndInterface changes to AugList desc
 
 /**
  * <h1>AugList<T></h1>
@@ -112,7 +115,7 @@ import java.util.stream.Stream;
  * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
  * @version 2
  */
-public class AugList<T> implements Iterable<T> {
+public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * The {@link ArrayList} that this {@link AugList} decorates.
      */
@@ -605,7 +608,6 @@ public class AugList<T> implements Iterable<T> {
         return ret;
     }
 
-    // (Overrides ArrayList<T>.equals()).
     /** 
      * Sees if the given {@link Object} may be equal to this {@link AugList}.
      * <p> If the Object in question is any of the following, it can be matched:
@@ -621,8 +623,7 @@ public class AugList<T> implements Iterable<T> {
      *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
      * @tags    Terminator
      */
-    @Override
-    public boolean equals(Object o) {
+    public boolean isEquivalent(Object o) {
         if (o instanceof AugList) {
             @SuppressWarnings({ "rawtypes" })
             // Suppress the rawtypes caution as o is an AugList.
@@ -655,7 +656,7 @@ public class AugList<T> implements Iterable<T> {
                 //     System.out.println(tALClass.toString()); // class java.lang.Integer
 
                 //     // If the generic fields have different names, the lists are treated as unequal.
-                //     if (!oALClass.toString().equals(tALClass.toString())) {
+                //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
                 //         return false;
                 //     }
                 // } catch (NoSuchFieldException e) {
@@ -1412,6 +1413,22 @@ public class AugList<T> implements Iterable<T> {
      *  )
      */
 
+    //TODO: Add correct annotations upon merge into d-documentation
+    /**
+     * Retains elements that appear in both this and the given {@link Collection}.
+     * If an element occurs multiple times in this, each copy is kept if at least one copy is present in the given collection.
+     * @param   collection
+     *          The collection in question.
+     * @return  {@code this}
+     * @throws  NullPointerException
+     *          {@code collection.isEquivalent(null)}
+     * 
+     */
+    public AugList<T> retainAll(Collection<? super T> collection) {
+        ls.retainAll(collection);
+        return this;
+    }
+
     /**
      * Returns a new reversed-order {@link AugList}.
      * @return  A new {@link AugList} with the same elements as this one, but in reverse order.
@@ -1525,7 +1542,7 @@ public class AugList<T> implements Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> setIntersection(AugList<T> setB) {
-        if (this.equals(setB)) {
+        if (this.isEquivalent(setB)) {
             return setB;
         }
         setB = setB.distinctCopy();
@@ -1811,6 +1828,33 @@ public class AugList<T> implements Iterable<T> {
         return ls.toArray(typedArr);
     }
 
+    //TODO: Annotate in line with methods on d-documentation
+    /**
+     * Casts this {@link AugList} to a {@link Collection}.
+     * @return  This {@link AugList}, as a {@link Collection}.
+     */
+    public Collection<T> toCollection() {
+        Collection<T> ret = new ArrayList<T>() {};
+        for (int i = 0; i < size(); i++) {
+            ret.add(get(i));
+        }
+        return ret;
+    }
+
+    //TODO: Annotate in line with methods on d-documentation
+    /**
+     * Casts this {@link AugList} to an {@link Enumeration}. DOES NOT PRESERVE ORDER.
+     * @return  This {@link AugList}, as a {@link Enumeration}.
+     */
+    public Enumeration<T> toEnumeration() {
+        Hashtable<T,T> hashtable = new Hashtable<T,T>() {};
+        for (T element : ls) {
+            hashtable.put(element, element);
+        }
+        return (Enumeration<T>)hashtable.elements();
+    }
+
+    // Returns this AugList as a string. Example outputs: "/", "[1,2,3,4]", "[a,b,c,d]"
     /**
      * This {@link AugList}'s contents, as a human-legible {@link String}.
      * @return  This, as a {@link String}.
@@ -1984,67 +2028,119 @@ public class AugList<T> implements Iterable<T> {
         return this;
     }
 
-    //#region Former Methods
-    /**
-     * All methods in this section were available in previous versions, but have since been made redundant.
-     * These methods have corresponding tests in AugListTest.java
-     */
-    /**
-     * Produces a sublist from the given index to the end of the list.
-     * @param       fromIndex
-     *              The index to start from to the end of the list.
-     * @return      A sublist from the {@code fromIndex}
-     * @throws      IndexOutOfBoundsException
-     *              {@code index < 0 || index >= this.size()}
-     * @see         tests.AugListTest#testSubListToEnd()
-     * @note        Inspired by {@link #subList(int, int)}.
-     *              Has testing, which is also commented out: {@link tests.AugListTest#testSubListToEnd()}
-     * @deprecated  Due to {@code subList(fromIndex, ls.size())} performing the same task.
-     * @tags        Creator
-     */
-    // public AugList<T> subListToEnd(int fromIndex) {
-    //     return subList(fromIndex, ls.size());
+    // /**
+    //  * Create a new AugList that is the given length, filled with the given value.
+    //  * @param   fill
+    //  *          What to fill this AugList with.
+    //  * @param   size
+    //  *          How long the AugList should be.
+    //  * @throws  IllegalArgumentException
+    //  *          {@code size < 0}
+    //  * @deprecated
+    //  */
+    // public AugList(T fill, int size) {
+    //     if (size < 0) {
+    //         throw new IllegalArgumentException("size must be positive.");
+    //     }
+    //     for (int i = 0; i < size; i++) {
+    //         this.ls.add(fill);
+    //     }
     // }
-    //#endregion
 
-    //#region Potentially useful code
+    // I have no idea how or why ensureCapacity would be used as it has no discernable impact on internal state.
+    // /**
+    //  * Increases the maximum number of elements this AugList can take to {@code minCapacity}.
+    //  * Does nothing if capacity is already sufficient.
+    //  * 
+    //  * @deprecated (Other methods already perform the same task.)
+    //  * @param   minCapacity
+    //  *          The minimum capacity this AugList is desired to have.
+    //  * @apiNote Encapsulates {@code ArrayList<T>.ensureCapacity()}.
+    //  * @deprecated
+    //  */
+    // public void ensureCapacity(int minCapacity) {
+    //     ls.ensureCapacity(minCapacity);
+    // }
+
+    // Was a part of an attempted change to .isEquivalent() that went nowhere.
+    // /**
+    //  * Helper class that is used in isEquivalent(), consisting of 2 fields and a single constructor.
+    //  * @deprecated
+    //  */
+    // private class TypeFinder {
+    //     // This only works if we don't force a parameter on the AugList.
+    //     @SuppressWarnings({ "rawtypes", "unused" })
+    //     AugList genericAugList;
+    //     AugList<T> thisAugList;
+
+    //     public TypeFinder(@SuppressWarnings("rawtypes") AugList genericAugList, AugList<T> thisAugList) {
+    //         this.genericAugList = genericAugList;
+    //         this.thisAugList = thisAugList;
+    //     }
+    // }
+
+    // Currently no need for this method?
+    // /**
+    //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
+    //  * @param   index
+    //  *          The index of the item to get.
+    //  * @return  The value at that index (which will be the default value if {@code index >= this.size()})
+    //  * @throws  IllegalArgumentException
+    //  *          If {@code index < 0}
+    //  * @deprecated
+    //  */
+    // public T getAndAppendIfEmpty(int index) {
+    //     if (index < 0) {
+    //         throw new IllegalArgumentException("index was negative.");
+    //     }
+    //     // Add empty entries until the given index if necessary.
+    //     if (index >= ls.size()) {
+    //         ArrayList<T> newLs = new ArrayList<T>(index + 1);
+    //         for (int i = 0; i < ls.size(); i++) {
+    //             newLs.set(i, ls.get(i));
+    //         }
+    //         ls = newLs;
+    //     }
+    //     return get(index);
+    // }
+
+    // Method currently unnecessary, so has been commented.
     /**
-     * Finds if the two {@link AugList AugLists} are in an Equivalence Relationship.
-     * @param       augListB
-     *              The second {@link AugList}.
-     * @return      {@code true} if the lists are in a EqRel, and {@code false} otherwise.
-     * @note        Inspired by the Equivalence relationship requirements of {@link List#equals()}.
-     *              <p>If ~ is a relation (a mapping), then if it fulfils the following:
-     *              - Reflexive (x ~ x)
-     *              - Symmetric (x ~ y ⇔ y ~ x)
-     *              - Transitive (x ~ y ^ y ~ z ⇒ x ~ z)
-     *              - Consistent (x ~ y ⇒ x ~ y for as long as x, y are constant)
-     *              - Non-null equivalence ( x != null ⇔ x !~ null )
-     *              Then they must be equivalent.
-     *              <p>Any such relation is called an equivalence relation.
-     *              <p>(Notably any such EqRel is a one to one mapping.)
-     * @deprecated  Due to current lack of use case. {@link #isRearrangement(AugList)} does the same job.
-     * @tags        Terminator
+     * Finds if the two AugLists are in an Equivalence Relationship.
+     * @param   augListB
+     *          The second AugList.
+     * @return  {@code true} if the lists are in a EqRel, and {@code false} otherwise.
+     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.isEquivalent()}.
+     * @implNote If ~ is a relation (a mapping), then if it fulfils the following:
+     *           <p>Reflexive (x ~ x)
+     *           <p>Symmetric (x ~ y <=> y ~ x)
+     *           <p>Transitive (x ~ y ^ y ~ z => x ~ z)
+     *           <p>Consistent (x ~ y => x ~ y for as long as x, y are constant)
+     *           <p>Non-null equivalence ( x != null <=> x !~ null )
+     *           <p>Then they must be equivalent.
+     *           <p>Any such relation is called an equivalence relation.
+     *           <p>(Notably any such EqRel is a one to one mapping.)
+     * @deprecated
      */
-    //public boolean isEqRel(AugList<T> augListB) {
+    // public boolean isEqRel(AugList<T> augListB) {
         // if (ls.size() != augListB.size()) {
         //     // If the two lists are different lengths, there is no world in which an EqRel can exist.
         //     // So rather than wasting compute time, we can terminate early.
         //     return false;
         // }
-        // if (!this.allSatisfy(x -> x.equals(x)) || !augListB.allSatisfy(x -> x.equals(x))) { // Reflexive check
+        // if (!this.allSatisfy(x -> x.isEquivalent(x)) || !augListB.allSatisfy(x -> x.isEquivalent(x))) { // Reflexive check
         //     return false; // Should theoretically never trigger.
         // }
         // AugList<AugList<T>> allRelations = new AugList<AugList<T>>();
         // for (int i = 0; i < ls.size(); i++) {
-        //     if (!ls.get(i).equals(ls.get(i)) || !augListB.get(i).equals(augListB.get(i))) { // Consistency check
+        //     if (!ls.get(i).isEquivalent(ls.get(i)) || !augListB.get(i).isEquivalent(augListB.get(i))) { // Consistency check
         //         return false; // (In theory this condition should never fail.)
         //     }
         //     allRelations.add(new AugList<T>());
         //     // (Notably oAsAugList.size() == ls.size().)
         //     for (int j = 0; j < augListB.size(); j++) {
-        //         if (ls.get(i).equals(augListB.get(j))) {
-        //             if (!ls.get(j).equals(augListB.get(i))) { // Symmetric check
+        //         if (ls.get(i).isEquivalent(augListB.get(j))) {
+        //             if (!ls.get(j).isEquivalent(augListB.get(i))) { // Symmetric check
         //                 return false;
         //             }
         //             if ((ls.get(i) == null && augListB.get(j) != null) || (ls.get(i) != null && augListB.get(j) == null))
@@ -2061,7 +2157,7 @@ public class AugList<T> implements Iterable<T> {
         //     for (int j = 0; j < allRelations.get(i).size(); j++) { // Relations of j
         //         // For all relations of i, check all relations of j relate to them.
         //         // (in other words, if i relates to j, are their relations equivalent?)
-        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().equals(allRelations.get(j).toString()))
+        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().isEquivalent(allRelations.get(j).toString()))
         //         {
         //             // If i is equivalent to j but the list of equivalences of i is not the same as the list of equivalences of j,
         //             // then Transitivity is broken, so return false.
