@@ -33,8 +33,8 @@ import java.util.stream.Stream;
  * <p>Changes:
  * <p>{@code boolean add()} (which always returned {@code true}) has been altered to {@code AugList<T> add()}.</p>
  * <p>{@code clone()} and {@code subList()} produce an {@code AugList<T>} rather than an {@code List<T>}.</p>
- * <p>Overrides {@code equals()}, which is more lenient than {@code ArrayList.equals()} and can match AugLists, Lists and Strings.
- * Notably this means {@code this.equals(this.clone())}.</p>
+ * <p>Overrides {@code isEquivalent()}, which is more lenient than {@code ArrayList.isEquivalent()} and can match AugLists, Lists and Strings.
+ * Notably this means {@code this.isEquivalent(this.clone())}.</p>
  * <p>Overrides {@code toString()} to provide a more legible overview of the contents.
  * <p>Adds constructors from {@code List<T>} and varargs.</p>
  * <p>Adds varargs variations of {@code addAll}, {@code containsAll}.</p>
@@ -62,7 +62,7 @@ public class AugList<T> implements Iterable<T> {
      *          An array of objects that this AugList will have
      */
     public AugList(T... a) {
-        this.ls = new ArrayList<T>(Arrays.asList(a));
+        this.ls = new AugList<T>(Arrays.asList(a)).ls;
     }
 
     /**
@@ -504,15 +504,12 @@ public class AugList<T> implements Iterable<T> {
         return ret;
     }
 
-    // (Overrides ArrayList<T>.equals()).
+    
     /**
      * This method will accept an input if it is STRICTLY equal: Use isRearrangement() for a more lenient Equality comparer.
      */
-    @Override
-    /**
-     * In VSCode, it appears it is not be possible to change the hover-tooltip for Object.equals()
-     */
-    public boolean equals(Object o) {
+    
+    public boolean isEquivalent(Object o) {
         if (o instanceof AugList) {
             @SuppressWarnings({ "rawtypes" }) // Suppress the unchecked cast caution as o is already an AugList under the hood.
             AugList oAsAugList = (AugList) o;
@@ -543,7 +540,7 @@ public class AugList<T> implements Iterable<T> {
                 //     System.out.println(tALClass.toString()); // class java.lang.Integer
 
                 //     // If the generic fields have different names, the lists are treated as unequal.
-                //     if (!oALClass.toString().equals(tALClass.toString())) {
+                //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
                 //         return false;
                 //     }
                 // } catch (NoSuchFieldException e) {
@@ -801,7 +798,7 @@ public class AugList<T> implements Iterable<T> {
 
     /**
      * Compares whether or not two lists have the same elements. (Order does not matter)
-     * <p>For a stricter equality function, use {@code this.equals()}.</p>
+     * <p>For a stricter equality function, use {@code this.isEquivalent()}.</p>
      * @param   otherAL
      *          The second list to compare against.
      * @return  {@code true} if the lists match; {@code false} otherwise.
@@ -876,7 +873,7 @@ public class AugList<T> implements Iterable<T> {
      * @apiNote Custom method similar to the C# function {@code IEnumerable<T>.Intersect()}.
      */
     public AugList<T> listIntersection(AugList<T> listB) {
-        if (this.equals(listB)) {
+        if (this.isEquivalent(listB)) {
             return listB;
         }
         listB = listB.clone();
@@ -1118,13 +1115,11 @@ public class AugList<T> implements Iterable<T> {
      * @param   collection
      *          The collection in question.
      * @return  {@code this}
-     * @throws  ClassCastException
-     *          At least one element cannot be cast into this {@link AugList}'s parameterized type {@link T}.
      * @throws  NullPointerException
-     *          {@code collection.equals(null)}
+     *          {@code collection.isEquivalent(null)}
      * 
      */
-    public AugList<T> retainAll(Collection<?> collection) {
+    public AugList<T> retainAll(Collection<? super T> collection) {
         ls.retainAll(collection);
         return this;
     }
@@ -1214,7 +1209,7 @@ public class AugList<T> implements Iterable<T> {
      * @apiNote Custom method based on the C# function {@code IEnumerable<T>.Intersect()}.
      */
     public AugList<T> setIntersection(AugList<T> setB) {
-        if (this.equals(setB)) {
+        if (this.isEquivalent(setB)) {
             return setB;
         }
         setB = setB.distinctCopy();
@@ -1630,9 +1625,9 @@ public class AugList<T> implements Iterable<T> {
     //     ls.ensureCapacity(minCapacity);
     // }
 
-    // Was a part of an attempted change to .Equals() that went nowhere.
+    // Was a part of an attempted change to .isEquivalent() that went nowhere.
     // /**
-    //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
+    //  * Helper class that is used in isEquivalent(), consisting of 2 fields and a single constructor.
     //  * @deprecated
     //  */
     // private class TypeFinder {
@@ -1678,7 +1673,7 @@ public class AugList<T> implements Iterable<T> {
      * @param   augListB
      *          The second AugList.
      * @return  {@code true} if the lists are in a EqRel, and {@code false} otherwise.
-     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.equals()}.
+     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.isEquivalent()}.
      * @implNote If ~ is a relation (a mapping), then if it fulfils the following:
      *           <p>Reflexive (x ~ x)
      *           <p>Symmetric (x ~ y <=> y ~ x)
@@ -1696,19 +1691,19 @@ public class AugList<T> implements Iterable<T> {
         //     // So rather than wasting compute time, we can terminate early.
         //     return false;
         // }
-        // if (!this.allSatisfy(x -> x.equals(x)) || !augListB.allSatisfy(x -> x.equals(x))) { // Reflexive check
+        // if (!this.allSatisfy(x -> x.isEquivalent(x)) || !augListB.allSatisfy(x -> x.isEquivalent(x))) { // Reflexive check
         //     return false; // Should theoretically never trigger.
         // }
         // AugList<AugList<T>> allRelations = new AugList<AugList<T>>();
         // for (int i = 0; i < ls.size(); i++) {
-        //     if (!ls.get(i).equals(ls.get(i)) || !augListB.get(i).equals(augListB.get(i))) { // Consistency check
+        //     if (!ls.get(i).isEquivalent(ls.get(i)) || !augListB.get(i).isEquivalent(augListB.get(i))) { // Consistency check
         //         return false; // (In theory this condition should never fail.)
         //     }
         //     allRelations.add(new AugList<T>());
         //     // (Notably oAsAugList.size() == ls.size().)
         //     for (int j = 0; j < augListB.size(); j++) {
-        //         if (ls.get(i).equals(augListB.get(j))) {
-        //             if (!ls.get(j).equals(augListB.get(i))) { // Symmetric check
+        //         if (ls.get(i).isEquivalent(augListB.get(j))) {
+        //             if (!ls.get(j).isEquivalent(augListB.get(i))) { // Symmetric check
         //                 return false;
         //             }
         //             if ((ls.get(i) == null && augListB.get(j) != null) || (ls.get(i) != null && augListB.get(j) == null))
@@ -1725,7 +1720,7 @@ public class AugList<T> implements Iterable<T> {
         //     for (int j = 0; j < allRelations.get(i).size(); j++) { // Relations of j
         //         // For all relations of i, check all relations of j relate to them.
         //         // (in other words, if i relates to j, are their relations equivalent?)
-        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().equals(allRelations.get(j).toString()))
+        //         if (allRelations.get(i).contains(augListB.get(j)) && !allRelations.get(i).toString().isEquivalent(allRelations.get(j).toString()))
         //         {
         //             // If i is equivalent to j but the list of equivalences of i is not the same as the list of equivalences of j,
         //             // then Transitivity is broken, so return false.
