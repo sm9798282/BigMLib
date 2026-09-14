@@ -25,28 +25,32 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.stream.Stream;
 
+/**
+ * A JUnit 3.x powered automatic tester for {@link src.AugList}.
+ * @see src.AugList
+ */
 public class AugListTest implements MultiTest {
 
     private AugList<Double> testDataDouble;
-    private AugList<String> testDataStr;
+    private AugList<String> testDataString;
     private AugList<Integer> testDataInt;
 
     final ArrayList<Double> ARRLISTDOUBLE = new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926));
     final ArrayList<String> ARRLISTSTR = new ArrayList<String>(Arrays.asList("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog"));
     final ArrayList<Integer> ARRLISTINT = new ArrayList<Integer>(Arrays.asList(7, 11, 19, -24, 117, 145, -56, 43));
 
+    /**
+     * @see src.AugList#AugList(Object...)
+     */
     @Override
     public void setupTestData() {
-        //if (testDataDouble == null)
-        //{
-            testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
-            testDataStr = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
-            testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
-            // As strings, the test data is:
-            // [1.0, 2.0, 7.11, -2.5, 3.1415926]
-            // [The, quick, brown, fox, jumps, over, the, lazy dog]
-            // [7, 11, 19, -24, 117, 145, -56, 43]
-        //}
+        testDataString = new AugList<String>("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog");
+        testDataDouble = new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926);
+        testDataInt = new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43);
+        // As strings, the test data is:
+        // [1.0, 2.0, 7.11, -2.5, 3.1415926]
+        // [The, quick, brown, fox, jumps, over, the, lazy dog]
+        // [7, 11, 19, -24, 117, 145, -56, 43]
     }
 
     @Test
@@ -73,7 +77,7 @@ public class AugListTest implements MultiTest {
         testDistinctCopy();
         testDistinctSelf();
         // testEnsureCapacity();
-        testEquals();
+        testIsEquivalent();
         testFilterCopy();
         testFilterSelf();
         testForEach();
@@ -91,7 +95,6 @@ public class AugListTest implements MultiTest {
         testInsertAllAtRandomVarargs();
         testInsertAtRandom();
         testIsEmpty();
-        testIsEqual();
         testIsRearrangement();
         testIterator();
         testLastIndexOf();
@@ -110,6 +113,7 @@ public class AugListTest implements MultiTest {
         testRemoveIf();
         testRemoveLast();
         testRemoveRandom();
+        testRetainAll();
         testReversed();
         testSample();
         testSet();
@@ -127,12 +131,11 @@ public class AugListTest implements MultiTest {
         testSwapRandom();
         testSwapRandomNoParam();
         testSubList();
-        testSubListToEnd();
         testTakeWhile();
-        //testToArrayGivenGenerator();
         testToArrayGivenType();
+        testToCollection();
+        testToEnumeration();
         testToString();
-        //testTrimToSize();
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
@@ -141,101 +144,138 @@ public class AugListTest implements MultiTest {
         testWithoutLast();
         testWithoutRandom();
         testWithoutWhere();
+        //testEnsureCapacity();
+        //testSubListToEnd();
+        //testToArrayGivenGenerator();
+        //testTrimToSize();
     }
 
+    /**
+     * JUnit tester for Single Append
+     * @see src.AugList#add(Object)
+     */
     @Test
     public void testAdd() {
         setupTestData();
         testDataDouble.add(7.0);
-        assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataStr.add("!");
-        assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog, !]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
+        testDataString.add("!");
+        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !]"));
         testDataInt.add(25);
-        assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
     }
 
+    /**
+     * JUnit tester for Bulk Append
+     * @see src.AugList#addAll(AugList)
+     */
     @Test
     public void testAddAll() {
         setupTestData();
         testDataDouble.addAll(new AugList<Double>(7.0));
-        assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataStr.addAll(new AugList<String>("!", "qwerty"));
-        assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
+        testDataString.addAll(new AugList<String>("!", "qwerty"));
+        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
         testDataInt.addAll(new AugList<Integer>(25, 125, 625));
-        assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
+    /**
+     * JUnit tester for Bulk Varargs Append
+     * @see src.AugList#addAll(Object...)
+     */
     @Test
     public void testAddAllVarargs() {
         setupTestData();
         testDataDouble.addAll(7.0);
-        assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataStr.addAll("!", "qwerty");
-        assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
+        testDataString.addAll("!", "qwerty");
+        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
         testDataInt.addAll(25, 125, 625);
-        assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
+    /**
+     * JUnit tester for Single Prepend
+     * @see src.AugList#addFirst()
+     */
     @Test
     public void testAddFirst() {
         setupTestData();
         testDataDouble.addFirst(7.0);
-        assertTrue(testDataDouble.toString().equals("[7.0, 1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataStr.addFirst("!");
-        assertTrue(testDataStr.toString().equals("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.isEquivalent("[7.0, 1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        testDataString.addFirst("!");
+        assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         testDataInt.addFirst(25);
-        assertTrue(testDataInt.toString().equals("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
     }
-
-    @SuppressWarnings("unlikely-arg-type")
-    // A string is a type which has the possibility of equivalence to an AugList, so the compiler warning can be suppressed.
+  
+    /**
+     * JUnit tester for finding all indices of a given object
+     * @see src.AugList#allIndicesOf(Object)
+     */
     @Test
     public void testAllIndicesOf() {
         setupTestData();
         assertTrue(testDataDouble.allIndicesOf(-2.0).size() == 0);
         //testDataStr.oneToOneMap(s -> s.toLowerCase()).forEach(System.out::println);
-        System.out.println(testDataStr.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
-        assertTrue(testDataStr.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
-        assertTrue(testDataInt.add(7).allIndicesOf(7).equals("[0, 8]"));
+        System.out.println(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
+        assertTrue(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
+        assertTrue(testDataInt.add(7).allIndicesOf(7).isEquivalent("[0, 8]"));
     }
 
+    /**
+     * JUnit tester for Mass Satisfaction (∀, All) 
+     * @see src.AugList#allSatisfy(java.util.function.Predicate)
+     */
     @Test
     public void testAllSatisfy() {
         setupTestData();
         assertTrue(testDataDouble.allSatisfy(d -> d > -3.0));
         assertFalse(testDataDouble.allSatisfy(d -> d > -2.0));
-        assertTrue(testDataStr.allSatisfy(s -> s.length() != 0));
-        assertFalse(testDataStr.allSatisfy(s -> s.length() == 1));
+        assertTrue(testDataString.allSatisfy(s -> s.length() != 0));
+        assertFalse(testDataString.allSatisfy(s -> s.length() == 1));
         assertTrue(testDataInt.allSatisfy(i -> -60 < i && i < 150));
         assertFalse(testDataInt.allSatisfy(i -> 0 < i && i < 100));
     }
 
+    /**
+     * JUnit tester for Existence (∃, Exists)
+     * @see src.AugList#anySatisfy(java.util.function.Predicate)
+     */
     @Test
     public void testAnySatisfy() {
         setupTestData();
         assertTrue(testDataDouble.anySatisfy(d -> d == -2.5));
         assertFalse(testDataDouble.anySatisfy(d -> 0 < d && d < 0.5));
-        assertTrue(testDataStr.anySatisfy(s -> s.length() == 4));
-        assertFalse(testDataStr.anySatisfy(s -> s.length() > 100));
+        assertTrue(testDataString.anySatisfy(s -> s.length() == 4));
+        assertFalse(testDataString.anySatisfy(s -> s.length() > 100));
         assertTrue(testDataInt.anySatisfy(i -> 3 < i && i < 8));
         assertFalse(testDataInt.anySatisfy(i -> 4 < i && i < 6));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Bulk Function application
+     * @see src.AugList#applyAll(java.util.function.Function)
+     */
     @Test
     public void testApplyAll() {
         setupTestData();
-        assertTrue(testDataDouble.applyAll(d -> d + 1).equals("[2.0, 3.0, 8.11, -1.5, 4.1415926]"));
-        assertEquals(testDataStr.applyAll(s -> s.substring(0, 1)), "[T, q, b, f, j, o, t, l]");
-        assertTrue(testDataInt.applyAll(i -> 2 * i).equals("[14, 22, 38, -48, 234, 290, -112, 86]"));
+        assertTrue(testDataDouble.applyAll(d -> d + 1).isEquivalent("[2.0, 3.0, 8.11, -1.5, 4.1415926]"));
+        assertTrue(testDataString.applyAll(s -> s.substring(0, 1)).isEquivalent("[T, q, b, f, j, o, t, l]"));
+        assertTrue(testDataInt.applyAll(i -> 2 * i).isEquivalent("[14, 22, 38, -48, 234, 290, -112, 86]"));
     }
 
+    /**
+     * JUnit tester for List Subdivision
+     * @see src.AugList#chunk(int)
+     */
     @Test
     public void testChunk() {
         setupTestData();
-        assertTrue(testDataDouble.chunk(3).toString().equals("[[1.0, 2.0, 7.11], [-2.5, 3.1415926]]"));
-        assertTrue(testDataStr.chunk(3).toString().equals("[[The, quick, brown], [fox, jumps, over], [the, lazy dog]]"));
-        assertTrue(testDataInt.chunk(1).toString().equals("[[7], [11], [19], [-24], [117], [145], [-56], [43]]"));
+        assertTrue(testDataDouble.chunk(3).isEquivalent("[[1.0, 2.0, 7.11], [-2.5, 3.1415926]]"));
+        assertTrue(testDataString.chunk(3).isEquivalent("[[The, quick, brown], [fox, jumps, over], [the, lazy dog]]"));
+        assertTrue(testDataInt.chunk(1).isEquivalent("[[7], [11], [19], [-24], [117], [145], [-56], [43]]"));
         assertThrows(IllegalArgumentException.class, 
             () -> { 
                 testDataDouble.chunk(0);
@@ -243,40 +283,56 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Emptying
+     * @see src.AugList#clear()
+     */
     @Test
     public void testClear() {
         setupTestData();
         testDataDouble.clear();
         assertTrue(testDataDouble.size() == 0);
-        testDataStr.clear();
-        assertTrue(testDataStr.isEmpty());
+        testDataString.clear();
+        assertTrue(testDataString.isEmpty());
         testDataInt.clear();
         assertTrue(testDataInt.size() == 0);
     }
 
+    /**
+     * JUnit tester for Cloning
+     * @see src.AugList#clone()
+     */
     @Test
     public void testClone() {
         setupTestData();
         // assertNotEquals checks for both contents and memory locations being identical to throw (which by use of clone() will never be true.)
-        assertEquals(testDataDouble.clone().oneToOneMap(x -> x), testDataDouble);
-        assertEquals(testDataStr.clone().distinctCopy(), testDataStr.distinctCopy());
-        assertEquals(testDataInt.clone().filterCopy(x -> x != 100), testDataInt);
+        assertTrue(testDataDouble.clone().oneToOneMap(x -> x).isEquivalent(testDataDouble));
+        assertTrue(testDataString.clone().distinctCopy().isEquivalent(testDataString.distinctCopy()));
+        assertTrue(testDataInt.clone().filterCopy(x -> x != 100).isEquivalent(testDataInt));
         assertNotSame(testDataDouble, testDataDouble.clone());
-        assertNotSame(testDataStr, testDataStr.clone());
+        assertNotSame(testDataString, testDataString.clone());
         assertNotSame(testDataInt, testDataInt.clone());
     }
 
+    /**
+     * JUnit tester for Single Containment (a ∈ A)
+     * @see src.AugList#contains(Object)
+     */
     @Test
     public void testContains() {
         setupTestData();
         assertTrue(testDataDouble.contains(3.1415926));
         assertFalse(testDataDouble.contains(99999.9));
-        assertTrue(testDataStr.contains("fox"));
-        assertFalse(testDataStr.contains("Lizard"));
+        assertTrue(testDataString.contains("fox"));
+        assertFalse(testDataString.contains("Lizard"));
         assertTrue(testDataInt.contains(11));
         assertFalse(testDataInt.contains(17));
     }
 
+    /**
+     * JUnit tester for Mass Containment (A ⊆ B)
+     * @see src.AugList#containsAll(AugList)
+     */
     @Test
     public void testContainsAll() {
         setupTestData();
@@ -285,12 +341,16 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.containsAll(new AugList<Double>(3.1415926d, -2.5))); // Test reversed order
         assertFalse(testDataDouble.containsAll(new AugList<Double>(99999.9)));
         assertFalse(testDataDouble.containsAll(new AugList<Double>(-2.5, 99999.9)));
-        assertTrue(testDataStr.containsAll(new AugList<String>("fox")));
-        assertFalse(testDataStr.containsAll(new AugList<String>("Lizard")));
+        assertTrue(testDataString.containsAll(new AugList<String>("fox")));
+        assertFalse(testDataString.containsAll(new AugList<String>("Lizard")));
         assertTrue(testDataInt.containsAll(new AugList<Integer> (7, 11)));
         assertFalse(testDataInt.containsAll(new AugList<Integer>(7, 11, 17)));
     }
 
+    /**
+     * JUnit tester for Varargs Mass Containment (A ⊆ B)
+     * @see src.AugList#containsAll(Object...)
+     */
     @Test
     public void testContainsAllVarargs() {
         setupTestData();
@@ -299,36 +359,48 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.containsAll(3.1415926d, -2.5)); // Test reversed order
         assertFalse(testDataDouble.containsAll(99999.9));
         assertFalse(testDataDouble.containsAll(-2.5, 99999.9));
-        assertTrue(testDataStr.containsAll("fox"));
-        assertFalse(testDataStr.containsAll("Lizard"));
+        assertTrue(testDataString.containsAll("fox"));
+        assertFalse(testDataString.containsAll("Lizard"));
         assertTrue(testDataInt.containsAll(7, 11));
         assertFalse(testDataInt.containsAll(7, 11, 17));
     }
 
+    /**
+     * JUnit tester for Any Contains (∃a ∈ A: a ∈ B)
+     * @see src.AugList#containsAny(AugList)
+     */
     @Test
     public void testContainsAny(){
         setupTestData();
         assertTrue(testDataDouble.containsAny(new AugList<Double>(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)));
-        assertTrue(testDataStr.containsAny(new AugList<String>("", "A", "an", "the", "this", "that", "there")));
+        assertTrue(testDataString.containsAny(new AugList<String>("", "A", "an", "the", "this", "that", "there")));
         assertTrue(testDataInt.containsAny(new AugList<Integer>(2, 3, 5, 7, 11, 13, 17, 19)));
         assertFalse(testDataDouble.containsAny(new AugList<Double>()));
     }
 
+    /**
+     * JUnit tester for Varargs Any Contains (∃a ∈ A: a ∈ B)
+     * @see src.AugList#containsAny(Object...)
+     */
     @Test
     public void testContainsAnyVarargs() {
         setupTestData();
         assertTrue(testDataDouble.containsAny(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0));
-        assertTrue(testDataStr.containsAny("", "A", "an", "the", "this", "that", "there"));
+        assertTrue(testDataString.containsAny("", "A", "an", "the", "this", "that", "there"));
         assertTrue(testDataInt.containsAny(2, 3, 5, 7, 11, 13, 17, 19));
         assertFalse(testDataDouble.containsAny());
     }
 
+    /**
+     * JUnit tester for Frequency
+     * @see src.AugList#countsOfElements()
+     */
     @Test
     public void testCountsOfElements() {
         setupTestData();
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.countsOfElements().get("the") == 2);
-        assertTrue(testDataStr.countsOfElements().get("THE") == null);
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.countsOfElements().get("the") == 2);
+        assertTrue(testDataString.countsOfElements().get("THE") == null);
         testDataDouble.addAll(7.0, 11.0, -2.5, 7.11, 7.11);
         assertTrue(testDataDouble.countsOfElements().get(7.11) == 3);
         assertTrue(testDataDouble.countsOfElements().get(-2.5) == 2);
@@ -336,84 +408,134 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.countsOfElements().get(12.0) == null);
     }
 
+    /**
+     * JUnit tester for Duplicate Discarding
+     * @see src.AugList#distinctCopy()
+     */
     @Test
     public void testDistinctCopy() {
         setupTestData();
         testDataDouble.addAll(1.0, 7.2, -9.221, 1.0, 7.11, -2.5, 19.0);
-        assertTrue(testDataDouble.distinctCopy().toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.2, -9.221, 19.0]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toUpperCase());
-        assertTrue(testDataStr.distinctCopy().toString().equals("[THE, QUICK, BROWN, FOX, JUMPS, OVER, LAZY DOG]"));
+        assertTrue(testDataDouble.distinctCopy().isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.2, -9.221, 19.0]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toUpperCase());
+        assertTrue(testDataString.distinctCopy().isEquivalent("[THE, QUICK, BROWN, FOX, JUMPS, OVER, LAZY DOG]"));
         testDataInt.addAll(new AugList<Integer>(7, 8, 11, 19, 117, 119, 145, 145));
-        assertTrue(testDataInt.distinctCopy().toString().equals("[7, 11, 19, -24, 117, 145, -56, 43, 8, 119]"));
+        assertTrue(testDataInt.distinctCopy().isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 8, 119]"));
     }
 
+    /**
+     * JUnit tester for Duplicate Discarding
+     * @see src.AugList#distinctSelf()
+     */
     @Test
     public void testDistinctSelf() {
         setupTestData();
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        final AugList<String> LOWERSTRCLONE = testDataStr.clone();
-        assertEquals(LOWERSTRCLONE, testDataStr);
-        assertNotEquals(LOWERSTRCLONE, testDataStr.distinctSelf());
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        final AugList<String> LOWERSTRCLONE = testDataString.clone();
+        assertTrue(LOWERSTRCLONE.isEquivalent(testDataString));
+        assertTrue(!LOWERSTRCLONE.isEquivalent(testDataString.distinctSelf()));
         // distinctSelf() modifies the instance so the equality breaks.
-        assertNotEquals(LOWERSTRCLONE, testDataStr);
-        assertEquals(testDataStr, "[the, quick, brown, fox, jumps, over, lazy dog]");
+        assertTrue(!LOWERSTRCLONE.isEquivalent(testDataString));
+        assertTrue(testDataString.isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Equality
+     * @see src.AugList#equals(Object)
+     * @see src.AugList#AugList()
+     */
     @Test
-    public void testEquals() {
+    public void testIsEquivalent() {
         setupTestData();
         final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
-        assertTrue(TESTDATA.equals(TESTDATA));
+        assertTrue(TESTDATA.isEquivalent(TESTDATA));
         // AugList.Equals() has been overridden so that as long as the contents of the lists match, they evaluate as equal.
-        assertTrue(TESTDATA.equals(new AugList<String>("Hello", "World")));
-        assertEquals(TESTDATA, new AugList<String>("Hello", "World"));
+        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
+        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
-        assertNotEquals(testDataDouble.clone().oneToOneMap(d -> d + 1), testDataDouble);
-        assertNotEquals(testDataStr.clone().oneToOneMap(s -> s.toLowerCase()), testDataStr.distinctCopy());
-        assertNotEquals(testDataInt.clone().filterCopy(i -> i == 117), testDataInt);
-        assertNotEquals(testDataDouble, testDataStr);
-        assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
-        assertNotEquals(testDataDouble, "[1.0, 2.0, -2.5, 3.1415926, 7.11]");
-        assertNotEquals(testDataDouble, testDataDouble.clone().swap(0,1));
-        assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        assertNotEquals(testDataDouble, new AugList<Double>());
-        assertEquals(new AugList<Double>(), new AugList<Double>());
-        assertTrue(new AugList<Double>().equals(new AugList<String>()));
-        assertFalse(new AugList<Double>().equals(""));
-        assertFalse(new AugList<Double>(7.0).equals(7.0));
+        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
+        assertFalse(new AugList<Double>().isEquivalent(""));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
+        assertFalse(new AugList<Double>().isEquivalent(""));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble));
+        assertTrue(testDataInt.isEquivalent(testDataInt));
+        assertTrue(testDataString.isEquivalent(testDataString));
+        assertFalse(testDataDouble.isEquivalent(testDataInt));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1, 2, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.clone()));
+        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        AugList<Double> shuffled = testDataDouble.shuffleCopy();
+        if (shuffled.isEquivalent(testDataDouble)) {
+           shuffled.swap(0, 1);
+        }
+        assertFalse(testDataDouble.isEquivalent(shuffled));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for filtering
+     * @see src.AugList#filterCopy(java.util.function.Predicate)
+     */
     @Test
     public void testFilterCopy() {
         setupTestData();
         final AugList<Double> TESTDATADOUBLECOPY = testDataDouble.clone();
-        final AugList<String> TESTDATASTRCOPY = testDataStr.clone();
+        final AugList<String> TESTDATASTRCOPY = testDataString.clone();
         final AugList<Integer> TESTDATAINTCOPY = testDataInt.clone();
-        assertTrue(testDataDouble.filterCopy(d -> d > 2.5).equals("[7.11, 3.1415926]"));
-        assertTrue(testDataStr.filterCopy(s -> s.length() == 3).equals("[The, fox, the]"));
-        assertTrue(testDataInt.filterCopy(i -> i % 2 == 0).equals("[-24, -56]"));
-        assertEquals(testDataDouble, TESTDATADOUBLECOPY);
-        assertEquals(testDataStr, TESTDATASTRCOPY);
-        assertEquals(testDataInt, TESTDATAINTCOPY);
+        assertTrue(testDataDouble.filterCopy(d -> d > 2.5).isEquivalent("[7.11, 3.1415926]"));
+        assertTrue(testDataString.filterCopy(s -> s.length() == 3).isEquivalent("[The, fox, the]"));
+        assertTrue(testDataInt.filterCopy(i -> i % 2 == 0).isEquivalent("[-24, -56]"));
+        assertTrue(testDataDouble.isEquivalent(TESTDATADOUBLECOPY));
+        assertTrue(testDataString.isEquivalent(TESTDATASTRCOPY));
+        assertTrue(testDataInt.isEquivalent(TESTDATAINTCOPY));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for filtering
+     * @see src.AugList#filterSelf(java.util.function.Predicate)
+     */
     @Test
     public void testFilterSelf() {
         setupTestData();
         final AugList<Double> TESTDATADOUBLECOPY = testDataDouble.clone();
-        final AugList<String> TESTDATASTRCOPY = testDataStr.clone();
+        final AugList<String> TESTDATASTRCOPY = testDataString.clone();
         final AugList<Integer> TESTDATAINTCOPY = testDataInt.clone();
-        assertTrue(testDataDouble.filterSelf(d -> d > 2.5).equals("[7.11, 3.1415926]"));
-        assertTrue(testDataStr.filterSelf(s -> s.length() == 3).equals("[The, fox, the]"));
-        assertTrue(testDataInt.filterSelf(i -> i % 2 == 0).equals("[-24, -56]"));
-        assertNotEquals(testDataDouble, TESTDATADOUBLECOPY);
-        assertNotEquals(testDataStr, TESTDATASTRCOPY);
-        assertNotEquals(testDataInt, TESTDATAINTCOPY);
+        assertTrue(testDataDouble.filterSelf(d -> d > 2.5).isEquivalent("[7.11, 3.1415926]"));
+        assertTrue(testDataString.filterSelf(s -> s.length() == 3).isEquivalent("[The, fox, the]"));
+        assertTrue(testDataInt.filterSelf(i -> i % 2 == 0).isEquivalent("[-24, -56]"));
+        assertFalse(testDataDouble.isEquivalent(TESTDATADOUBLECOPY));
+        assertFalse(testDataString.isEquivalent(TESTDATASTRCOPY));
+        assertFalse(testDataInt.isEquivalent(TESTDATAINTCOPY));
     }
 
+    /**
+     * JUnit tester for function application
+     * @see src.AugList#forEach(java.util.function.Consumer)
+     */
     @Test
     public void testForEach() {
         setupTestData();
@@ -443,10 +565,14 @@ public class AugListTest implements MultiTest {
          * 43
          */
         testDataDouble.forEach(System.out::println);
-        testDataStr.forEach(System.out::println);
+        testDataString.forEach(System.out::println);
         testDataInt.forEach(System.out::println);
     }
 
+    /**
+     * JUnit tester for Random List Subdivision
+     * @see src.AugList#fragment()
+     */
     @Test
     public void testFragment() {
         setupTestData();
@@ -472,6 +598,10 @@ public class AugListTest implements MultiTest {
         }
     }
 
+    /**
+     * JUnit tester for Reading/Loading
+     * @see src.AugList#get(int)
+     */
     @Test
     public void testGet() {
         setupTestData();
@@ -480,10 +610,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> {
             testDataDouble.get(1000);
         });
-        assertTrue(testDataStr.get(0) == "The");
-        assertTrue(testDataStr.get(3) == "fox");
+        assertTrue(testDataString.get(0) == "The");
+        assertTrue(testDataString.get(3) == "fox");
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            testDataStr.get(-1);
+            testDataString.get(-1);
         });
         assertTrue(testDataInt.get(0) == 7);
         assertTrue(testDataInt.get(1) == 11);
@@ -492,49 +622,74 @@ public class AugListTest implements MultiTest {
         });
     }
 
+    /**
+     * JUnit tester for Reading/Loading the Tail
+     * @see src.AugList#getLast(int)
+     */
     @Test
     public void testGetLast() {
         setupTestData();
         assertTrue(testDataDouble.getLast() == 3.1415926);
-        assertTrue(testDataStr.getLast() == "lazy dog");
+        assertTrue(testDataString.getLast() == "lazy dog");
         assertTrue(testDataInt.getLast() == 43);
         assertThrows(NoSuchElementException.class, () -> {
             new AugList<Integer>().getLast();
         });
     }
 
+    /**
+     * JUnit tester for Reading/Loading at Random
+     * @see src.AugList#getRandom()
+     */
     @Test
     public void testGetRandom() {
         setupTestData();
         assertTrue(testDataDouble.contains(testDataDouble.getRandom()));
         assertTrue(testDataInt.contains(testDataInt.getRandom()));
-        assertTrue(testDataStr.contains(testDataStr.getRandom()));
+        assertTrue(testDataString.contains(testDataString.getRandom()));
     }
 
+    /**
+     * JUnit tester for Hashcodes.
+     * @see src.AugList#hashCode()
+     */
     @Test
     public void testHashCode() {
         setupTestData();
         assertTrue(testDataDouble.hashCode() == ARRLISTDOUBLE.hashCode());
-        assertTrue(testDataStr.hashCode() == ARRLISTSTR.hashCode());
+        assertTrue(testDataString.hashCode() == ARRLISTSTR.hashCode());
         assertTrue(testDataInt.hashCode() == ARRLISTINT.hashCode());
     }
 
+    /**
+     * JUnit tester for Index finding
+     * @see src.AugList#indexOf(Object)
+     */
     @Test
     public void testIndexOf() {
         setupTestData();
         assertTrue(testDataDouble.indexOf(1.0) == 0);
         assertTrue(testDataDouble.indexOf(3.1415926) == 4);
         assertTrue(testDataDouble.indexOf(77) == -1);
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.indexOf("the") == 0);
-        assertTrue(testDataStr.indexOf("jumps") == 4);
-        assertTrue(testDataStr.indexOf("") == -1);
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.indexOf("the") == 0);
+        assertTrue(testDataString.indexOf("jumps") == 4);
+        assertTrue(testDataString.indexOf("") == -1);
         assertTrue(testDataInt.indexOf(117) == 4);
         assertTrue(testDataInt.indexOf(43) == 7);
         assertTrue(testDataInt.indexOf(711) == -1);
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * @see src.AugList#AugList()
+     * @see src.AugList#AugList(Stream)
+     * @see src.AugList#AugList(Spliterator)
+     * @see src.AugList#AugList(Iterable)
+     * @see src.AugList#AugList(Iterator)
+     * @see src.AugList#AugList(Enumeration)
+     * @see src.AugList#AugList(Object...)
+     * @see src.AugList#AugList(AugList, AugList)
+     */
     @Test
     public void testInitSpecial() {
         setupTestData();
@@ -542,68 +697,72 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(new ArrayList<String>(Arrays.asList(""))).add("1").get(1).equals("1"));
         // From LinkedList<T> (Which implements Iterable<T>)
         LinkedList<String> l = new LinkedList<String>();
-        assertTrue(new AugList<String>(l).equals("/"));
+        assertTrue(new AugList<String>(l).isEquivalent("/"));
         // From Vector<T> (Which implements Iterable<T>)
         Vector<String> v = new Vector<String>();
-        assertTrue(new AugList<String>(v).equals("/"));
+        assertTrue(new AugList<String>(v).isEquivalent("/"));
         // From Iterator<T>
-        assertTrue(new AugList<String>(testDataStr.iterator()).equals(testDataStr));
+        assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
         // From Enumeration<T>
-        assertTrue(new AugList<String>(testDataStr.countsOfElements().keys()).isRearrangement(testDataStr));
+        assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
         // From Spliterator<T>
-        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).equals("[b, a, ce, ddd]"));
+        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
         // From AugList<T> (Which implements Iterable<T>)
-        assertTrue(new AugList<String>(testDataStr).equals(testDataStr));
+        assertTrue(new AugList<String>(testDataString).isEquivalent(testDataString));
         // From HashSet<T> (and LinkedHashSet<T>) (Which both implement Iterable<T>)
         HashSet<String> h = new HashSet<String>();
-        assertTrue(new AugList<String>(h).equals("/"));
+        assertTrue(new AugList<String>(h).isEquivalent("/"));
         LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-        assertTrue(new AugList<String>(lhs).equals("/"));
+        assertTrue(new AugList<String>(lhs).isEquivalent("/"));
         h.add("Hello");
         h.add("World");
         h.add("!");
         assertTrue(new AugList<String>(h).isRearrangement(new AugList<String>("Hello", "World", "!")));
         // From TreeSet<T> (Which implements Iterable<T>)
         TreeSet<String> t = new TreeSet<String>();
-        assertTrue(new AugList<String>(t).equals("/"));
+        assertTrue(new AugList<String>(t).isEquivalent("/"));
         t.add("Hello");
         t.add("World");
         t.add("!");
         assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
         // From any class that implements Deque<T> (Which implements Iterable<T>)
         ArrayDeque<String> ad = new ArrayDeque<String>();
-        assertTrue(new AugList<String>(ad).equals("/"));
+        assertTrue(new AugList<String>(ad).isEquivalent("/"));
         ad.add("Hello");
         ad.add("World");
         ad.add("!");
         assertTrue(new AugList<String>(ad).isRearrangement(new AugList<String>("Hello", "World", "!")));
         // From a PriorityQueue<T> (Which implements Iterable<T>)
         PriorityQueue<String> pq = new PriorityQueue<String>();
-        assertTrue(new AugList<String>(pq).equals("/"));
+        assertTrue(new AugList<String>(pq).isEquivalent("/"));
         pq.add("Hello");
         pq.add("World");
         pq.add("!");
         assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
         // From a Stream<T>
         Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
-        assertTrue(new AugList<Integer>(s).equals("[1, *null*]"));
+        assertTrue(new AugList<Integer>(s).isEquivalent("[1, *null*]"));
         // From a set of values and counts
-        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 3, 4, 2)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
-        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"), new AugList<Integer>(1, 3, 4, 2)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
-        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 3, 4, 2, 999)), "[a, b, b, b, cd, cd, cd, cd, eef, eef]");
-        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, 0, 4, 0)), "[a, cd, cd, cd, cd]");
-        assertEquals(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), new AugList<Integer>(1, -999, 4, -7)), "[a, cd, cd, cd, cd]");
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, -999, 4, -7) ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
     }
 
+    /**
+     * JUnit tester for Single Insertion
+     * @see src.AugList#insert(int, Object)
+     */
     @Test
     public void testInsert() {
         setupTestData();
         testDataDouble.insert(1,7.0);
-        assertTrue(testDataDouble.toString().equals("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataStr.insert(0, "!");
-        assertTrue(testDataStr.toString().equals("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        testDataString.insert(0, "!");
+        assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         testDataInt.insert(2, 25);
-        assertTrue(testDataInt.toString().equals("[7, 11, 25, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 25, 19, -24, 117, 145, -56, 43]"));
         assertThrows(IndexOutOfBoundsException.class,
             () -> {
                 testDataDouble.insert(1000, 1.0);
@@ -611,15 +770,19 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Bulk Insertion
+     * @see src.AugList#insertAll(int, AugList)
+     */
     @Test
     public void testInsertAll() {
         setupTestData();
         testDataDouble.insertAll(1, new AugList<Double>(7.0));
-        assertTrue(testDataDouble.toString().equals("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataStr.insertAll(0, new AugList<String>("!", "qwerty"));
-        assertTrue(testDataStr.toString().equals("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        testDataString.insertAll(0, new AugList<String>("!", "qwerty"));
+        assertTrue(testDataString.isEquivalent("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         testDataInt.insertAll(2, new AugList<Integer>(25, 125, 625));
-        assertTrue(testDataInt.toString().equals("[7, 11, 25, 125, 625, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 25, 125, 625, 19, -24, 117, 145, -56, 43]"));
         assertThrows(IndexOutOfBoundsException.class,
             () -> {
                 testDataDouble.insertAll(1000, new AugList<Double>(1.0));
@@ -627,16 +790,20 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Varargs Bulk Insertion
+     * @see src.AugList#insertAll(int, Object...)
+     */
     @Test
     public void testInsertAllVarargs() {
         setupTestData();
         testDataDouble.insertAll(1, 7.0);
-        assertTrue(testDataDouble.toString().equals("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataStr.insertAll(0, "!", "qwerty");
-        assertTrue(testDataStr.toString().equals("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        testDataString.insertAll(0, "!", "qwerty");
+        assertTrue(testDataString.isEquivalent("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         //It is not possible to use the varargs overload here due to overload ambiguity between varargs only and index + varargs arguments, so this test is skipped.
         testDataInt.insertAll(2, 25, 125, 625);
-        assertTrue(testDataInt.toString().equals("[7, 11, 25, 125, 625, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 25, 125, 625, 19, -24, 117, 145, -56, 43]"));
         assertThrows(IndexOutOfBoundsException.class,
             () -> {
                 testDataDouble.insertAll(1000, new AugList<Double>(1.0));
@@ -644,89 +811,88 @@ public class AugListTest implements MultiTest {
         );
     }
 
+    /**
+     * JUnit tester for Random Bulk Insertion
+     * @see src.AugList#insertAllAtRandom()
+     */
     @Test
     public void testInsertAllAtRandom() {
         setupTestData();
         AugList<Double> expectedALD = testDataDouble.clone().addAll(new AugList<Double>(7.0));
         testDataDouble.insertAllAtRandom(new AugList<Double>(7.0));
         assertTrue(expectedALD.isRearrangement(testDataDouble));
-        AugList<String> expectedALS = testDataStr.clone().addAll(new AugList<String>("!", "qwerty"));
-        testDataStr.insertAllAtRandom(new AugList<String>("!", "qwerty"));
-        assertTrue(expectedALS.isRearrangement(testDataStr));
+        AugList<String> expectedALS = testDataString.clone().addAll(new AugList<String>("!", "qwerty"));
+        testDataString.insertAllAtRandom(new AugList<String>("!", "qwerty"));
+        assertTrue(expectedALS.isRearrangement(testDataString));
         AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
         testDataInt.insertAllAtRandom(new AugList<Integer>(25, 125, 625));
         assertTrue(expectedALI.isRearrangement(testDataInt));
     }
 
+    /**
+     * JUnit tester for Random Varargs Bulk Insertion
+     * @see src.AugList#insertAllAtRandom()
+     */
     @Test
     public void testInsertAllAtRandomVarargs() {
         setupTestData();
         AugList<Double> expectedALD = testDataDouble.clone().addAll(new AugList<Double>(7.0));
         testDataDouble.insertAllAtRandom(7.0);
         assertTrue(expectedALD.isRearrangement(testDataDouble));
-        AugList<String> expectedALS = testDataStr.clone().addAll(new AugList<String>("!", "qwerty"));
-        testDataStr.insertAllAtRandom("!", "qwerty");
-        assertTrue(expectedALS.isRearrangement(testDataStr));
+        AugList<String> expectedALS = testDataString.clone().addAll(new AugList<String>("!", "qwerty"));
+        testDataString.insertAllAtRandom("!", "qwerty");
+        assertTrue(expectedALS.isRearrangement(testDataString));
         AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
         testDataInt.insertAllAtRandom(25, 125, 625);
         assertTrue(expectedALI.isRearrangement(testDataInt));
     }
 
+    /**
+     * JUnit tester for Random Single Insertion
+     * @see src.AugList#insertAtRandom()
+     */
     @Test
     public void testInsertAtRandom() {
         setupTestData();
         AugList<Double> expectedALD = testDataDouble.clone().add(7.0);
         testDataDouble.insertAtRandom(7.0);
         assertTrue(testDataDouble.isRearrangement(expectedALD));
-        AugList<String> expectedALS = testDataStr.clone().add("!");
-        testDataStr.insertAtRandom("!");
-        assertTrue(testDataStr.isRearrangement(expectedALS));
+        AugList<String> expectedALS = testDataString.clone().add("!");
+        testDataString.insertAtRandom("!");
+        assertTrue(testDataString.isRearrangement(expectedALS));
         AugList<Integer> expectedALI = testDataInt.clone().add(25);
         testDataInt.insertAtRandom(25);
         assertTrue(testDataInt.isRearrangement(expectedALI));
     }
 
-    @SuppressWarnings("rawtypes")
+    /**
+     * JUnit tester for Emptiness check (A = ∅)
+     * @see src.AugList#isEmpty()
+     */
     @Test
     public void testIsEmpty() {
         setupTestData();
         assertFalse(testDataDouble.isEmpty());
-        assertFalse(testDataStr.isEmpty());
+        assertFalse(testDataString.isEmpty());
         assertFalse(testDataInt.isEmpty());
         assertTrue(testDataInt.clear().isEmpty());
-        assertTrue(new AugList().isEmpty());
-    }
-
-    @Test
-    public void testIsEqual() {
-        setupTestData();
-        assertEquals(testDataDouble, testDataDouble);
-        assertEquals(testDataInt, testDataInt);
-        assertEquals(testDataStr, testDataStr);
-        assertNotEquals(testDataDouble, testDataInt);
-        assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
-        assertNotEquals(testDataDouble, "[1, 2, 7.11, -2.5, 3.1415926]");
-        assertEquals(testDataDouble, testDataDouble.clone());
-        assertEquals(testDataDouble, new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926));
-        assertNotEquals(testDataInt, new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0));
-        assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        AugList<Double> shuffled = testDataDouble.shuffleCopy();
-        if (shuffled.equals(testDataDouble)) {
-            shuffled.swap(0, 1);
-        }
-        assertNotEquals(testDataDouble, shuffled);
+        assertTrue(new AugList<Integer>().isEmpty());
     }
 
     // As all 3 of isRearrangement(), shuffleSelf() and shuffleCopy() are tested here,
     // making testShuffleSelf() and testShuffleCopy() call testIsRearrangement()
     // preserves the integrity of the tests whilst saving file size.
 
+    /**
+     * JUnit tester for Rearrangement test
+     * @see src.AugList#isRearrangement()
+     */
     @Test
     public void testIsRearrangement() {
         setupTestData();
         assertTrue(testDataDouble.isRearrangement(testDataDouble));
         assertTrue(testDataDouble.isRearrangement(testDataDouble.shuffleCopy()));
-        assertTrue(testDataStr.isRearrangement(testDataStr.shuffleCopy()));
+        assertTrue(testDataString.isRearrangement(testDataString.shuffleCopy()));
         assertTrue(testDataInt.isRearrangement(testDataInt.shuffleCopy()));
         AugList<Double> tddClone = testDataDouble.clone();
         assertTrue(tddClone.isRearrangement(testDataDouble.shuffleSelf()));
@@ -737,22 +903,34 @@ public class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>(1.0).isRearrangement(new AugList<Double>(2.0)));
     }
 
+    /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleCopy()
+     */
     @Test
     public void testShuffleCopy() {
         testIsRearrangement();
     }
 
+    /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleSelf()
+     */
     @Test
     public void testShuffleSelf() {
         testIsRearrangement();
     }
 
+    /**
+     * JUnit tester for {@link Iterator} "cast"
+     * @see src.AugList#iterator()
+     */
     @Test
     public void testIterator() {
         setupTestData();
         Iterator<Double> TDD_iterator = testDataDouble.iterator(),
                          ALD_iterator = ARRLISTDOUBLE.iterator();
-        Iterator<String> TDS_iterator = testDataStr.iterator(),
+        Iterator<String> TDS_iterator = testDataString.iterator(),
                          ALS_iterator = ARRLISTSTR.iterator();
         Iterator<Integer> TDI_iterator = testDataInt.iterator(),
                           ALI_iterator = ARRLISTINT.iterator();
@@ -765,70 +943,88 @@ public class AugListTest implements MultiTest {
         while (TDI_iterator.hasNext()) {
             assertEquals(TDI_iterator.next(), ALI_iterator.next());
         }
+        assertTrue(TDD_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
+        assertTrue(TDS_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
+        assertTrue(TDI_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
         // The hashcodes of i.e. testDataDouble.iterator() and ARRLISTDOUBLE.iterator() do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
         // and check each pair is identical.
     }
 
+    /**
+     * JUnit tester for Last Index finding
+     * @see src.AugList#lastIndexOf()
+     */
     @Test
     public void testLastIndexOf() {
         setupTestData();
         assertTrue(testDataDouble.lastIndexOf(1.0) == 0);
         assertTrue(testDataDouble.lastIndexOf(3.1415926) == 4);
         assertTrue(testDataDouble.lastIndexOf(77) == -1);
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.lastIndexOf("the") == 6);
-        assertTrue(testDataStr.lastIndexOf("jumps") == 4);
-        assertTrue(testDataStr.lastIndexOf("") == -1);
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.lastIndexOf("the") == 6);
+        assertTrue(testDataString.lastIndexOf("jumps") == 4);
+        assertTrue(testDataString.lastIndexOf("") == -1);
         assertTrue(testDataInt.lastIndexOf(117) == 4);
         assertTrue(testDataInt.lastIndexOf(43) == 7);
         assertTrue(testDataInt.lastIndexOf(711) == -1);
     }
 
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
+    
+    /**
+     * JUnit tester for "List Difference"
+     * @see src.AugList#listDifference()
+     */
     @Test
     public void testListDifference() {
         setupTestData();
-        assertTrue(testDataDouble.listDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals(testDataDouble));
-        assertTrue(testDataDouble.listDifference(testDataDouble).equals("/"));
-        assertTrue(testDataDouble.listDifference(new AugList<Double>()).equals(testDataDouble));
-        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).equals("[2.0, -2.5]"));
-        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[2.0, -2.5]"));
-        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[2.0, -2.5]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.listDifference(new AugList<String>()).equals(testDataStr));
-        assertTrue(testDataStr.listDifference(new AugList<String>("the")).equals("[quick, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.listDifference(new AugList<String>("the", "the")).equals("[quick, brown, fox, jumps, over, lazy dog]"));
-        assertTrue(testDataStr.listDifference(new AugList<String>("the", "the", "the")).equals("[quick, brown, fox, jumps, over, lazy dog]"));
-        assertTrue(testDataStr.listDifference(new AugList<String>("the", "fox", "lazy", "dog")).equals("[quick, brown, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listDifference(testDataDouble).isEquivalent("/"));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[2.0, -2.5]"));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[2.0, -2.5]"));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[2.0, -2.5]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.listDifference(new AugList<String>()).isEquivalent(testDataString));
+        assertTrue(testDataString.listDifference(new AugList<String>("the")).isEquivalent("[quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.listDifference(new AugList<String>("the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.listDifference(new AugList<String>("the", "the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.listDifference(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[quick, brown, jumps, over, the, lazy dog]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
+    /**
+     * JUnit tester for "List Intersection"
+     * @see src.AugList#listIntersection()
+     */
     @Test
     public void testListIntersection() {
         setupTestData();
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals("/"));
-        assertTrue(testDataDouble.listIntersection(testDataDouble).equals(testDataDouble));
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>()).equals("/"));
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.11, 1.0)).equals("[1.0, 7.11]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.listIntersection(new AugList<String>()).equals("/"));
-        assertTrue(testDataStr.listIntersection(new AugList<String>("the")).equals("[the]"));
-        assertTrue(testDataStr.listIntersection(new AugList<String>("the", "the")).equals("[the, the]"));
-        assertTrue(testDataStr.listIntersection(new AugList<String>("the", "the", "the")).equals("[the, the]"));
-        assertTrue(testDataStr.listIntersection(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, fox]"));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("/"));
+        assertTrue(testDataDouble.listIntersection(testDataDouble).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>()).isEquivalent("/"));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.11, 1.0)).isEquivalent("[1.0, 7.11]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.listIntersection(new AugList<String>()).isEquivalent("/"));
+        assertTrue(testDataString.listIntersection(new AugList<String>("the")).isEquivalent("[the]"));
+        assertTrue(testDataString.listIntersection(new AugList<String>("the", "the")).isEquivalent("[the, the]"));
+        assertTrue(testDataString.listIntersection(new AugList<String>("the", "the", "the")).isEquivalent("[the, the]"));
+        assertTrue(testDataString.listIntersection(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[the, fox]"));
     }
     
+    /**
+     * JUnit tester for {@link ListIterator} "Cast"
+     * @see src.AugList#listIterator()
+     */
     @Test
     public void testListIterator() {
         setupTestData();
         ListIterator<Double> TDD_lIterator = testDataDouble.listIterator(),
                              ALD_lIterator = ARRLISTDOUBLE.listIterator();
-        ListIterator<String> TDS_lIterator = testDataStr.listIterator(),
+        ListIterator<String> TDS_lIterator = testDataString.listIterator(),
                              ALS_lIterator = ARRLISTSTR.listIterator();
         ListIterator<Integer> TDI_lIterator = testDataInt.listIterator(),
                               ALI_lIterator = ARRLISTINT.listIterator();
@@ -870,18 +1066,25 @@ public class AugListTest implements MultiTest {
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
         }
+        assertTrue(TDD_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDS_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDI_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
         // The hashcodes of i.e. testDataDouble.listIterator() and ARRLISTDOUBLE.listIterator() do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
         // and check for each pair, all methods act identically across both copies.
     }
 
+    /**
+     * JUnit tester for {@link ListIterator} "Cast"
+     * @see src.AugList#listIterator(int)
+     */
     @Test
     public void testListIteratorFromIndex() {
         setupTestData();
         ListIterator<Double> TDD_lIterator = testDataDouble.listIterator(3),
                              ALD_lIterator = ARRLISTDOUBLE.listIterator(3);
-        ListIterator<String> TDS_lIterator = testDataStr.listIterator(2),
+        ListIterator<String> TDS_lIterator = testDataString.listIterator(2),
                              ALS_lIterator = ARRLISTSTR.listIterator(2);
         ListIterator<Integer> TDI_lIterator = testDataInt.listIterator(1),
                               ALI_lIterator = ARRLISTINT.listIterator(1);
@@ -923,41 +1126,50 @@ public class AugListTest implements MultiTest {
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
         }
-        // The hashcodes of i.e. testDataDouble.listIterator() and ARRLISTDOUBLE.listIterator() do not match,
+        assertTrue(TDD_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDS_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDI_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        // The hashcodes of i.e. testDataDouble.listIterator(1) and ARRLISTDOUBLE.listIterator(1) do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
         // and check for each pair, all methods act identically across both copies.
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for "List Union"
+     * @see src.AugList#listUnion()
+     */
     @Test
     public void testListUnion() {
         setupTestData();
         //testDataDouble.listUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).forEach(System.out::println);
-        assertTrue(testDataDouble.listUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
-        assertTrue(testDataDouble.listUnion(testDataDouble).equals(testDataDouble));
-        assertTrue(testDataDouble.listUnion(new AugList<Double>()).equals(testDataDouble));
-        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).equals(testDataDouble));
-        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
-        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 1.0]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.listUnion(new AugList<String>()).equals(testDataStr));
-        assertTrue(testDataStr.listUnion(new AugList<String>("the")).equals("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.listUnion(new AugList<String>("the", "the")).equals("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.listUnion(new AugList<String>("the", "the", "the")).equals("[the, quick, brown, fox, jumps, over, the, lazy dog, the]"));
-        assertTrue(testDataStr.listUnion(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, quick, brown, fox, jumps, over, the, lazy dog, lazy, dog]"));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
+        assertTrue(testDataDouble.listUnion(testDataDouble).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 1.0]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.listUnion(new AugList<String>()).isEquivalent(testDataString));
+        assertTrue(testDataString.listUnion(new AugList<String>("the")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.listUnion(new AugList<String>("the", "the")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.listUnion(new AugList<String>("the", "the", "the")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog, the]"));
+        assertTrue(testDataString.listUnion(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog, lazy, dog]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testOneToOneMap() {
         setupTestData();
         assertTrue(testDataDouble.oneToOneMap(d -> 0).allSatisfy(d -> d == 0));
-        assertTrue(testDataDouble.oneToOneMap(d -> d - 1).equals("[0.0, 1.0, 6.11, -3.5, 2.1415926]"));
-        assertTrue(testDataStr.oneToOneMap(d -> d.length()).get(2) == 5);
+        assertTrue(testDataDouble.oneToOneMap(d -> d - 1).isEquivalent("[0.0, 1.0, 6.11, -3.5, 2.1415926]"));
+        assertTrue(testDataString.oneToOneMap(d -> d.length()).get(2) == 5);
         assertTrue(testDataInt.oneToOneMap(i -> i % 2 == 0).countsOfElements().get(true) == 2);
     }
 
+    /**
+     * JUnit tester for pairing
+     * @see src.AugList#pairUp()
+     */
     @Test
     public void testPairUp() {
         setupTestData();
@@ -976,6 +1188,10 @@ public class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>(2.0, 3.0).pairUp(new AugList<Double>(null, 2.0)).elements().asIterator().hasNext());
     }
 
+    /**
+     * JUnit tester for {@link Stream ParallelStream} "Cast"
+     * @see src.AugList#parallelStream()
+     */
     @Test
     public void testParallelStream() {
         setupTestData();
@@ -985,123 +1201,148 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.parallelStream().count() == ARRLISTDOUBLE.parallelStream().count());
         assertTrue(testDataDouble.parallelStream().isParallel() == ARRLISTDOUBLE.parallelStream().isParallel());
         assertTrue(testDataDouble.parallelStream().iterator().hasNext() == ARRLISTDOUBLE.parallelStream().iterator().hasNext());
-        assertTrue(testDataStr.parallelStream().count() == ARRLISTSTR.parallelStream().count());
-        assertTrue(testDataStr.parallelStream().isParallel() == ARRLISTSTR.parallelStream().isParallel());
-        assertTrue(testDataStr.parallelStream().iterator().hasNext() == ARRLISTSTR.parallelStream().iterator().hasNext());
+        assertTrue(testDataString.parallelStream().count() == ARRLISTSTR.parallelStream().count());
+        assertTrue(testDataString.parallelStream().isParallel() == ARRLISTSTR.parallelStream().isParallel());
+        assertTrue(testDataString.parallelStream().iterator().hasNext() == ARRLISTSTR.parallelStream().iterator().hasNext());
         assertTrue(testDataInt.parallelStream().count() == ARRLISTINT.parallelStream().count());
         assertTrue(testDataInt.parallelStream().isParallel() == ARRLISTINT.parallelStream().isParallel());
         assertTrue(testDataInt.parallelStream().iterator().hasNext() == ARRLISTINT.parallelStream().iterator().hasNext());
-    }
+        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+    }    
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Single Removal
+     * @see src.AugList#remove()
+     */
     @Test
     public void testRemove() {
         setupTestData();
         assertFalse(testDataDouble.remove(18));
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.remove(1.0));
-        assertTrue(testDataDouble.equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.remove("quick"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertFalse(testDataStr.remove("quick"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.remove("lazy dog"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.remove("quick"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertFalse(testDataString.remove("quick"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.remove("lazy dog"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the]"));
         assertFalse(testDataInt.remove(8));
-        assertTrue(testDataInt.equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.remove(19));
-        assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
         assertFalse(testDataInt.remove(null));
     }
     
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Bulk Removal
+     * @see src.AugList#removeAll(src.AugList)
+     */
     @Test
     public void testRemoveAll() {
         setupTestData();
         assertFalse(testDataDouble.removeAll(new AugList<Double>(18.0)));
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeAll(new AugList<Double>(1.0)));
-        assertTrue(testDataDouble.equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.removeAll(new AugList<String>("quick")));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertFalse(testDataStr.removeAll(new AugList<String>("quick")));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.removeAll(new AugList<String>("quick", "lazy dog")));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.removeAll(new AugList<String>("quick")));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertFalse(testDataString.removeAll(new AugList<String>("quick")));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.removeAll(new AugList<String>("quick", "lazy dog")));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the]"));
         assertFalse(testDataInt.removeAll(new AugList<Integer>(8)));
-        assertTrue(testDataInt.equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.removeAll(new AugList<Integer>(19)));
-        assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Varargs Bulk Removal
+     * @see src.AugList#removeAll(Object...)
+     */
     @Test
     public void testRemoveAllVarargs() {
         setupTestData();
         assertFalse(testDataDouble.removeAll(18.0));
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeAll(1.0));
-        assertTrue(testDataDouble.equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.removeAll("quick"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertFalse(testDataStr.removeAll("quick"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.removeAll("quick"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertFalse(testDataString.removeAll("quick"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
         assertFalse(testDataInt.removeAll(8));
-        assertTrue(testDataInt.equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.removeAll(19));
-        assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Single Targeted Removal
+     * @see src.AugList#removeAt()
+     */
     @Test
     public void testRemoveAtIndex() {
         setupTestData();
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.removeAt(18); });
         assertTrue(testDataDouble.removeAt(0) == 1.0f);
-        assertTrue(testDataDouble.equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.removeAt(1).equals("quick"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.removeAt(6).equals("lazy dog"));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.removeAt(1).equals("quick"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.removeAt(6).equals("lazy dog"));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the]"));
         assertTrue(testDataInt.removeAt(2) == 19);
-        assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Selective Removal
+     * @see src.AugList#removeIf()
+     */
     @Test
     public void testRemoveIf() {
         setupTestData();
         assertFalse(testDataDouble.removeIf(d -> d > 18));
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeIf(d -> d <= 1.0));
-        assertTrue(testDataDouble.equals("[2.0, 7.11, 3.1415926]"));
-        assertTrue(testDataStr.removeIf(s -> s.equals("quick")));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertFalse(testDataStr.removeIf(s -> s.equals("quick")));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.removeIf(s -> s.length() == 8));
-        assertTrue(testDataStr.equals("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, 3.1415926]"));
+        assertTrue(testDataString.removeIf(s -> s.equals("quick")));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertFalse(testDataString.removeIf(s -> s.equals("quick")));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.removeIf(s -> s.length() == 8));
+        assertTrue(testDataString.isEquivalent("[The, brown, fox, jumps, over, the]"));
         assertFalse(testDataInt.removeIf(i -> i == 8));
-        assertTrue(testDataInt.equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.removeIf(i -> 18 <= i && i <= 20));
-        assertTrue(testDataInt.equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Stack Popping
+     * @see src.AugList#removeLast()
+     */
     @Test
     public void testRemoveLast() {
         setupTestData();
         assertFalse(testDataDouble.removeLast() == 3.1415926f);
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11, -2.5]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5]"));
         assertTrue(testDataDouble.removeLast() == -2.5f);
-        assertTrue(testDataDouble.equals("[1.0, 2.0, 7.11]"));
-        assertTrue(testDataStr.removeLast() == "lazy dog");
-        assertTrue(testDataStr.equals("[The, quick, brown, fox, jumps, over, the]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11]"));
+        assertTrue(testDataString.removeLast() == "lazy dog");
+        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the]"));
         assertTrue(testDataInt.removeLast() == 43);
-        assertTrue(testDataInt.equals("[7, 11, 19, -24, 117, 145, -56]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56]"));
         assertThrows(NoSuchElementException.class, () -> { (new AugList<String>()).removeLast(); });
     }
 
+    /**
+     * JUnit tester for Random Removal
+     * @see src.AugList#removeRandom()
+     */
     @Test
     public void testRemoveRandom() {
         setupTestData();
@@ -1146,119 +1387,163 @@ public class AugListTest implements MultiTest {
         else {
             stateIndex = 4;
         }
-        assertTrue(validStates.get(stateIndex).equals(testDataDouble));
+        assertTrue(validStates.get(stateIndex).isEquivalent(testDataDouble));
         assertTrue(tddClone.get(stateIndex).equals(removed));
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().removeRandom(); });
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    @Test
+    public void testRetainAll() {
+        setupTestData();
+        testDataString.applyAll(s -> s.toUpperCase());
+        assertTrue(testDataString.clone().retainAll(new AugList<String>("THE").toCollection()).isEquivalent("[THE, THE]"));
+        //setupTestData();
+        //testDataSting.applyAll(s -> s.toUpperCase());
+        assertTrue(testDataString.clone().retainAll(new AugList<String>("THE", "QUICK", "OVER").toCollection()).isEquivalent("[THE, QUICK, OVER, THE]"));
+        //setupTestData();
+        //testDataSting.applyAll(s -> s.toUpperCase());
+        assertTrue(testDataString.clone().retainAll(new AugList<String>("THE", "ALEPH").toCollection()).isEquivalent("[THE, THE]"));
+        //setupTestData();
+        assertTrue(testDataString.clone().retainAll(new AugList<String>().toCollection()).isEquivalent("/"));
+        assertThrows(NullPointerException.class, () -> { testDataString.clone().retainAll(null); });
+    }
+
+    /**
+     * JUnit tester for Reversal
+     * @see src.AugList#reversed()
+     */
     @Test
     public void testReversed() {
         setupTestData();
-        assertTrue(testDataDouble.reversed().equals("[3.1415926, -2.5, 7.11, 2.0, 1.0]"));
-        assertTrue(testDataStr.reversed().equals("[lazy dog, the, over, jumps, fox, brown, quick, The]"));
-        assertTrue(testDataInt.reversed().equals("[43, -56, 145, 117, -24, 19, 11, 7]"));
+        assertTrue(testDataDouble.reversed().isEquivalent("[3.1415926, -2.5, 7.11, 2.0, 1.0]"));
+        assertTrue(testDataString.reversed().isEquivalent("[lazy dog, the, over, jumps, fox, brown, quick, The]"));
+        assertTrue(testDataInt.reversed().isEquivalent("[43, -56, 145, 117, -24, 19, 11, 7]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Sampling
+     * @see src.AugList#sample()
+     */
     @Test
     public void testSample() {
         setupTestData();
         assertTrue(testDataDouble.sample(5, false).isRearrangement(testDataDouble));
-        assertTrue(testDataDouble.sample(0, false).equals("/"));
+        assertTrue(testDataDouble.sample(0, false).isEquivalent("/"));
         assertTrue(testDataDouble.containsAll(testDataDouble.sample(1, false)));
         // Technically speaking this assertion could fail, but the probability of the such is .8^100000000, a value so small it is effectively 0.
         // (Plus, as the sample algorithm is only psuedo-random, I imagine that this assertion passing can be proven as either guaranteed or not.)
         assertTrue(testDataDouble.sample(100000000, true).contains(1.0));
-        assertThrows(IllegalArgumentException.class, () -> { testDataStr.sample(10000000, false); });
+        assertThrows(IllegalArgumentException.class, () -> { testDataString.sample(10000000, false); });
         assertThrows(IllegalArgumentException.class, () -> { testDataInt.sample(-10, false); });
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Setting/Writing
+     * @see src.AugList#set()
+     */
     @Test
     public void testSet() {
         setupTestData();
         assertTrue(testDataDouble.set(0, 42.0d) == 1.0d);
         assertTrue(testDataDouble.get(0) == 42.0d);
-        assertTrue(testDataDouble.equals("[42.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent("[42.0, 2.0, 7.11, -2.5, 3.1415926]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Set Difference
+     * @see src.AugList#setDifference()
+     */
     @Test
     public void testSetDifference() {
         setupTestData();
-        assertTrue(testDataDouble.setDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals(testDataDouble));
-        assertEquals(testDataDouble.setDifference(testDataDouble), ("/"));
-        assertTrue(testDataDouble.setDifference(new AugList<Double>()).equals(testDataDouble));
-        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).equals("[2.0, -2.5]"));
-        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[2.0, -2.5]"));
-        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[2.0, -2.5]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        AugList<String> TDStrSet = testDataStr.clone();
+        assertTrue(testDataDouble.setDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setDifference(testDataDouble).isEquivalent("/"));
+        assertTrue(testDataDouble.setDifference(new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[2.0, -2.5]"));
+        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[2.0, -2.5]"));
+        assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[2.0, -2.5]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        AugList<String> TDStrSet = testDataString.clone();
         TDStrSet.removeAt(6);
-        assertEquals(testDataStr.setDifference(new AugList<String>()), (TDStrSet));
-        assertTrue(testDataStr.setDifference(new AugList<String>("the")).equals("[quick, brown, fox, jumps, over, lazy dog]"));
-        assertTrue(testDataStr.setDifference(new AugList<String>("the", "the")).equals("[quick, brown, fox, jumps, over, lazy dog]"));
-        assertEquals(testDataStr.setDifference(new AugList<String>("the", "fox", "lazy", "dog")), ("[quick, brown, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setDifference(new AugList<String>()).isEquivalent(TDStrSet));
+        assertTrue(testDataString.setDifference(new AugList<String>("the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setDifference(new AugList<String>("the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setDifference(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[quick, brown, jumps, over, lazy dog]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Set Intersection
+     * @see src.AugList#setIntersection()
+     */
     @Test
     public void testSetIntersection() {
         setupTestData();
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals("/"));
-        assertTrue(testDataDouble.setIntersection(testDataDouble).equals(testDataDouble));
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>()).equals("/"));
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[1.0, 7.11, 3.1415926]"));
-        assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.11, 1.0)).equals("[1.0, 7.11]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        assertTrue(testDataStr.setIntersection(new AugList<String>()).equals("/"));
-        assertTrue(testDataStr.setIntersection(new AugList<String>("the")).equals("[the]"));
-        assertTrue(testDataStr.setIntersection(new AugList<String>("the", "the")).equals("[the]"));
-        assertTrue(testDataStr.setIntersection(new AugList<String>("the", "the", "the")).equals("[the]"));
-        assertTrue(testDataStr.setIntersection(new AugList<String>("the", "fox", "lazy", "dog")).equals("[the, fox]"));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("/"));
+        assertTrue(testDataDouble.setIntersection(testDataDouble).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>()).isEquivalent("/"));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.11, 1.0)).isEquivalent("[1.0, 7.11]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        assertTrue(testDataString.setIntersection(new AugList<String>()).isEquivalent("/"));
+        assertTrue(testDataString.setIntersection(new AugList<String>("the")).isEquivalent("[the]"));
+        assertTrue(testDataString.setIntersection(new AugList<String>("the", "the")).isEquivalent("[the]"));
+        assertTrue(testDataString.setIntersection(new AugList<String>("the", "the", "the")).isEquivalent("[the]"));
+        assertTrue(testDataString.setIntersection(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[the, fox]"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Set Union
+     * @see src.AugList#setUnion()
+     */
     @Test
     public void testSetUnion() {
         setupTestData();
         //testDataDouble.setUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).forEach(System.out::println);
-        assertTrue(testDataDouble.setUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
-        assertEquals(testDataDouble.setUnion(testDataDouble), (testDataDouble));
-        assertTrue(testDataDouble.setUnion(new AugList<Double>()).equals(testDataDouble));
-        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).equals(testDataDouble));
-        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
-        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataStr = testDataStr.oneToOneMap(s -> s.toLowerCase());
-        AugList<String> TDStrSet = testDataStr.withoutIndex(6);
-        assertEquals(testDataStr.setUnion(new AugList<String>()), (TDStrSet));
-        assertEquals(testDataStr.setUnion(new AugList<String>("the")), ("[the, quick, brown, fox, jumps, over, lazy dog]"));
-        assertTrue(testDataStr.setUnion(new AugList<String>("the", "the")).equals("[the, quick, brown, fox, jumps, over, lazy dog]"));
-        assertTrue(testDataStr.setUnion(new AugList<String>("the", "the", "the")).equals("[the, quick, brown, fox, jumps, over, lazy dog]"));
-        assertEquals(testDataStr.setUnion(new AugList<String>("the", "fox", "lazy", "dog")), ("[the, quick, brown, fox, jumps, over, lazy dog, lazy, dog]"));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
+        assertTrue(testDataDouble.setUnion(testDataDouble).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        AugList<String> TDStrSet = testDataString.withoutIndex(6);
+        assertTrue(testDataString.setUnion(new AugList<String>()).isEquivalent(TDStrSet));
+        assertTrue(testDataString.setUnion(new AugList<String>("the")).isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setUnion(new AugList<String>("the", "the")).isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setUnion(new AugList<String>("the", "the", "the")).isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataString.setUnion(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog, lazy, dog]"));
     }
 
+    /**
+     * JUnit tester for Length
+     * @see src.AugList#size()
+     */
     @Test
     public void testSize() {
         setupTestData();
         assertTrue(testDataDouble.size() == 5);
-        assertTrue(testDataStr.size() == 8);
+        assertTrue(testDataString.size() == 8);
         assertTrue(testDataInt.size() == 8);
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Conditional Omittance (Forwards)
+     * @see src.AugList#skipWhile()
+     */
     @Test
     public void testSkipWhile() {
         setupTestData();
-        assertTrue(testDataDouble.skipWhile(d -> d < 0).equals(testDataDouble));
-        assertTrue(testDataDouble.skipWhile(d -> d > 0).equals("[-2.5, 3.1415926]"));
-        assertTrue(testDataStr.skipWhile(s -> s.length() != 9).equals("/"));
+        assertTrue(testDataDouble.skipWhile(d -> d < 0).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.skipWhile(d -> d > 0).isEquivalent("[-2.5, 3.1415926]"));
+        assertTrue(testDataString.skipWhile(s -> s.length() != 9).isEquivalent("/"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for sorting
+     * @see src.AugList#sort()
+     */
     @Test
     public void testSort() {
         setupTestData();
@@ -1268,14 +1553,14 @@ public class AugListTest implements MultiTest {
                 return (int)(o1 - o2);
             }
         });
-        assertTrue(testDataDouble.equals("[-2.5, 1.0, 2.0, 3.1415926, 7.11]"));
+        assertTrue(testDataDouble.isEquivalent("[-2.5, 1.0, 2.0, 3.1415926, 7.11]"));
         // Sort descending
         testDataDouble.sort(new Comparator<Double>() {
             public int compare(Double o1, Double o2) {
                 return (int)(o2 - o1);
             }
         });
-        assertTrue(testDataDouble.equals("[7.11, 3.1415926, 2.0, 1.0, -2.5]"));
+        assertTrue(testDataDouble.isEquivalent("[7.11, 3.1415926, 2.0, 1.0, -2.5]"));
         // Sort descending, then sort by 3rd digit ascending
         testDataDouble.sort(new Comparator<Double>() {
             public int compare(Double o1, Double o2) {
@@ -1287,15 +1572,19 @@ public class AugListTest implements MultiTest {
                 return (int)(Integer.parseInt(left) - Integer.parseInt(right));
             }
         });
-        assertEquals(testDataDouble, ("[2.0, 1.0, 7.11, 3.1415926, -2.5]"));
+        assertTrue(testDataDouble.isEquivalent("[2.0, 1.0, 7.11, 3.1415926, -2.5]"));
     }
 
+    /**
+     * JUnit tester for {@link Spliterator} "Cast"
+     * @see src.AugList#spliterator()
+     */
     @Test
     public void testSpliterator() {
         setupTestData();
         Spliterator<Double> TDD_spliterator = testDataDouble.spliterator(),
                             ALD_spliterator = ARRLISTDOUBLE.spliterator();
-        Spliterator<String> TDS_spliterator = testDataStr.spliterator(),
+        Spliterator<String> TDS_spliterator = testDataString.spliterator(),
                             ALS_spliterator = ARRLISTSTR.spliterator();
         Spliterator<Integer> TDI_spliterator = testDataInt.spliterator(),
                              ALI_spliterator = ARRLISTINT.spliterator();
@@ -1308,38 +1597,55 @@ public class AugListTest implements MultiTest {
         assertEquals(TDI_spliterator.characteristics(), ALI_spliterator.characteristics());
         assertEquals(TDI_spliterator.estimateSize(), ALI_spliterator.estimateSize());
         assertEquals(TDI_spliterator.getExactSizeIfKnown(), ALI_spliterator.getExactSizeIfKnown());
+        assertTrue(TDD_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
+        assertTrue(TDS_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
+        assertTrue(TDI_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
         // The hashcodes of i.e. testDataDouble.spliterator() and ARRLISTDOUBLE.spliterator() do not match,
         // so the only way to be 100% sure if the spliterators have the same underlying data,
         // is to take the spliterators and check functionality is identical.
     }
 
+    /**
+     * JUnit tester for {@link Stream} "cast"
+     * @see src.AugList#stream()
+     */
     @Test
     public void testStream() {
         setupTestData();
         assertTrue(testDataDouble.stream().count() == ARRLISTDOUBLE.stream().count());
         assertTrue(testDataDouble.stream().isParallel() == ARRLISTDOUBLE.stream().isParallel());
         assertTrue(testDataDouble.stream().iterator().hasNext() == ARRLISTDOUBLE.stream().iterator().hasNext());
-        assertTrue(testDataStr.stream().count() == ARRLISTSTR.stream().count());
-        assertTrue(testDataStr.stream().isParallel() == ARRLISTSTR.stream().isParallel());
-        assertTrue(testDataStr.stream().iterator().hasNext() == ARRLISTSTR.stream().iterator().hasNext());
+        assertTrue(testDataString.stream().count() == ARRLISTSTR.stream().count());
+        assertTrue(testDataString.stream().isParallel() == ARRLISTSTR.stream().isParallel());
+        assertTrue(testDataString.stream().iterator().hasNext() == ARRLISTSTR.stream().iterator().hasNext());
         assertTrue(testDataInt.stream().count() == ARRLISTINT.stream().count());
         assertTrue(testDataInt.stream().isParallel() == ARRLISTINT.stream().isParallel());
         assertTrue(testDataInt.stream().iterator().hasNext() == ARRLISTINT.stream().iterator().hasNext());
+        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Swapping
+     * @see src.AugList#swap()
+     */
     @Test
     public void testSwap() {
         setupTestData();
-        assertTrue(testDataDouble.swap(0, 0).equals(testDataDouble));
-        assertTrue(testDataDouble.swap(0, 1).equals("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataInt.swap(1, 0).equals("[11, 7, 19, -24, 117, 145, -56, 43]"));
-        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(-1, 1); });
-        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(9999, 1); });
-        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(1, -1); });
-        assertThrows(IndexOutOfBoundsException.class, () -> {testDataStr.swap(1, 9999); });
+        assertTrue(testDataDouble.swap(0, 0).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.swap(0, 1).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataInt.swap(1, 0).isEquivalent("[11, 7, 19, -24, 117, 145, -56, 43]"));
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(-1, 1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(9999, 1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(1, -1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(1, 9999); });
     }
 
+    /**
+     * JUnit tester for Partial Random Swapping
+     * @see src.AugList#swapRandom(int)
+     */
     @Test
     public void testSwapRandom() {
         setupTestData();
@@ -1358,6 +1664,10 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(-1); });
     }
 
+    /**
+     * JUnit tester for Full Random Swapping
+     * @see src.AugList#swapRandom()
+     */
     @Test
     public void testSwapRandomNoParam() {
         setupTestData();
@@ -1376,140 +1686,201 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Sublist
+     * @see src.AugList#subList()
+     */
     @Test
     public void testSubList() {
         setupTestData();
         assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subList(1, 0); });
-        assertTrue(testDataDouble.subList(1, 1).equals("/"));
-        assertTrue(testDataDouble.subList(0, 1).equals("[1.0]"));
-        assertTrue(testDataDouble.subList(0, 3).equals("[1.0, 2.0, 7.11]"));
+        assertTrue(testDataDouble.subList(1, 1).isEquivalent("/"));
+        assertTrue(testDataDouble.subList(0, 1).isEquivalent("[1.0]"));
+        assertTrue(testDataDouble.subList(0, 3).isEquivalent("[1.0, 2.0, 7.11]"));
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(0, 999); });
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(-1, 0); });
     }
 
-    @SuppressWarnings("unlikely-arg-type")
-    @Test
-    public void testSubListToEnd() {
-        setupTestData();
-        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subListToEnd(-1); });
-        assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subListToEnd(999); });
-        assertEquals(testDataDouble.subListToEnd(1), ("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.subListToEnd(0).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.subListToEnd(3).equals("[-2.5, 3.1415926]"));
-    }
-
-    @SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Conditional Collection
+     * @see src.AugList#takeWhile()
+     */
     @Test
     public void testTakeWhile() {
         setupTestData();
-        assertTrue(testDataDouble.takeWhile(d -> d < 0).equals("[1.0]"));
-        assertTrue(testDataDouble.takeWhile(d -> d > 0).equals("[1.0, 2.0, 7.11, -2.5]"));
-        assertEquals(testDataStr.takeWhile(s -> s.length() == 9), ("[The]"));
-        assertEquals(testDataStr.takeWhile(s -> s.length() != 9), (testDataStr));
+        assertTrue(testDataDouble.takeWhile(d -> d < 0).isEquivalent("[1.0]"));
+        assertTrue(testDataDouble.takeWhile(d -> d > 0).isEquivalent("[1.0, 2.0, 7.11, -2.5]"));
+        assertTrue(testDataString.takeWhile(s -> s.length() == 9).isEquivalent("[The]"));
+        assertTrue(testDataString.takeWhile(s -> s.length() != 9).isEquivalent(testDataString));
     }
 
+    /**
+     * JUnit tester for Array Casting
+     * @see src.AugList#toArray()
+     */
     @Test
     public void testToArrayGivenType() {
         setupTestData();
         assertTrue(testDataDouble.toArray(new Double[] { })[2] == 7.11);
-        String[] tDStrArr = testDataStr.toArray(new String[] { });
+        String[] tDStrArr = testDataString.toArray(new String[] { });
         tDStrArr[2] = "red";
         assertTrue(tDStrArr[2] == "red");
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    @Test
+    public void testToCollection() {
+        setupTestData();
+        String collStr = testDataDouble.toCollection().getClass().toGenericString();
+        // A class string is formatted in the following manner:
+        //      <MODIFIERS> <VISIBILITY> class <CLASSNAME>$<OTHER>
+        // i.e. public class Object
+        //      final class java.util.ArrayList$ArrayListSpliterator
+        //      static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>
+        // Lambda and anonymous expressions get a number, so an example for collStr is:
+        //      class src.AugList$18
+        //      
+        assertTrue(collStr.contains("class src.AugList$"));
+        AugList<Character> collAL = new AugList<Character>();
+        for (int i = 0; i < collStr.toCharArray().length; i++) {
+            collAL.add(collStr.toCharArray()[i]);
+        }
+        collAL.removeIf(ch -> (ch + "").toUpperCase() != (ch + "").toLowerCase());
+        collAL.forEach(ch -> {
+            try {
+                Integer.valueOf((ch + ""));
+            } catch (Exception e) {
+                System.out.println(ch);
+                System.out.println(collAL);
+                assertTrue(false);
+            }
+        });
+    }
+
+    @Test
+    public void testToEnumeration() {
+        setupTestData();
+        String enumDesc = testDataDouble.toEnumeration().getClass().toGenericString();
+        assertTrue(enumDesc.equals("private class java.util.Hashtable$Enumerator<T>"));
+        assertTrue(new AugList<Double>(testDataDouble.toEnumeration()).isRearrangement(testDataDouble));
+    }
+
+    /**
+     * JUnit tester for {@link String} representation (Or String casting)
+     * @see src.AugList#toString()
+     */
     @Test
     public void testToString() {
         setupTestData();
-        assertTrue(testDataDouble.toString().equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.toString().equals("[The, quick, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataInt.toString().equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-        assertEquals(new AugList<String>(""), "[]");
-        assertEquals(new AugList<String>("", ""), "[, ]");
-        assertEquals(new AugList<String>("", "", ""), "[, , ]");
-        assertEquals(new AugList<String>("", ",", ",,"), "[, ,, ,,]");
-        assertEquals(new AugList<String>(" ", ", ", "  ,, "), "[ , , ,   ,, ]");
-        assertTrue(new AugList<String>(null, null).equals("[*null*, *null*]"));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(new AugList<String>("").isEquivalent("[]"));
+        assertTrue(new AugList<String>("", "").isEquivalent("[, ]"));
+        assertTrue(new AugList<String>("", "", "").isEquivalent("[, , ]"));
+        assertTrue(new AugList<String>("", ",", ",,").isEquivalent("[, ,, ,,]"));
+        assertTrue(new AugList<String>(" ", ", ", "  ,, ").isEquivalent("[ , , ,   ,, ]"));
+        assertTrue(new AugList<String>(null, null, null).isEquivalent("[*null*, *null*, *null*]"));
     }
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Single Removal
+     * @see src.AugList#without()
+     */
     @Test
 	public void testWithout() {
         setupTestData();
-        assertTrue(testDataDouble.without(18).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.without(1.0).equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.without("quick").equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.without("quick").equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.without("lazy dog").equals("[The, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.without(8).equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.without(19).equals("[7, 11, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.without(null).equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataDouble.without(18).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.without(1.0).isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.without("quick").isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.without("quick").isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.without("lazy dog").isEquivalent("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.without(8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.without(19).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.without(null).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Bulk Removal
+     * @see src.AugList#withoutAll(src.AugList)
+     */
     @Test
 	public void testWithoutAll() {
         setupTestData();
-        assertTrue(testDataDouble.withoutAll(new AugList<Double>(18.0)).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.withoutAll(new AugList<Double>(1.0)).equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.withoutAll(new AugList<String>("quick")).equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutAll(new AugList<String>("quick")).equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutAll(new AugList<String>("quick", "lazy dog")).equals("[The, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.withoutAll(new AugList<Integer>(8)).equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.withoutAll(new AugList<Integer>(19, 43, 7, 7)).equals("[11, -24, 117, 145, -56]"));
-        assertTrue((new AugList<Integer>(1, 2).withoutAll(new AugList<Integer>()).equals("[1, 2]")));
+        assertTrue(testDataDouble.withoutAll(new AugList<Double>(18.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.withoutAll(new AugList<Double>(1.0)).isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.withoutAll(new AugList<String>("quick")).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutAll(new AugList<String>("quick")).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutAll(new AugList<String>("quick", "lazy dog")).isEquivalent("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.withoutAll(new AugList<Integer>(8)).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.withoutAll(new AugList<Integer>(19, 43, 7, 7)).isEquivalent("[11, -24, 117, 145, -56]"));
+        assertTrue((new AugList<Integer>(1, 2).withoutAll(new AugList<Integer>()).isEquivalent("[1, 2]")));
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Varargs Bulk Removal
+     * @see src.AugList#withoutAll(Object...)
+     */
     @Test
 	public void testWithoutAllVarargs() {
 		setupTestData();
-        assertTrue(testDataDouble.withoutAll(18.0).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.withoutAll(1.0).equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.withoutAll("quick").equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutAll("quick").equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutAll("quick", "lazy dog").equals("[The, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.withoutAll(8).equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.withoutAll(19, 43, 7, 7).equals("[11, -24, 117, 145, -56]"));
-        assertTrue((new AugList<Integer>(1, 2).withoutAll().equals("[1, 2]")));
+        assertTrue(testDataDouble.withoutAll(18.0).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.withoutAll(1.0).isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.withoutAll("quick").isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutAll("quick").isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutAll("quick", "lazy dog").isEquivalent("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.withoutAll(8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.withoutAll(19, 43, 7, 7).isEquivalent("[11, -24, 117, 145, -56]"));
+        assertTrue((new AugList<Integer>(1, 2).withoutAll().isEquivalent("[1, 2]")));
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Targeted Removal
+     * @see src.AugList#withoutIndex()
+     */
     @Test
 	public void testWithoutIndex() {
         setupTestData();
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.withoutIndex(18); });
-        assertTrue(testDataDouble.withoutIndex(0).equals("[2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataStr.withoutIndex(1).equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutIndex(6).equals("[The, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.withoutIndex(2).equals("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataDouble.withoutIndex(0).isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataString.withoutIndex(1).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutIndex(6).isEquivalent("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.withoutIndex(2).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Tail Removal
+     * @see src.AugList#withoutLast()
+     */
     @Test
 	public void testWithoutLast() {
         setupTestData();
-        assertTrue(testDataDouble.withoutLast().equals("[1.0, 2.0, 7.11, -2.5]"));
-        assertTrue(testDataDouble.withoutLast().equals("[1.0, 2.0, 7.11]"));
-        assertTrue(testDataStr.withoutLast().equals("[The, quick, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.withoutLast().equals("[7, 11, 19, -24, 117, 145, -56]"));
+        assertTrue(testDataDouble.withoutLast().isEquivalent("[1.0, 2.0, 7.11, -2.5]"));
+        assertTrue(testDataDouble.withoutLast().isEquivalent("[1.0, 2.0, 7.11]"));
+        assertTrue(testDataString.withoutLast().isEquivalent("[The, quick, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.withoutLast().isEquivalent("[7, 11, 19, -24, 117, 145, -56]"));
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
+    /**
+     * JUnit tester for Conditional Removal
+     * @see src.AugList#withoutWhere()
+     */
     @Test
 	public void testWithoutWhere() {
         setupTestData();
-        assertTrue(testDataDouble.withoutWhere(d -> d > 18).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.withoutWhere(d -> d <= 1.0).equals("[2.0, 7.11, 3.1415926]"));
-        assertTrue(testDataStr.withoutWhere(s -> s.equals("quick")).equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutWhere(s -> s.equals("quick")).equals("[The, brown, fox, jumps, over, the, lazy dog]"));
-        assertTrue(testDataStr.withoutWhere(s -> s.length() == 8).equals("[The, brown, fox, jumps, over, the]"));
-        assertTrue(testDataInt.withoutWhere(i -> i == 8).equals("[7, 11, 19, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.withoutWhere(i -> 18 <= i && i <= 20).equals("[7, 11, -24, 117, 145, -56, 43]"));
-        assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).equals(testDataInt));
+        assertTrue(testDataDouble.withoutWhere(d -> d > 18).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.withoutWhere(d -> d <= 1.0).isEquivalent("[2.0, 7.11, 3.1415926]"));
+        assertTrue(testDataString.withoutWhere(s -> s.equals("quick")).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutWhere(s -> s.equals("quick")).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
+        assertTrue(testDataString.withoutWhere(s -> s.length() == 8).isEquivalent("[The, brown, fox, jumps, over, the]"));
+        assertTrue(testDataInt.withoutWhere(i -> i == 8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.withoutWhere(i -> 18 <= i && i <= 20).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).isEquivalent(testDataInt));
 	}
 
+    /**
+     * JUnit tester for Random Removal
+     * @see src.AugList#withoutRandom()
+     */
     @Test
 	public void testWithoutRandom() {
         setupTestData();
@@ -1553,10 +1924,16 @@ public class AugListTest implements MultiTest {
         else {
             stateIndex = 4;
         }
-        assertTrue(validStates.get(stateIndex).equals(tddWithout));
+        assertTrue(validStates.get(stateIndex).isEquivalent(tddWithout));
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().withoutRandom(); });
     }
 
+    // #region Deprecated tests
+    
+    /**
+     * JUnit tester for Capacity Increase
+     * @see src.AugList#ensureCapacity()
+     */
     // @Test
     // public void testEnsureCapacity() {
     //     setupTestData();
@@ -1565,10 +1942,31 @@ public class AugListTest implements MultiTest {
     //     // This test is an auto-pass.
     // }
 
+    /**
+     * JUnit tester for Sublist
+     * @see src.AugList#subListToEnd()
+     */
+    // @SuppressWarnings("unlikely-arg-type")
+    // @Test
+    // public void testSubListToEnd() {
+    //     setupTestData();
+    //     assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subListToEnd(-1); });
+    //     assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subListToEnd(999); });
+    //     assertEquals(testDataDouble.subListToEnd(1), ("[2.0, 7.11, -2.5, 3.1415926]"));
+    //     assertTrue(testDataDouble.subListToEnd(0).equals("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+    //     assertTrue(testDataDouble.subListToEnd(3).equals("[-2.5, 3.1415926]"));
+    // }
+
+    /**
+     * JUnit tester for Capacity Decrease
+     * @see src.AugList#trimToSize()
+     */
     // @Test
     // public void testTrimToSize() {
     //     setupTestData();
     //     // There is no way to see how this method performs (due to being type void and the relevant field being private)
     //     // So this test auto-succeeds
     // }
+    
+    //#endregion
 }
