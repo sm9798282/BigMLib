@@ -737,6 +737,9 @@ public class AugListTest implements MultiTest {
         while (TDI_iterator.hasNext()) {
             assertEquals(TDI_iterator.next(), ALI_iterator.next());
         }
+        assertTrue(TDD_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
+        assertTrue(TDS_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
+        assertTrue(TDI_iterator.getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
         // The hashcodes of i.e. testDataDouble.iterator() and ARRLISTDOUBLE.iterator() do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
@@ -841,6 +844,9 @@ public class AugListTest implements MultiTest {
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
         }
+        assertTrue(TDD_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDS_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDI_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
         // The hashcodes of i.e. testDataDouble.listIterator() and ARRLISTDOUBLE.listIterator() do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
@@ -894,7 +900,10 @@ public class AugListTest implements MultiTest {
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
         }
-        // The hashcodes of i.e. testDataDouble.listIterator() and ARRLISTDOUBLE.listIterator() do not match,
+        assertTrue(TDD_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDS_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        assertTrue(TDI_lIterator.getClass().toGenericString().equals("private class java.util.ArrayList$ListItr"));
+        // The hashcodes of i.e. testDataDouble.listIterator(1) and ARRLISTDOUBLE.listIterator(1) do not match,
         // so the only way to be 100% sure if they iterators have the same underlying data,
         // is to take elements from each iterator until they are exhausted,
         // and check for each pair, all methods act identically across both copies.
@@ -960,8 +969,11 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.parallelStream().count() == ARRLISTINT.parallelStream().count());
         assertTrue(testDataInt.parallelStream().isParallel() == ARRLISTINT.parallelStream().isParallel());
         assertTrue(testDataInt.parallelStream().iterator().hasNext() == ARRLISTINT.parallelStream().iterator().hasNext());
+        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
     }
-
+    
     @Test
     public void testRemove() {
         setupTestData();
@@ -1279,6 +1291,9 @@ public class AugListTest implements MultiTest {
         assertEquals(TDI_spliterator.characteristics(), ALI_spliterator.characteristics());
         assertEquals(TDI_spliterator.estimateSize(), ALI_spliterator.estimateSize());
         assertEquals(TDI_spliterator.getExactSizeIfKnown(), ALI_spliterator.getExactSizeIfKnown());
+        assertTrue(TDD_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
+        assertTrue(TDS_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
+        assertTrue(TDI_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
         // The hashcodes of i.e. testDataDouble.spliterator() and ARRLISTDOUBLE.spliterator() do not match,
         // so the only way to be 100% sure if the spliterators have the same underlying data,
         // is to take the spliterators and check functionality is identical.
@@ -1296,6 +1311,9 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.stream().count() == ARRLISTINT.stream().count());
         assertTrue(testDataInt.stream().isParallel() == ARRLISTINT.stream().isParallel());
         assertTrue(testDataInt.stream().iterator().hasNext() == ARRLISTINT.stream().iterator().hasNext());
+        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
     }
 
     @Test
