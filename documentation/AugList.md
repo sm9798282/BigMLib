@@ -94,7 +94,7 @@ Provided with AugList V2 are the following:
 - `removeIf(Predicate<? super T>)`
 - `removeLast()`
 - `removeRandom()`
-- PLANNED `retainAll(java.util.Collection<T>)`
+- `retainAll(java.util.Collection<? super T>)`
 - `reversed()`
 - `sample(int, boolean)`
 - `set(int, T)`,
@@ -118,8 +118,8 @@ Provided with AugList V2 are the following:
 - `swapRandom()`
 - `takeWhile(Predicate<? super T>)`
 - `toArray(T[])`
-- PLANNED `toCollection()`
-- PLANNED `toEnumeration()`
+- `toCollection()`
+- `toEnumeration()`
 - `toString()`
 - `without(T)`
 - `withoutAll(AugList<T>)`

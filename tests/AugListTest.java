@@ -258,7 +258,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Bulk Function application
      * @see src.AugList#applyAll(java.util.function.Function)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testApplyAll() {
         setupTestData();
@@ -445,7 +444,6 @@ public class AugListTest implements MultiTest {
      * @see src.AugList#equals(Object)
      * @see src.AugList#AugList()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testIsEquivalent() {
         setupTestData();
@@ -468,44 +466,40 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
         assertFalse(new AugList<Double>().isEquivalent(""));
         assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
-    
-        //TODO: Change below to use isEquivalent() (from equals())
-      
-        //assertNotEquals(testDataDouble.clone().oneToOneMap(d -> d + 1), testDataDouble);
-        //assertNotEquals(testDataStr.clone().oneToOneMap(s -> s.toLowerCase()), testDataStr.distinctCopy());
-        //assertNotEquals(testDataInt.clone().filterCopy(i -> i == 117), testDataInt);
-        //assertNotEquals(testDataDouble, testDataStr);
-        //assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
-        //assertNotEquals(testDataDouble, "[1.0, 2.0, -2.5, 3.1415926, 7.11]");
-        //assertNotEquals(testDataDouble, testDataDouble.clone().swap(0,1));
-        //assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        //assertNotEquals(testDataDouble, new AugList<Double>());
-        //assertEquals(new AugList<Double>(), new AugList<Double>());
-        //assertTrue(new AugList<Double>().equals(new AugList<String>()));
-        //assertFalse(new AugList<Double>().equals(""));
-        //assertFalse(new AugList<Double>(7.0).equals(7.0));
-        //assertEquals(testDataDouble, testDataDouble);
-        //assertEquals(testDataInt, testDataInt);
-        //assertEquals(testDataStr, testDataStr);
-        //assertNotEquals(testDataDouble, testDataInt);
-        //assertEquals(testDataDouble, "[1.0, 2.0, 7.11, -2.5, 3.1415926]");
-        //assertNotEquals(testDataDouble, "[1, 2, 7.11, -2.5, 3.1415926]");
-        //assertEquals(testDataDouble, testDataDouble.clone());
-        //assertEquals(testDataDouble, new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926));
-        //assertNotEquals(testDataInt, new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0));
-        //assertEquals(testDataDouble, new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
+        assertFalse(new AugList<Double>().isEquivalent(""));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble));
+        assertTrue(testDataInt.isEquivalent(testDataInt));
+        assertTrue(testDataString.isEquivalent(testDataString));
+        assertFalse(testDataDouble.isEquivalent(testDataInt));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1, 2, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.clone()));
+        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
         AugList<Double> shuffled = testDataDouble.shuffleCopy();
-        //if (shuffled.equals(testDataDouble)) {
-        //    shuffled.swap(0, 1);
-        //}
-        //assertNotEquals(testDataDouble, shuffled);
+        if (shuffled.isEquivalent(testDataDouble)) {
+           shuffled.swap(0, 1);
+        }
+        assertFalse(testDataDouble.isEquivalent(shuffled));
     }
 
     /**
      * JUnit tester for filtering
      * @see src.AugList#filterCopy(java.util.function.Predicate)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testFilterCopy() {
         setupTestData();
@@ -524,7 +518,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for filtering
      * @see src.AugList#filterSelf(java.util.function.Predicate)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testFilterSelf() {
         setupTestData();
@@ -697,7 +690,6 @@ public class AugListTest implements MultiTest {
      * @see src.AugList#AugList(Object...)
      * @see src.AugList#AugList(AugList, AugList)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testInitSpecial() {
         setupTestData();
@@ -984,7 +976,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for "List Difference"
      * @see src.AugList#listDifference()
      */
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
     @Test
     public void testListDifference() {
         setupTestData();
@@ -1006,7 +997,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for "List Intersection"
      * @see src.AugList#listIntersection()
      */
-    @SuppressWarnings("unlikely-arg-type") // A string can be equal to an AugList, so this warning is suppressed.
     @Test
     public void testListIntersection() {
         setupTestData();
@@ -1149,7 +1139,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for "List Union"
      * @see src.AugList#listUnion()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testListUnion() {
         setupTestData();
@@ -1227,7 +1216,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Single Removal
      * @see src.AugList#remove()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemove() {
         setupTestData();
@@ -1252,7 +1240,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Bulk Removal
      * @see src.AugList#removeAll(src.AugList)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAll() {
         setupTestData();
@@ -1276,7 +1263,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Varargs Bulk Removal
      * @see src.AugList#removeAll(Object...)
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAllVarargs() {
         setupTestData();
@@ -1298,7 +1284,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Single Targeted Removal
      * @see src.AugList#removeAt()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveAtIndex() {
         setupTestData();
@@ -1317,7 +1302,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Selective Removal
      * @see src.AugList#removeIf()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveIf() {
         setupTestData();
@@ -1341,7 +1325,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Stack Popping
      * @see src.AugList#removeLast()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testRemoveLast() {
         setupTestData();
@@ -1429,7 +1412,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Reversal
      * @see src.AugList#reversed()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testReversed() {
         setupTestData();
@@ -1442,7 +1424,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Sampling
      * @see src.AugList#sample()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSample() {
         setupTestData();
@@ -1460,7 +1441,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Setting/Writing
      * @see src.AugList#set()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSet() {
         setupTestData();
@@ -1473,7 +1453,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Set Difference
      * @see src.AugList#setDifference()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetDifference() {
         setupTestData();
@@ -1496,7 +1475,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Set Intersection
      * @see src.AugList#setIntersection()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetIntersection() {
         setupTestData();
@@ -1519,7 +1497,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Set Union
      * @see src.AugList#setUnion()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSetUnion() {
         setupTestData();
@@ -1555,7 +1532,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Conditional Omittance (Forwards)
      * @see src.AugList#skipWhile()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSkipWhile() {
         setupTestData();
@@ -1568,7 +1544,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for sorting
      * @see src.AugList#sort()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSort() {
         setupTestData();
@@ -1655,7 +1630,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Swapping
      * @see src.AugList#swap()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSwap() {
         setupTestData();
@@ -1716,7 +1690,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Sublist
      * @see src.AugList#subList()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testSubList() {
         setupTestData();
@@ -1732,7 +1705,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Conditional Collection
      * @see src.AugList#takeWhile()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testTakeWhile() {
         setupTestData();
@@ -1796,7 +1768,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for {@link String} representation (Or String casting)
      * @see src.AugList#toString()
      */
-    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testToString() {
         setupTestData();
@@ -1815,7 +1786,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Single Removal
      * @see src.AugList#without()
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithout() {
         setupTestData();
@@ -1833,7 +1803,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Bulk Removal
      * @see src.AugList#withoutAll(src.AugList)
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutAll() {
         setupTestData();
@@ -1851,7 +1820,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Varargs Bulk Removal
      * @see src.AugList#withoutAll(Object...)
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutAllVarargs() {
 		setupTestData();
@@ -1869,7 +1837,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Targeted Removal
      * @see src.AugList#withoutIndex()
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutIndex() {
         setupTestData();
@@ -1884,7 +1851,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Tail Removal
      * @see src.AugList#withoutLast()
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutLast() {
         setupTestData();
@@ -1898,7 +1864,6 @@ public class AugListTest implements MultiTest {
      * JUnit tester for Conditional Removal
      * @see src.AugList#withoutWhere()
      */
-	@SuppressWarnings("unlikely-arg-type")
     @Test
 	public void testWithoutWhere() {
         setupTestData();

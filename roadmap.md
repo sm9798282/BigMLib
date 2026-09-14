@@ -6,19 +6,14 @@
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - Change testAdd family of tests to check the returned AugList
 - Test pulling from dev to a d- branch
-- Demonstrate the unfixable problems with `equals()` in tests
 
 ## Possible features
 
 ### AugList V2 Planned
 
-- `AugList` implements methods from `Collection<T>` (In progress on d-classAndInterface)
-- `AugList` casts to `Collection<T>` (In progress on d-classAndInterface)
-- `AugList` casts to `Enumeration<T>` on d-classAndInterface
-- MAYBE AugList implements `Serializable` on d-classAndInterface
-- AugList implements `Cloneable` on d-classAndInterface
-- AugList implements remaining methods from `List<T>` on d-classAndInterface
-- AugList implements all `java.lang` Interfaces that can be reasonably implemented on d-classAndInterface
+- Separate out Special Inits by constructor
+- FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls
+- Check other constructors also don't throw when fed nulls
 - Introduce Array Constructor on d-instantiation?
 - Introduce ListIterator Constructor on d-instantiation?
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-random?
@@ -88,5 +83,12 @@
 
 ## Completed
 
+- AugList implements remaining methods from `List<T>` on d-classAndInterface
+- `AugList` casts to `Enumeration<T>` on d-classAndInterface
+- AugList implements `Cloneable` on d-classAndInterface
+- AugList implements all `java.lang` Interfaces that can be reasonably implemented on d-classAndInterface
+- `AugList` implements methods from `Collection<T>` (In progress on d-classAndInterface)
+- `AugList` casts to `Collection<T>` (In progress on d-classAndInterface)
+- FIX `equals()` "UNFIXABLES" by moving functionality to `isEquivalent()` and returning to default `Object.equals()` behaviour
 - Mass changing `@code` to `@link` where possible
 - Parameter name unification

@@ -25,8 +25,6 @@ import java.util.function.Predicate;
 //import java.lang.reflect.ParameterizedType;
 import java.util.stream.Stream;
 
-// TODO: Add d-classAndInterface changes to AugList desc
-
 /**
  * <h1>AugList<T></h1>
  *
@@ -42,7 +40,6 @@ import java.util.stream.Stream;
  *
  * <h3>Overrides</h3>
  *
- * - Overrides {@link Object#equals(Object)} to more leniently match AugLists, Lists and Strings. Notably this means {@code this.equals(this.clone()) == true}.</p>
  * - Overrides {@link Object#toString()} to provide a more legible overview of the contents.
  *
  * <h3>Overloads</h3>
@@ -68,13 +65,14 @@ import java.util.stream.Stream;
  * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
  * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
  * - {@link #forEach(Consumer)},</p>
- * - {@link #isRearrangement()},</p>
+ * - {@link #isEquivalent(Object)}, {@link #isRearrangement()},</p>
  * - {@link #listDifference(AugList)}, {@link #listIntersection(AugList)}, {@link #listUnion(AugList)},</p>
  * - {@link #pairUp(AugList)},</p>
- * - {@code #retainAll(java.util.Collection)}, {@code #toCollection()},</p>
+ * - {@link #retainAll(java.util.Collection)}, {@link #toCollection()},</p>
  * - {@link #setDifference(AugList)}, {@link #setIntersection(AugList)}, {@link #setUnion(AugList)},</p>
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},</p>
  * - {@link #swap(int, int)}, {@link swapRandom(int)}, {@link #swapRandom()},</p>
+ * - {@link #toEnumeration()},</p>
  * - {@link #without(T)}, {@link #withoutAll(AugList)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
  * - {@link #getRandom()}, {@link #removeRandom()},</p>
  * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(AugList)}, {@link #insertAllAtRandom(T...)},</p>
@@ -1401,7 +1399,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ls.remove((new Random()).nextInt(ls.size()));
     }
 
-    //TODO: Encapsulate ArrayList<T>.retainAll() (Work will be done on a different branch to avoid branch contamination)
     /*
      * (The reason as to why implementation has so far been pushed back is that
      *  listIntersection() and setIntersection() do ALMOST the same job.
@@ -1413,16 +1410,15 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *  )
      */
 
-    //TODO: Add correct annotations upon merge into d-documentation
     /**
      * Retains elements that appear in both this and the given {@link Collection}.
-     * If an element occurs multiple times in this, each copy is kept if at least one copy is present in the given collection.
+     * If an element occurs multiple times and the given {@link Collection} contains it, each copy is kept.
      * @param   collection
-     *          The collection in question.
+     *          The {@link Collection} in question.
      * @return  {@code this}
      * @throws  NullPointerException
-     *          {@code collection.isEquivalent(null)}
-     * 
+     *          {@code collection.equals(null)}
+     * @tags    Converter
      */
     public AugList<T> retainAll(Collection<? super T> collection) {
         ls.retainAll(collection);
@@ -1828,10 +1824,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ls.toArray(typedArr);
     }
 
-    //TODO: Annotate in line with methods on d-documentation
     /**
      * Casts this {@link AugList} to a {@link Collection}.
      * @return  This {@link AugList}, as a {@link Collection}.
+     * @tags    Converter
      */
     public Collection<T> toCollection() {
         Collection<T> ret = new ArrayList<T>() {};
@@ -1841,10 +1837,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ret;
     }
 
-    //TODO: Annotate in line with methods on d-documentation
     /**
      * Casts this {@link AugList} to an {@link Enumeration}. DOES NOT PRESERVE ORDER.
      * @return  This {@link AugList}, as a {@link Enumeration}.
+     * @tags    Converter
      */
     public Enumeration<T> toEnumeration() {
         Hashtable<T,T> hashtable = new Hashtable<T,T>() {};

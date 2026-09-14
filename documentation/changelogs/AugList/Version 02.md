@@ -65,5 +65,4 @@ Separately:
 
 ## Known problems
 
-- (UNFIXABLE, since V1) Equality does not guarantee equal hash codes
-- (UNFIXABLE, since V1) Equality is not Symmetric
+None

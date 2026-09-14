@@ -52,8 +52,8 @@ These methods have applications in set theory, probability, statistics, function
 
 ## Known Problems
 
-- (UNFIXABLE) Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
-- (UNFIXABLE) For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
+- Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
+- For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
 - `toString()` bug where attempting to print a list with nulls threw an exception
 - `isEqual()` bug where "[1.0]" != "[1.0]"
 - Insufficient tests in `testToString()` to test for an empty list or a list with nulls
