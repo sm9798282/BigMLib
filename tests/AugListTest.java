@@ -129,6 +129,7 @@ public class AugListTest implements MultiTest {
         //testToArrayGivenGenerator();
         testToArrayGivenType();
         testToCollection();
+        testToEnumeration();
         testToString();
         //testTrimToSize();
         testWithout();
@@ -1401,6 +1402,14 @@ public class AugListTest implements MultiTest {
                 assertTrue(false);
             }
         });
+    }
+
+    @Test
+    public void testToEnumeration() {
+        setupTestData();
+        String enumDesc = testDataDouble.toEnumeration().getClass().toGenericString();
+        assertTrue(enumDesc.equals("private class java.util.Hashtable$Enumerator<T>"));
+        assertTrue(new AugList<Double>(testDataDouble.toEnumeration()).isRearrangement(testDataDouble));
     }
 
     @Test

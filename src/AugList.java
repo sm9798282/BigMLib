@@ -1469,6 +1469,19 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ret;
     }
 
+    //TODO: Annotate in line with methods on d-documentation
+    /**
+     * Casts this {@link AugList} to an {@link Enumeration}. DOES NOT PRESERVE ORDER.
+     * @return  This {@link AugList}, as a {@link Enumeration}.
+     */
+    public Enumeration<T> toEnumeration() {
+        Hashtable<T,T> hashtable = new Hashtable<T,T>() {};
+        for (T element : ls) {
+            hashtable.put(element, element);
+        }
+        return (Enumeration<T>)hashtable.elements();
+    }
+
     // Returns this AugList as a string. Example outputs: "/", "[1,2,3,4]", "[a,b,c,d]"
     @Override
     public String toString() {
