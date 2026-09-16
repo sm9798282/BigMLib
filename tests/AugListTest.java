@@ -87,13 +87,21 @@ public class AugListTest implements MultiTest {
         testGetRandom();
         testHashCode();
         testIndexOf();
-        testInitSpecial();
         testInsert();
         testInsertAll();
         testInsertAllVarargs();
         testInsertAllAtRandom();
         testInsertAllAtRandomVarargs();
         testInsertAtRandom();
+        testInstantiateBlank();
+        testInstantiateEnumeration();
+        testInstantiateIterable();
+        testInstantiateIterator();
+        testInstantiateListIterator();
+        testInstantiatePairs();
+        testInstantiateSpliterator();
+        testInstantiateStream();
+        testInstantiateVarargs();
         testIsEmpty();
         testIsRearrangement();
         testIterator();
@@ -440,9 +448,8 @@ public class AugListTest implements MultiTest {
     }
 
     /**
-     * JUnit tester for Equality
-     * @see src.AugList#equals(Object)
-     * @see src.AugList#AugList()
+     * JUnit tester for Equivalence
+     * @see src.AugList#isEquivalent(Object)
      */
     @Test
     public void testIsEquivalent() {
@@ -681,19 +688,53 @@ public class AugListTest implements MultiTest {
     }
 
     /**
+     * JUnit tester for instantiating an empty {@link AugList}.
      * @see src.AugList#AugList()
-     * @see src.AugList#AugList(Stream)
-     * @see src.AugList#AugList(Spliterator)
-     * @see src.AugList#AugList(Iterable)
-     * @see src.AugList#AugList(Iterator)
-     * @see src.AugList#AugList(Enumeration)
-     * @see src.AugList#AugList(Object...)
+     */
+    @Test
+    public void testInstantiateBlank() {
+        setupTestData();
+        assertTrue(new AugList<String>().size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from Pairs.
      * @see src.AugList#AugList(AugList, AugList)
      */
     @Test
-    public void testInitSpecial() {
+    public void testInstantiatePairs() {
         setupTestData();
-        // From List<T> (Or any class that implements it) (Which implements Iterable<T>)
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, -999, 4, -7) ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        assertTrue(new AugList<String>(new AugList<String>(), new AugList<Integer>()).size() == 0);
+        assertTrue(new AugList<String>(null, null).size() == 0);
+        assertTrue(new AugList<String>(new AugList<String>(), null).size() == 0);
+        assertTrue(new AugList<String>(null, new AugList<Integer>()).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Enumeration}.
+     * @see src.AugList#AugList(Enumeration)
+     */
+    @Test
+    public void testInstantiateEnumeration() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
+        Enumeration<Float> en = null;
+        assertTrue(new AugList<Float>(en).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Iterable}.
+     * @see src.AugList#AugList(Iterable)
+     */
+    @Test
+    public void testInstantiateIterable() {
+        setupTestData();
+        // From ? implements List<T> (Which itself implements Iterable<T>)
         assertTrue(new AugList<String>(new ArrayList<String>(Arrays.asList(""))).add("1").get(1).equals("1"));
         // From LinkedList<T> (Which implements Iterable<T>)
         LinkedList<String> l = new LinkedList<String>();
@@ -701,12 +742,6 @@ public class AugListTest implements MultiTest {
         // From Vector<T> (Which implements Iterable<T>)
         Vector<String> v = new Vector<String>();
         assertTrue(new AugList<String>(v).isEquivalent("/"));
-        // From Iterator<T>
-        assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
-        // From Enumeration<T>
-        assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
-        // From Spliterator<T>
-        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
         // From AugList<T> (Which implements Iterable<T>)
         assertTrue(new AugList<String>(testDataString).isEquivalent(testDataString));
         // From HashSet<T> (and LinkedHashSet<T>) (Which both implement Iterable<T>)
@@ -725,7 +760,7 @@ public class AugListTest implements MultiTest {
         t.add("World");
         t.add("!");
         assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From any class that implements Deque<T> (Which implements Iterable<T>)
+        // From ? implements Deque<T> (Which implements Iterable<T>)
         ArrayDeque<String> ad = new ArrayDeque<String>();
         assertTrue(new AugList<String>(ad).isEquivalent("/"));
         ad.add("Hello");
@@ -739,15 +774,74 @@ public class AugListTest implements MultiTest {
         pq.add("World");
         pq.add("!");
         assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        Iterable<Long> it = null;
+        assertTrue(new AugList<Long>(it).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Iterator}.
+     * @see src.AugList#AugList(Iterator)
+     */
+    @Test
+    public void testInstantiateIterator() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
+        Iterator<Short> it = null;
+        assertTrue(new AugList<Short>(it).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link ListIterator}.
+     * @see src.AugList#AugList(ListIterator)
+     */
+    @Test
+    public void testInstantiateListIterator() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.listIterator()).isEquivalent(testDataString));
+        assertTrue(new AugList<String>(testDataString.listIterator(2)).isEquivalent(testDataString.subList(2, testDataString.size())));
+        ListIterator<Byte> li = null;
+        assertTrue(new AugList<Byte>(li).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Spliterator}.
+     * @see src.AugList#AugList(Spliterator)
+     */
+    @Test
+    public void testInstantiateSpliterator() {
+        setupTestData();
+        // From Spliterator<T>
+        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
+        Spliterator<Character> sp = null;
+        assertTrue(new AugList<Character>(sp).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Stream}.
+     * @see src.AugList#AugList(Stream)
+     */
+    @Test
+    public void testInstantiateStream() {
+        setupTestData();
         // From a Stream<T>
         Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
-        assertTrue(new AugList<Integer>(s).isEquivalent("[1, *null*]"));
-        // From a set of values and counts
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, -999, 4, -7) ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        AugList<Integer> AL = new AugList<Integer>(s);
+        assertTrue(AL.isEquivalent("[1, *null*]"));
+        Stream<String> t = null;
+        assertTrue(new AugList<String>(t).size() == 0);
+    }
+
+    /**
+     * JUnit tester for instantiating from a varargs {@link Arrays array}.
+     * @see src.AugList#AugList(Object...)
+     */
+    @Test
+    public void testInstantiateVarargs() {
+        setupTestData();
+        Integer[] i = null;
+        // Passing an Array acts the same as passing varargs
+        assertTrue(new AugList<Integer>(i).size() == 0); 
+        assertTrue(new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43).isEquivalent(testDataInt));       
     }
 
     /**

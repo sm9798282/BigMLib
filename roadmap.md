@@ -11,13 +11,8 @@
 
 ### AugList V2 Planned
 
-- Separate out Special Inits by constructor
-- FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls
-- Check other constructors also don't throw when fed nulls
-- Introduce Array Constructor on d-instantiation?
-- Introduce ListIterator Constructor on d-instantiation?
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-random?
-- `AugList<T>.isEquals()` attempts to match any object that could be constructed into `AugList<T>`
+- `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
 - `setMany(AugList<Integer> indices, AugList<T> values)`
 - `countCombinations()` (combinatorics)
 - Parameters that take `AugList<T>` changed to take any `Iterable<T>`
@@ -83,6 +78,11 @@
 
 ## Completed
 
+- Separate out Special Inits by constructor
+- FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls
+- Check other constructors also don't throw when fed nulls
+- Introduce Array Constructor on d-instantiation?
+- Introduce ListIterator Constructor on d-instantiation?
 - AugList implements remaining methods from `List<T>` on d-classAndInterface
 - `AugList` casts to `Enumeration<T>` on d-classAndInterface
 - AugList implements `Cloneable` on d-classAndInterface

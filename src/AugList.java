@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 //import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Spliterator;
@@ -121,8 +122,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new, empty, non-null {@link AugList}.
-     * @see         tests.AugListTest#testEquals()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @see         tests.AugListTest#testInstantiateBlank()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList() {
@@ -133,27 +134,36 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@link T}[].
      * @param       elements
      *              The varargs array of objects that will make up this {@link AugList}.
-     * @see         tests.AugListTest#setupTestData()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     *              <p>If {@code elements.equals(null)}, the resulting {@link AugList} is empty.
+     * @see         tests.AugListTest#testInstantiateVarargs()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     @SafeVarargs
     public AugList(T... elements) {
-        this.ls = new ArrayList<T>(Arrays.asList(elements));
+        if (Objects.isNull(elements)) {
+            this.ls = new ArrayList<T>() {};
+        }
+        else {
+            this.ls = new ArrayList<T>(Arrays.asList(elements));
+        }
     }
 
     /**
      * Creates a new {@link AugList} from the given {@link Enumeration}.
      * @param       enumeration
      *              The {@link Enumeration} object to source the elements for this {@link AugList} from.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     *              <p>If {@code enumeration.equals(null)}, the resulting {@link AugList} is empty.
+     * @see         tests.AugListTest#testInstantiateEnumeration()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Enumeration<T> enumeration) {
         this.ls = new ArrayList<T>() {};
-        while (enumeration.hasMoreElements()) {
-            this.ls.add(enumeration.nextElement());
+        if (!Objects.isNull(enumeration)) {
+            while (enumeration.hasMoreElements()) {
+                this.ls.add(enumeration.nextElement());
+            }
         }
     }
 
@@ -161,14 +171,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@link Iterator} over some sequence.
      * @param       iterator
      *              The {@link Iterator} object to source the elements for this {@link AugList} from.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
+     *              If {@code iterator.equals(null)}, the resulting {@link AugList} is empty.
+     * @see         tests.AugListTest#testInstantiateIterator()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
      * @tags        Constructor
      */
     public AugList(Iterator<T> iterator) {
         this.ls = new ArrayList<T>() {};
-        while (iterator.hasNext()) {
-            this.ls.add(iterator.next());
+        if (!Objects.isNull(iterator)) {
+            while (iterator.hasNext()) {
+                this.ls.add(iterator.next());
+            }
         }
     }
 
@@ -176,12 +189,32 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@code ? implements} {@link Iterable}.
      * @param       iterable
      *              The {@link Iterable} object to source the elements for this {@link AugList} from.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @see         tests.AugListTest#testInstantiateIterable()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Iterable<T> iterable) {
-        this.ls = new AugList<T>(iterable.iterator()).ls;
+        if (Objects.isNull(iterable)) {
+            this.ls = new ArrayList<T>() {};
+        }
+        else {
+            this.ls = new AugList<T>(iterable.iterator()).ls;
+        }
+    }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link ListIterator}.
+     * @param       listIterator
+     *              The {@link ListIterator} object to source the elements this {@link AugList} from.
+     * @see         tests.AugListTest#testInstantiateListIterator()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)} ,{@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
+     */
+    public AugList(ListIterator<T> listIterator) {
+        this.ls = new ArrayList<T>() {};
+        if (!Objects.isNull(listIterator)) {
+            listIterator.forEachRemaining(element -> ls.add(element));
+        }
     }
 
     /**
@@ -192,22 +225,27 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       counts
      *              How many times each value should be repeated.
      *              If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @see         tests.AugListTest#testInstantiatePairs()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(AugList<T> values, AugList<Integer> counts) {
-        while (values.size() > counts.size()) {
-            counts.add(0);
+        if (Objects.isNull(values) || Objects.isNull(counts)) {
+            this.ls = new ArrayList<T>() {};
         }
-        while (counts.size() > values.size()) {
-            counts.removeLast();
-        }
-        counts.oneToOneMap(count -> count > 0 ? count : 0);
-        ls = new ArrayList<T>() {};
-        for (int i = 0; i < values.size(); i++) {
-            for (int j = 0; j < counts.get(i); j++) {
-                ls.add(values.get(i));
+        else {
+            while (values.size() > counts.size()) {
+                counts.add(0);
+            }
+            while (counts.size() > values.size()) {
+                counts.removeLast();
+            }
+            counts.oneToOneMap(count -> count > 0 ? count : 0);
+            ls = new ArrayList<T>() {};
+            for (int i = 0; i < values.size(); i++) {
+                for (int j = 0; j < counts.get(i); j++) {
+                    ls.add(values.get(i));
+                }
             }
         }
     }
@@ -216,28 +254,30 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@link Spliterator}.
      * @param       spliterator
      *              The {@link Spliterator} object to source the elements for this {@link AugList} from.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @see         tests.AugListTest#testInstantiateSpliterator()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Spliterator<T> spliterator) {
         this.ls = new ArrayList<T>() {};
-        spliterator.forEachRemaining(e -> this.ls.add(e));
+        if (!Objects.isNull(spliterator)) {
+            spliterator.forEachRemaining(e -> this.ls.add(e));
+        }
     }
 
     /**
      * Creates a new {@link AugList} from the given {@link Stream}.
      * @param       stream
      *              The {@link Stream} object to source the elements for this {@link AugList} from.
-     * @see         tests.AugListTest#testInitSpecial()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @see         tests.AugListTest#testInstantiateStream()
+     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Stream<T> stream) {
-        // if (stream.anyMatch(e -> e == null)) {
-        //     throw new IllegalStateException("The stream must not contain nulls.")
-        // }
-        this.ls = new AugList<T>(stream.iterator()).ls;
+        this.ls = new ArrayList<T>() {};
+        if (!Objects.isNull(stream)) {
+            this.ls = new AugList<T>(stream.iterator()).ls;
+        }
     }
 
     /**
