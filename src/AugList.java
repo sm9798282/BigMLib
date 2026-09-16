@@ -1289,6 +1289,20 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * Returns a {@link String} that describes the parameterized type of this {@link AugList}.
+     * @see     tests.AugListTest#testParameterizedTypeDesc()
+     * @return  A {@link String} describing the parameterized type, or "∅" if {@link #isEmpty()}.
+     */
+    public String parameterizedTypeDesc() {
+        if (isEmpty()) {
+            return "∅";
+        }
+        // Reaching this branch means this AugList cannot be empty,
+        // so there is no need to catch NoSuchElementException.
+        return this.getLast().getClass().toGenericString();
+    }
+
+    /**
      * Attempts to remove the first occurrence of the given {@link Object} from this {@link AugList}, if present.
      * <p>For a Mutator method, see {@link #without(Object)}.
      * @param   o

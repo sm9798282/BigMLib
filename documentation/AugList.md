@@ -32,11 +32,10 @@ Provided with AugList V2 are the following:
 - `new AugList<T>(Enumeration<T>)`
 - `new AugList<T>(Iterator<T>)`
 - `new AugList<T>(Iterable<T>)`
-- PLANNED `new AugList<T>(ListIterator<T>)`
+- `new AugList<T>(ListIterator<T>)`
 - `new AugList<T>(AugList<T>, AugList<Integer>)`
 - `new AugList<T>(Spliterator<T>)`
 - `new AugList<T>(Stream<T>)`
-- PLANNED `new AugList<T>(T[])`
 - `add(T)`
 - `addAll(AugList<T>)`
 - `addAll(T...)`
@@ -62,6 +61,7 @@ Provided with AugList V2 are the following:
 - `forEach(Consumer<? super T>)`
 - `fragment(int)`
 - `get(int)`
+- `getClass()`
 - `getLast()`
 - `getRandom()`
 - `hashCode()`
@@ -73,6 +73,7 @@ Provided with AugList V2 are the following:
 - `insertAllAtRandom(T...)`
 - `insertAtRandom(T)`
 - `isEmpty()`
+- `isEquivalent()`
 - `isRearrangement()`
 - PLANNED `isSet()`
 - `iterator()`
@@ -84,9 +85,12 @@ Provided with AugList V2 are the following:
 - `listUnion(AugList<T>)`
 - PLANNED `massOverwriteRandom(AugList<T>)`
 - `oneToOneMap(Function<? super T, U>)`
+- `notify()`
+- `notifyAll()`
 - PLANNED `overwriteRandom(T)`
 - `pairUp(AugList<U>)`
 - `parallelStream()`
+- `parameterizedTypeDesc()`
 - `remove(Object)`
 - `removeAll(AugList<T>)`
 - `removeAll(T...)`
@@ -121,6 +125,9 @@ Provided with AugList V2 are the following:
 - `toCollection()`
 - `toEnumeration()`
 - `toString()`
+- `wait()`
+- `wait(long)`
+- `wait(long, int)`
 - `without(T)`
 - `withoutAll(AugList<T>)`
 - `withoutAll(T...)`

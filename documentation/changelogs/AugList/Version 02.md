@@ -12,6 +12,7 @@
 ## Behavioural changes
 
 - `AugList<T>.toString()` now represents `null` as `"*null*"`.
+- `AugList<T>.equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for V1 behaviour.
 
 ## Naming changes
 

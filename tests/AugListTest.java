@@ -114,6 +114,7 @@ public class AugListTest implements MultiTest {
         testOneToOneMap();
         testPairUp();
         testParallelStream();
+        testParameterizedTypeDesc();
         testRemove();
         testRemoveAll();
         testRemoveAllVarargs();
@@ -1304,6 +1305,20 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
         assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
         assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+    }    
+
+    /**
+     * JUnit tester for getting the parameterized type.
+     * @see src.AugList#parameterizedTypeDesc()
+     */
+    @Test
+    public void testParameterizedTypeDesc()
+    {
+        setupTestData();
+        assertTrue(testDataInt.parameterizedTypeDesc().equals("public final class java.lang.Integer"));
+        assertTrue(testDataString.parameterizedTypeDesc().equals("public final class java.lang.String"));
+        assertTrue(testDataDouble.parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(new AugList<Character>().parameterizedTypeDesc().equals("∅"));
     }    
 
     /**
