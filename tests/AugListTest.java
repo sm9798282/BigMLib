@@ -455,9 +455,28 @@ public class AugListTest implements MultiTest {
     @Test
     public void testIsEquivalent() {
         setupTestData();
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.countsOfElements().keys()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.countsOfElements().keys()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.iterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.iterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.spliterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.spliterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.listIterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.listIterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.stream()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.stream()));
+        assertFalse(testDataDouble.isEquivalent(null));
+        assertTrue(testDataString.isEquivalent(testDataString.hashCode()));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.hashCode() + 1));
+        assertFalse(testDataDouble.isEquivalent(-1.2));
+        assertFalse(testDataDouble.isEquivalent('A'));
+        assertFalse(new AugList<Character>().isEquivalent(testDataDouble));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<String>()));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<Integer>()));
         final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
         assertTrue(TESTDATA.isEquivalent(TESTDATA));
-        // AugList.Equals() has been overridden so that as long as the contents of the lists match, they evaluate as equal.
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
@@ -499,7 +518,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
         AugList<Double> shuffled = testDataDouble.shuffleCopy();
         if (shuffled.isEquivalent(testDataDouble)) {
-           shuffled.swap(0, 1);
+            shuffled.swap(0, 1);
         }
         assertFalse(testDataDouble.isEquivalent(shuffled));
     }
@@ -1319,7 +1338,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.parameterizedTypeDesc().equals("public final class java.lang.String"));
         assertTrue(testDataDouble.parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(new AugList<Character>().parameterizedTypeDesc().equals("∅"));
-    }    
+    }
 
     /**
      * JUnit tester for Single Removal

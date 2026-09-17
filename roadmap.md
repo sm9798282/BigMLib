@@ -12,7 +12,6 @@
 ### AugList V2 Planned
 
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-random?
-- `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
 - `setMany(AugList<Integer> indices, AugList<T> values)`
 - `countCombinations()` (combinatorics)
 - Parameters that take `AugList<T>` changed to take any `Iterable<T>`
@@ -58,7 +57,8 @@
 
 - `BoolAlg` class provides Boolean Algebra functions NOT, AND, OR, XOR, Implies, LSL, LSR, ADD, Compliment, SUB, toLong, fromLong
 - `ALHamcrestCompat` class provides casts from `Hamcrest-core` classes to `AugList`
-- Statistics Library with features from R and SAS
+- `class Statistics` with features from R and SAS
+- `class Generics` with an implementation of `parameterizedTypeDesc()`
 - `interface UI` with methods like `getBool()`, `getInt()`, `getDouble()`, `getStr()`, `writeStr()`
 - `CLI implements UI`
 - `GUI implements UI`
@@ -78,6 +78,7 @@
 
 ## Completed
 
+- `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
 - Separate out Special Inits by constructor
 - FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls
 - Check other constructors also don't throw when fed nulls

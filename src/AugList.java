@@ -648,79 +648,166 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /** 
      * Sees if the given {@link Object} may be equal to this {@link AugList}.
-     * <p> If the Object in question is any of the following, it can be matched:
-     * - {@link AugList}: Same length and Elements are equal for each index.
-     * - {@code ? implements} {@link List}: Passes {@link List#equals(Object)}.
-     * - {@link String}: Equal to the result of {@link AugList#toString()}.
+     * <p>If the {@link Object} in question is any of the following,
+     * it will be considered equivalent if that object constructs to an {@link AugList} that:
+     * - {@code ? implements} {@link Enumeration}: Same values, even if a {@link #isRearrangement(AugList) Rearrangement}
+     * - {@code ? implements} {@link Iterator}: Same values, same order
+     * - {@code ? implements} {@link Iterable}: Same values, same order
+     * - {@code ? implements} {@link ListIterator}: Same values, same order
+     * - {@code ? implements} {@link Spliterator}: Same values, same order
+     * - {@code ? implements} {@link Stream}: Same values, same order
+     * Separately:
+     * - A {@link String} is equivalent if it matches the {@link #toString()} representation.
+     * - A {@link Number} is equivalent if it matches the {@link #hashCode()}.
+     * <p>If the given {@link Object} is none of the above, it cannot be equivalent.
      * @param   o
      *          The object in question.
      * @see     #isRearrangement(AugList)
-     * @see     tests.AugListTest#testEquals()
+     * @see     #equals(Object)
+     * @see     tests.AugListTest#testIsEquivalent()
      * @return  {@code true} if equivalent, and {@code false} otherwise.
      * @note    Breaks the contract that states that two equal objects have equal {@link #hashCode() hashcodes},
      *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
      * @tags    Terminator
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public boolean isEquivalent(Object o) {
-        if (o instanceof AugList) {
-            @SuppressWarnings({ "rawtypes" })
-            // Suppress the rawtypes caution as o is an AugList.
-            // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
-            AugList oAsAugList = (AugList) o;
-            // We know o is an AugList:
-            // Firstly, are the lists the same size?
-            if (ls.size() != oAsAugList.size()) {
-                return false;
-            }
-            // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
-            {
-                // // If they are, do they have the same generic type?
-                // try {
-                //     /**
-                //      * Credit: There's no way I would be able to do this without StackOverflow.
-                //      * Based off the following:
-                //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
-                //      */
-                //     Class<?> testClass = TypeFinder.class;
-                    
-                //     Field oALF = testClass.getDeclaredField("genericAugList");
-                //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
-                //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
-                //     System.out.println(oALClass.toString()); // class java.lang.String
-
-                //     Field tALF = testClass.getDeclaredField("thisAugList");
-                //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
-                //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
-                //     System.out.println(tALClass.toString()); // class java.lang.Integer
-
-                //     // If the generic fields have different names, the lists are treated as unequal.
-                //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
-                //         return false;
-                //     }
-                // } catch (NoSuchFieldException e) {
-                //     return false;
-                // }
-            }
-            
-            // If they are, are the sequences identical?
-            for (int i = 0; i < ls.size(); i++) {
-                if (!ls.get(i).equals(oAsAugList.get(i))) {
-                    return false;
-                }
-            }
-            // If they are, assume equality.
-            return true;
-        }
-        if (o instanceof List) {
-            // Delegate the job of answering this to built-in methods.
-            return ls.equals(o);
+        if (Objects.isNull(o)) {
+            return false;
         }
         if (o instanceof String) {
             // o is a String; If it is the same as this.toString(), it will be treated as equal.
             return o.equals(this.toString());
         }
-        // If it is not any of the supported types, then we assume non-equivalence.
-        return false;
+        if (o instanceof Number) {
+            return ((Number)(o)).intValue() == this.hashCode();
+        }
+        if (o instanceof Enumeration) {
+            //try {
+            // If o is an Enumeration<? extends T>, it will cast without throwing.
+            // Enumerations come from Hashtables, so are usually unordered - hence the isRearrangement leniency.
+            return isRearrangement(new AugList<T>((Enumeration<T>)o));
+            // Since unchecked casting does not throw (I believe...), this try-catch is unnecessary.
+            // } catch (Exception e) {
+            //     // If o's parameterized type is not "? extends T", it will throw upon casting.
+            //     // Since the parameterized type cannot be meaningfully compared against, return false.
+            //     return false;
+            // }
+        }
+        AugList ALo = new AugList();
+        // ListIterator is an Iterator, so they do not need to explicitly be included in this filter.
+        if (o instanceof Iterator || o instanceof Spliterator || o instanceof Iterable || o instanceof Stream) {
+            if (o instanceof ListIterator) {
+                ListIterator oListIterator = (ListIterator)o;
+                ALo = new AugList(oListIterator);
+            }
+            if (o instanceof Iterator && !(o instanceof ListIterator)) {
+                Iterator oIterator = (Iterator)o;
+                ALo = new AugList(oIterator);
+            }
+            if (o instanceof Iterable) {
+                Iterable oIterable = (Iterable)o;
+                ALo = new AugList(oIterable);
+            }
+            if (o instanceof Spliterator) {
+                Spliterator oSpliterator = (Spliterator)o;
+                ALo = new AugList(oSpliterator);
+            }
+            if (o instanceof Stream) {
+                Stream oStream = (Stream)o;
+                ALo = new AugList(oStream);
+            }
+            String oPType = "", thisPType = "";
+                try {
+                    oPType = ALo.get(0).getClass().toGenericString();
+                } catch (IndexOutOfBoundsException e) {
+                    // If an exception is thrown, AL = ∅.
+                    try {
+                        this.getLast();
+                        // If an exception has not been thrown, AL = ∅ and this != ∅
+                        // So return false.
+                        return false; 
+                    } catch (NoSuchElementException ex) {
+                        // If an exception is thrown, it is because this = ∅.
+                        // Whilst the parameterized type for both o and this are unknown,
+                        // from a mathematical standpoint ∅ = ∅, thus return true.
+                        return true;
+                    }
+                }
+                try {
+                    thisPType = this.getLast().getClass().toGenericString();
+                    // If the parameterized type doesn't match, or the lists are different lengths, they cannot be equivalent.
+                    if (!thisPType.equals(oPType) || size() != ALo.size()) {
+                        return false;
+                    }
+                    for (int i = 0; i < this.size(); i++) {
+                        // If any element mismatches, the lists cannot be equivalent.
+                        if (!this.get(i).equals(ALo.get(i))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } catch (NoSuchElementException e) {
+                    // If an exception has been thrown, AL != ∅, this = ∅
+                    // So return false
+                    return false;
+                }
+            }
+        return false; // If it is not any of the supported types, then assume non-equivalence.
+
+        // if (o instanceof AugList) {
+        //     @SuppressWarnings({ "rawtypes" })
+        //     // Suppress the rawtypes caution as o is an AugList.
+        //     // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
+        //     AugList oAsAugList = (AugList) o;
+        //     // We know o is an AugList:
+        //     // Firstly, are the lists the same size?
+        //     if (ls.size() != oAsAugList.size()) {
+        //         return false;
+        //     }
+        //     // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
+        //     {
+        //         // // If they are, do they have the same generic type?
+        //         // try {
+        //         //     /**
+        //         //      * Credit: There's no way I would be able to do this without StackOverflow.
+        //         //      * Based off the following:
+        //         //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
+        //         //      */
+        //         //     Class<?> testClass = TypeFinder.class;
+                    
+        //         //     Field oALF = testClass.getDeclaredField("genericAugList");
+        //         //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
+        //         //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
+        //         //     System.out.println(oALClass.toString()); // class java.lang.String
+
+        //         //     Field tALF = testClass.getDeclaredField("thisAugList");
+        //         //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
+        //         //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
+        //         //     System.out.println(tALClass.toString()); // class java.lang.Integer
+
+        //         //     // If the generic fields have different names, the lists are treated as unequal.
+        //         //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
+        //         //         return false;
+        //         //     }
+        //         // } catch (NoSuchFieldException e) {
+        //         //     return false;
+        //         // }
+        //     }
+            
+        //     // If they are, are the sequences identical?
+        //     for (int i = 0; i < ls.size(); i++) {
+        //         if (!ls.get(i).equals(oAsAugList.get(i))) {
+        //             return false;
+        //         }
+        //     }
+        //     // If they are, assume equality.
+        //     return true;
+        // }
+        // if (o instanceof List) {
+        //     // Delegate the job of answering this to built-in methods.
+        //     return ls.equals(o);
+        // }
     }
 
     /**
@@ -1036,6 +1123,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   augListB
      *          The second {@link AugList} to compare against.
      * @return  {@code true} if the lists are rearrangements; {@code false} otherwise.
+     * @see     #equals(Object)
+     * @see     #isEquivalent(Object)
      * @see     tests.AugListTest#testIsRearrangement()
      * @note    Functionality is, to my knowledge, not implemented in Java or C#.
      * @tags    Terminator

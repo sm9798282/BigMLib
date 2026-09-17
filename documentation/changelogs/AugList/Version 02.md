@@ -2,17 +2,19 @@
 
 ## Additions
 
+- `equals()` reverted to `Object.equals()` behaviour, with `isEquivalent(Object)` getting enhanced V1 `equals()` behaviour
 - New Constructor from `? implements Iterable<T>`, replaces Constructors from `ArrayList<T>` and `List<T>`
 - New Constructor from `Spliterator<T>`
 - New Constructor from `Stream<T>`
 - New Constructor from a list of values and a list of counts (value-count pairs), [`public AugList(AugList<T>, AugList<Integer>)`]
 - New Random "family" of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
 - And new Random-adjacent methods too: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
+- New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
 
 ## Behavioural changes
 
 - `AugList<T>.toString()` now represents `null` as `"*null*"`.
-- `AugList<T>.equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for V1 behaviour.
+- `AugList<T>.equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for enhanced V1 behaviour.
 
 ## Naming changes
 
@@ -37,6 +39,7 @@ Parameters have (except where additional context is helpful) been renamed to fol
 
 - Tests for ALL the new features
 - Expanded `toString()` tests
+- V1 `testEquals()` enhanced and moved to `testIsEquivalent()`
 - `swap()` tests
 
 ## Documentation changes
