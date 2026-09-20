@@ -11,14 +11,14 @@
 
 ### AugList V2 Planned
 
-- Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-random?
-- `setMany(AugList<Integer> indices, AugList<T> values)`
-- `countCombinations()` (combinatorics)
-- Parameters that take `AugList<T>` changed to take any `Iterable<T>`
-- Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.
-- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right.
-- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`)
-- `applyAll(Function)` changed to `applyAll(UnaryOperation)`
+- Parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param
+- `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
+- Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
+- `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write
+- Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-write
+- `countCombinations()` (combinatorics) on d-csma
+- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-csma
+- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-csma
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
 - PLANNED `AugList<Byte> ALFactory.fromByteBuff(ByteBuffer)`
 - PLANNED `AugList<Character> ALFactory.fromCharBuff(CharBuffer)`
@@ -55,7 +55,7 @@
 
 ## Other planned
 
-- `BoolAlg` class provides Boolean Algebra functions NOT, AND, OR, XOR, Implies, LSL, LSR, ADD, Compliment, SUB, toLong, fromLong
+- `BoolAlg` class provides Boolean Algebra functions NOT, AND, OR, XOR, Implies, LSL, LSR, ADD, Compliment, SUB, MUX, toLong, fromLong
 - `ALHamcrestCompat` class provides casts from `Hamcrest-core` classes to `AugList`
 - `class Statistics` with features from R and SAS
 - `class Generics` with an implementation of `parameterizedTypeDesc()`
@@ -66,15 +66,20 @@
 - `class Transition`
 - `class State`
 - `class FSM` composes `Transition`, `State` and provides methods to traverse FSM
+- `interface Distance`
+- `class PythagDist implements Distance`
+- `class TaxicabDist implements Distance`
+- `class MaxDist implements Distance`
+- `FileHandler` helper class that provides easy Read/Write functions
+- `class FibonacciHeap`
+- `interface SortingAlgorithm`
+- `BubbleSort`, `SelectionSort`, `MergeSort`, `BinInsertionSort`, `HeapSort`, `QuickSort` implements `SortingAlgorithm`
 - `interface SqTile<T>`
 - `BlankTile<T>`, `ValueTile<T>`, `DiagDivisorTile<T>`, `MultiTile<T>` implements `SqTile`
 - `interface HexTile`
 - Hex grid handler
-- `FileHandler` helper class that provides easy Read/Write functions
+
 - Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess
-- `class FibonacciHeap`
-- `interface SortingAlgorithm`
-- `BubbleSort`, `SelectionSort`, `MergeSort`, `BinInsertionSort`, `HeapSort`, `QuickSort` implements `SortingAlgorithm`
 
 ## Completed
 
