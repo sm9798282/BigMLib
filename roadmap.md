@@ -11,7 +11,7 @@
 
 ### AugList V2 Planned
 
-- Parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param
+- Parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param (IN PROGRESS)
 - `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
 - `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write

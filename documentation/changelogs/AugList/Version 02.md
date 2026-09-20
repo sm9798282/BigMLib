@@ -6,7 +6,7 @@
 - New Constructor from `? implements Iterable<T>`, replaces Constructors from `ArrayList<T>` and `List<T>`
 - New Constructor from `Spliterator<T>`
 - New Constructor from `Stream<T>`
-- New Constructor from a list of values and a list of counts (value-count pairs), [`public AugList(AugList<T>, AugList<Integer>)`]
+- New Constructor from a list of values and a list of counts (value-count pairs), [`new AugList<T>(Iterable<T>, Iterable<Integer>)`]
 - New Random "family" of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
 - And new Random-adjacent methods too: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.

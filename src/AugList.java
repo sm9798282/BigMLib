@@ -229,22 +229,24 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(AugList<T> values, AugList<Integer> counts) {
+    public AugList(Iterable<T> values, Iterable<Integer> counts) {
         if (Objects.isNull(values) || Objects.isNull(counts)) {
             this.ls = new ArrayList<T>() {};
         }
         else {
-            while (values.size() > counts.size()) {
-                counts.add(0);
+            AugList<T> ALvalues = new AugList<T>(values);
+            AugList<Integer> ALcounts = new AugList<Integer>(counts);
+            while (ALvalues.size() > ALcounts.size()) {
+                ALcounts.add(0);
             }
-            while (counts.size() > values.size()) {
-                counts.removeLast();
+            while (ALcounts.size() > ALvalues.size()) {
+                ALcounts.removeLast();
             }
-            counts.oneToOneMap(count -> count > 0 ? count : 0);
+            ALcounts.oneToOneMap(count -> count > 0 ? count : 0);
             ls = new ArrayList<T>() {};
-            for (int i = 0; i < values.size(); i++) {
-                for (int j = 0; j < counts.get(i); j++) {
-                    ls.add(values.get(i));
+            for (int i = 0; i < ALvalues.size(); i++) {
+                for (int j = 0; j < ALcounts.get(i); j++) {
+                    ls.add(ALvalues.get(i));
                 }
             }
         }

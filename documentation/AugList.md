@@ -33,7 +33,7 @@ Provided with AugList V2 are the following:
 - `new AugList<T>(Iterator<T>)`
 - `new AugList<T>(Iterable<T>)`
 - `new AugList<T>(ListIterator<T>)`
-- `new AugList<T>(AugList<T>, AugList<Integer>)`
+- `new AugList<T>(Iterable<T>, Iterable<Integer>)`
 - `new AugList<T>(Spliterator<T>)`
 - `new AugList<T>(Stream<T>)`
 - `add(T)`
