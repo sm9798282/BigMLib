@@ -31,9 +31,10 @@ Parameters have (except where additional context is helpful) been renamed to fol
 
 ## Bugfixes
 
-- `toString()` no longer throws `nullPointerException` when attempting to represent `null`
+- `toString()` no longer throws `NullPointerException` when attempting to represent `null`
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
-- Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing)
+- Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)
+- Passing `null` into `addAll(AugList<T>)` / `addAll(T...)` returns this (as opposed to throwing `NullPointerException`)
 
 ## Testing changes
 

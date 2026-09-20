@@ -166,12 +166,14 @@ public class AugListTest implements MultiTest {
     @Test
     public void testAdd() {
         setupTestData();
+        // Check append behaviour
         testDataDouble.add(7.0);
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataString.add("!");
+        // Check return type
+        assertTrue(testDataString.add("!").getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !]"));
-        testDataInt.add(25);
-        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
+        // Check functional paradigm style program is plausible
+        assertTrue(testDataInt.add(25).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
     }
 
     /**
@@ -181,12 +183,17 @@ public class AugListTest implements MultiTest {
     @Test
     public void testAddAll() {
         setupTestData();
+        // Test Bulk Append behaviour
         testDataDouble.addAll(new AugList<Double>(7.0));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataString.addAll(new AugList<String>("!", "qwerty"));
-        assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
-        testDataInt.addAll(new AugList<Integer>(25, 125, 625));
+        // Check functional paradigm
+        assertTrue(testDataString.addAll(new AugList<String>("!", "qwerty")).isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
+        // Check return type
+        assertTrue(testDataInt.addAll(new AugList<Integer>(25, 125, 625)).getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
+        // Check nulls
+        Integer[] nullArr = null;
+        assertTrue(testDataInt.addAll(nullArr).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
     /**
@@ -196,12 +203,17 @@ public class AugListTest implements MultiTest {
     @Test
     public void testAddAllVarargs() {
         setupTestData();
+        // Test Bulk Append
         testDataDouble.addAll(7.0);
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        testDataString.addAll("!", "qwerty");
+        // Check return type
+        assertTrue(testDataString.addAll("!", "qwerty").getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
-        testDataInt.addAll(25, 125, 625);
-        assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
+        // Check functional paradigm
+        assertTrue(testDataInt.addAll(25, 125, 625).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
+        // Test nulls
+        Iterable<Integer> nullIterable = null;
+        assertTrue(testDataInt.addAll(nullIterable).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
     }
 
     /**
@@ -213,12 +225,11 @@ public class AugListTest implements MultiTest {
         setupTestData();
         testDataDouble.addFirst(7.0);
         assertTrue(testDataDouble.isEquivalent("[7.0, 1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataString.addFirst("!");
+        assertTrue(testDataString.addFirst("!").getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
-        testDataInt.addFirst(25);
-        assertTrue(testDataInt.isEquivalent("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.addFirst(25).isEquivalent("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
     }
-  
+
     /**
      * JUnit tester for finding all indices of a given object
      * @see src.AugList#allIndicesOf(Object)

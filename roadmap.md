@@ -4,7 +4,6 @@
 
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
-- Change testAdd family of tests to check the returned AugList
 - Test pulling from dev to a d- branch
 
 ## Possible features
@@ -83,6 +82,7 @@
 
 ## Completed
 
+- Change testAdd family of tests to check the returned AugList
 - `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
 - Separate out Special Inits by constructor
 - FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls

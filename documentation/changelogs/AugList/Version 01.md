@@ -54,9 +54,10 @@ These methods have applications in set theory, probability, statistics, function
 
 - Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
 - For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
-- `toString()` bug where attempting to print a list with nulls threw an exception
-- Constructors bug where supplying null threw an exception
-- `isEqual()` bug where `"[1.0]"` != `"[1.0]"`
+- `toString()` bug where attempting to print a list with nulls throws a `NullPointerException`.
+- Constructors bug where supplying null threw an `NullPointerException`.
+- `isEqual()` bug where `"[1.0]"` != `"[1.0]"`.
+- `addAll(AugList<T>)` / `addAll(T...)` bug where passing a `null` throws `NullPointerException`
 - Insufficient tests in `testToString()` to test for an empty list or a list with nulls
 - No `testSwap()`
 - Documentation talks about adding the method `getAndAppendIfEmpty()`  method was commented out and never available to use.

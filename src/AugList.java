@@ -123,7 +123,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Creates a new, empty, non-null {@link AugList}.
      * @see         tests.AugListTest#testInstantiateBlank()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList() {
@@ -136,7 +136,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The varargs array of objects that will make up this {@link AugList}.
      *              <p>If {@code elements.equals(null)}, the resulting {@link AugList} is empty.
      * @see         tests.AugListTest#testInstantiateVarargs()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     @SafeVarargs
@@ -155,7 +155,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The {@link Enumeration} object to source the elements for this {@link AugList} from.
      *              <p>If {@code enumeration.equals(null)}, the resulting {@link AugList} is empty.
      * @see         tests.AugListTest#testInstantiateEnumeration()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Enumeration<T> enumeration) {
@@ -173,7 +173,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The {@link Iterator} object to source the elements for this {@link AugList} from.
      *              If {@code iterator.equals(null)}, the resulting {@link AugList} is empty.
      * @see         tests.AugListTest#testInstantiateIterator()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
      * @tags        Constructor
      */
     public AugList(Iterator<T> iterator) {
@@ -190,7 +190,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       iterable
      *              The {@link Iterable} object to source the elements for this {@link AugList} from.
      * @see         tests.AugListTest#testInstantiateIterable()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Iterable<T> iterable) {
@@ -207,7 +207,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       listIterator
      *              The {@link ListIterator} object to source the elements this {@link AugList} from.
      * @see         tests.AugListTest#testInstantiateListIterator()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)} ,{@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)} ,{@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(ListIterator<T> listIterator) {
@@ -226,7 +226,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              How many times each value should be repeated.
      *              If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
      * @see         tests.AugListTest#testInstantiatePairs()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Iterable<T> values, Iterable<Integer> counts) {
@@ -257,7 +257,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       spliterator
      *              The {@link Spliterator} object to source the elements for this {@link AugList} from.
      * @see         tests.AugListTest#testInstantiateSpliterator()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Spliterator<T> spliterator) {
@@ -272,7 +272,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       stream
      *              The {@link Stream} object to source the elements for this {@link AugList} from.
      * @see         tests.AugListTest#testInstantiateStream()
-     * @overloads   {@link #AugList()}, {@link #AugList(AugList, AugList)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
     public AugList(Stream<T> stream) {
@@ -307,8 +307,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...)}
      * @tags        Mutator
      */
-    public AugList<T> addAll(AugList<T> elements) {
-        ls.addAll(elements.ls);
+    public AugList<T> addAll(Iterable<T> elements) {
+        if (Objects.isNull(elements)) {
+            return this;
+        }
+        AugList<T> ALelements = new AugList<T>(elements);
+        ls.addAll(ALelements.ls);
         return this;
     }
 
@@ -324,6 +328,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SafeVarargs
     public final AugList<T> addAll(T... elements) {
+        if (Objects.isNull(elements)) {
+            return this;
+        }
         ls.addAll(new AugList<T>(elements).ls);
         return this;
     }
