@@ -960,12 +960,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * @return  A random element of this {@link AugList}.
+     * @throws  NoSuchElementException
+     *          {@code this.size() == 0}
      * @see     #get(int)
      * @see     tests.AugListTest#testGetRandom()
      * @note    Randomized variant of {@link #get()}.
      * @tags    Terminator
      */
     public T getRandom() {
+        if (size() == 0) {
+            throw new NoSuchElementException();
+        }
         return ls.get((new Random()).nextInt(ls.size()));
     }
 

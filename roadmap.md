@@ -83,6 +83,7 @@
 
 ## Completed
 
+- Test gets from empty lists (and throw `NoSuchElementException` where necessary)
 - `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
 - Change testAdd family of tests to check the returned AugList
 - `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`

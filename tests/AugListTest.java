@@ -686,9 +686,13 @@ public class AugListTest implements MultiTest {
     @Test
     public void testGetRandom() {
         setupTestData();
+        assertTrue(testDataDouble.getRandom().getClass().toGenericString().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.contains(testDataDouble.getRandom()));
         assertTrue(testDataInt.contains(testDataInt.getRandom()));
         assertTrue(testDataString.contains(testDataString.getRandom()));
+        assertThrows(NoSuchElementException.class, () -> {
+            new AugList<Integer>().getRandom();
+        });
     }
 
     /**
