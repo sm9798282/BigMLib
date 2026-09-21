@@ -13,8 +13,9 @@
 
 ## Behavioural changes
 
-- `AugList<T>.toString()` now represents `null` as `"*null*"`.
-- `AugList<T>.equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for enhanced V1 behaviour.
+- `toString()` now represents `null` as `"*null*"`.
+- V1 `equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for enhanced V1 behaviour.
+- V1 `applyAll(Function<? super T, T>)` changed to V2 `applyAll(UnaryOperator<T>)`
 
 ## Naming changes
 

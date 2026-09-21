@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 //import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 //import java.lang.reflect.Field;
 //import java.lang.reflect.ParameterizedType;
 import java.util.stream.Stream;
@@ -52,7 +53,7 @@ import java.util.stream.Stream;
  *
  * <h3>Replacements</h3>
  *
- * - Replaced {@link List#replaceAll(java.util.function.UnaryOperator)} with {@link AugList#oneToOneMap(Function)}
+ * - Replaced {@link List#replaceAll(java.util.function.UnaryOperator)} with {@link AugList#applyAll(UnaryOperator)}
  *
  * <h3>Additions</h3>
  *
@@ -411,19 +412,21 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Applies the given {@link Function} to all elements of this {@link AugList}
+     * Applies the given {@link UnaryOperator} to all elements of this {@link AugList}
      * <p>For a Terminator method, use {@link #forEach()}.</p>
      * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   func
-     *          The {@link Function} in question.
+     *          The {@link UnaryOperator} in question.
      * @return  This {@link AugList}, with each element transformed as according to the function.
      * @see     #oneToOneMap(Function)
      * @see     #forEach(Consumer)
+     * @see     List#replaceAll(UnaryOperator)
      * @see     tests.AugListTest#testApplyAll()
      * @note    Inspired by the C# function {@code List<T>.ConvertAll(Converter<T, TOutput>)}.
+     *          <p>Very similar to {@link List#replaceAll(UnaryOperator)}.
      * @tags    Mutator
      */
-    public AugList<T> applyAll(Function<? super T, T> func) {
+    public AugList<T> applyAll(UnaryOperator<T> func) {
         for (int i = 0; i < ls.size(); i++) {
             ls.set(i, func.apply(ls.get(i)));
         }

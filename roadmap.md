@@ -5,13 +5,14 @@
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - Test pulling from dev to a d- branch
+- Test nulls
+- Test non-primitive return types (IN PROGRESS)
 
 ## Possible features
 
 ### AugList V2 Planned
 
 - Parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param (IN PROGRESS)
-- `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
 - `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write
 - Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-write
@@ -82,6 +83,7 @@
 
 ## Completed
 
+- `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
 - Change testAdd family of tests to check the returned AugList
 - `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
 - Separate out Special Inits by constructor

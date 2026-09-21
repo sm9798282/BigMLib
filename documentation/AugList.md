@@ -43,7 +43,7 @@ Provided with AugList V2 are the following:
 - `allIndicesOf(T)`
 - `allSatisfy(Predicate<? super T>)`
 - `anySatisfy(Predicate<? super T>)`
-- `applyAll(Function<? super T, T>)`
+- `applyAll(UnaryOperator<T>)`
 - `chunk(int)`
 - `clear()`
 - `clone()`
