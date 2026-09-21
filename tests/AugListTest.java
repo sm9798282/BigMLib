@@ -325,6 +325,9 @@ public class AugListTest implements MultiTest {
     @Test
     public void testClone() {
         setupTestData();
+        assertTrue(testDataDouble != testDataDouble.clone());
+        assertTrue(testDataDouble.clone().isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.getClass() == (testDataDouble.clone().getClass()));
         // assertNotEquals checks for both contents and memory locations being identical to throw (which by use of clone() will never be true.)
         assertTrue(testDataDouble.clone().oneToOneMap(x -> x).isEquivalent(testDataDouble));
         assertTrue(testDataString.clone().distinctCopy().isEquivalent(testDataString.distinctCopy()));
@@ -332,6 +335,7 @@ public class AugListTest implements MultiTest {
         assertNotSame(testDataDouble, testDataDouble.clone());
         assertNotSame(testDataString, testDataString.clone());
         assertNotSame(testDataInt, testDataInt.clone());
+        assertTrue(testDataDouble.parameterizedTypeDesc().equals(testDataDouble.clone().parameterizedTypeDesc()));
     }
 
     /**

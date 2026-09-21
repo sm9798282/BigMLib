@@ -32,6 +32,7 @@ Parameters have (except where additional context is helpful) been renamed to fol
 
 ## Bugfixes
 
+- `clone()`'s Class now matches this Class i.e. `this.getClass() == this.clone().getClass()`
 - `toString()` no longer throws `NullPointerException` when attempting to represent `null`
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
 - Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)

@@ -468,21 +468,31 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Replaces {@link List#clear()}: Returns {@code this}, not {@code void}.
      * @tags    Mutator
      */
-    public AugList<T> clear()
-    {
+    public AugList<T> clear() {
         ls.clear();
         return this;
     }
 
     // Notably, works differently to ArrayList<T>.clone() in that the return type is an AugList<T>.
     /**
-     * @return  A new {@code AugList} with identical contents as this one.
+     * Creates and returns a new {@link AugList} with identical contents but a different reference.
+     * @return  A new {@link AugList} with identical contents as this one.
      * @see     tests.AugListTest#testClone()
-     * @note    Replaces {@link Object#clone()}: Return type {@link AugList} (as opposed to {@link Object})
+     * @note    Replaces {@link Object#clone()}: Return type {@link AugList}, as opposed to an {@link Object}.
+     *          <p>Also note that:</p>
+     *          <pre>this.clone() != this, this.clone().isEquivalent(this), this.clone().getClass() == this.getClass()</pre>
      * @tags    Creator
      */
     public AugList<T> clone() {
-        AugList<T> clone = new AugList<T>() {};
+        /**
+         * If clone is defined as `new AugList<T>() {}`,
+         *  Then the resulting Class string is "class src.AugList$NN" (for some number NN)
+         * However, with clone defined as `new AugList<T>()`,
+         *  Then the resulting Class string is "class src.AugList".
+         * 
+         * The latter is preferable so that `this.getClass() == this.clone().getClass()`.
+         */
+        AugList<T> clone = new AugList<T>();
         for (T e : ls) {
             clone.add(e);
         }

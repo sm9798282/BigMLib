@@ -58,6 +58,7 @@ These methods have applications in set theory, probability, statistics, function
 - Constructors bug where supplying null threw an `NullPointerException`.
 - `isEqual()` bug where `"[1.0]"` != `"[1.0]"`.
 - `addAll(AugList<T>)` / `addAll(T...)` bug where passing a `null` throws `NullPointerException`
+- `clone()` bug where `this.getClass() != this.clone().getClass()`
 - Insufficient tests in `testToString()` to test for an empty list or a list with nulls
 - No `testSwap()`
 - Documentation talks about adding the method `getAndAppendIfEmpty()`  method was commented out and never available to use.
