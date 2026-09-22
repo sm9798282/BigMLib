@@ -52,6 +52,7 @@ Provided with AugList V2 are the following:
 - `boolean______________containsAll(T...)`
 - `boolean______________containsAny(AugList<T>)`
 - `boolean______________containsAny(T...)`
+- `int__________________countOf()`
 - `AugList<Integer>_____countsOfElements()`
 - `AugList<T>___________distinctCopy()`
 - `AugList<T>___________distinctSelf()`
@@ -135,6 +136,13 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________withoutLast()`
 - `AugList<T>___________withoutRandom()`
 - `AugList<T>___________withoutWhere(Predicate<? super T>)`
+
+## Internal methods
+
+Some methods share large amounts of their logic.
+By unifying their code, the Single Source of Truth principle can be followed, and thus debugging time reduced.
+
+- `boolean containsBulk(AugList<T>, boolean)`
 
 ## See Also
 

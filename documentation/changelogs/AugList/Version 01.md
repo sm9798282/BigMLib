@@ -25,7 +25,7 @@ Features included with AugList V1 include:
 - `.add(T)` has return type `AugList<T>` (as opposed to always returning `true`)
 - `.clone()` has return type `AugList<T>` (as opposed to `Object`)
 - `.subList(int, int)` has return type `AugList<T>` (as opposed to `List<T>`)
-- `isEquals()` overridden to match AugLists, Lists and Strings so that for `AugList<T>` A, `A.clone().equals(A) == true`
+- `equals()` overridden to match AugLists, Lists and Strings so that for `AugList<T>` A, `A.clone().equals(A) == true`
 - `toString()` overridden to give an actually acceptable representation
 - `List.add(int, T)` renamed to `insert(int, T)`
 - `List<T>.addAll(int, Collection<?>)` replaced by `insertAll(int, AugList<T>)`
@@ -55,7 +55,7 @@ These methods have applications in set theory, probability, statistics, function
 - Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
 - For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
 - `toString()` bug where attempting to print a list with nulls throws a `NullPointerException`.
-- Constructors bug where supplying null threw an `NullPointerException`.
+- Constructors and `allIndices()` bug where supplying `null` throws a `NullPointerException`.
 - `isEqual()` bug where `"[1.0]"` != `"[1.0]"`.
 - `addAll(AugList<T>)` / `addAll(T...)` bug where passing a `null` throws `NullPointerException`
 - `clone()`, `filterCopy()`, `filterSelf()`, `listIntersection()`, `setIntersection()`, `setUnion()`, `skipWhile()` and `takeWhile()`'s bug where i.e. `this.getClass() != this.clone().getClass()`

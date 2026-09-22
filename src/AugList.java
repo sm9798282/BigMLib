@@ -46,23 +46,22 @@ import java.util.stream.Stream;
  *
  * <h3>Overloads</h3>
  *
- * - Constructors will take any {@code ? implements} {@link Iterable}, {@link Iterator}, {@link Spliterator}, or {@link Stream}.</p>
- * - Varargs constructor i.e. {@code new AugList<Integer>(1, 2, 3, 4)}.</p>
+ * - Constructors will take any {@link Arrays Array, Varargs Array}, {@link Iterable}, {@link Iterator}, {@link ListIterator}, {@link Spliterator}, or {@link Stream}.</p>
  * - Constructor and paired value-count overloads i.e. {@code new AugList<String>(new AugList<Integer>(5, 2), new AugList<String>("a", "bc"))}.</p>
- * - Adds varargs overloads for select bulk-processing methods, such as {@link #addAll(T...)}, {@link #containsAll(T...)} and {@link #removeAll(Object...)}.
+ * - Adds varargs overloads for select bulk-processing methods, such as {@link #addAll(T...) addAll(T...)}, {@link #containsAll(T...) containsAll(T...)} and {@link #removeAll(T...) removeAll(T...)}.
  *
  * <h3>Replacements</h3>
  *
- * - Replaced {@link List#replaceAll(java.util.function.UnaryOperator)} with {@link AugList#applyAll(UnaryOperator)}
+ * - Replaces {@link List#replaceAll(UnaryOperator)} with {@link AugList#applyAll(UnaryOperator)}
  *
  * <h3>Additions</h3>
  *
  * Adds the following methods:<p>
  * - {@link #allIndicesOf(Object)},</p>
  * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
- * - {@link #applyAll(Function)}, {@link #oneToOneMap(Function)},</p>
+ * - {@link #applyAll(UnaryOperator)}, {@link #oneToOneMap(Function)},</p>
  * - {@link #chunk(int)}, {@link #fragment(int)},</p>
- * - {@link #containsAny(AugList)}, {@link #containsAny(T...)}</p>
+ * - {@link #containsAny(AugList)}, {@link #containsAny(T...) containsAny(T...)}</p>
  * - {@link #countsOfElements()},</p>
  * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
  * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
@@ -73,11 +72,11 @@ import java.util.stream.Stream;
  * - {@link #retainAll(java.util.Collection)}, {@link #toCollection()},</p>
  * - {@link #setDifference(AugList)}, {@link #setIntersection(AugList)}, {@link #setUnion(AugList)},</p>
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},</p>
- * - {@link #swap(int, int)}, {@link swapRandom(int)}, {@link #swapRandom()},</p>
+ * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},</p>
  * - {@link #toEnumeration()},</p>
  * - {@link #without(T)}, {@link #withoutAll(AugList)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
  * - {@link #getRandom()}, {@link #removeRandom()},</p>
- * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(AugList)}, {@link #insertAllAtRandom(T...)},</p>
+ * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(AugList)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)},</p>
  * - {@link #sample(int, boolean)},</p>
  * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
  *
@@ -301,11 +300,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Appends all given elements to this {@link AugList}.
      * @param       elements
-     *              The elements in question.
+     *              The elements in question. If {@code null}, returns {@code this}.
      * @return      This {@link AugList}, with the given elements appended to it.
      * @see         tests.AugListTest#testAddAll()
      * @note        Replaces {@link ArrayList#addAll()}: Returns {@code this}, not {@code void}.
-     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...)}
+     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...) addAll(T...)}
      * @tags        Mutator
      */
     public AugList<T> addAll(Iterable<T> elements) {
@@ -320,11 +319,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Appends all given elements to this {@link AugList}.
      * @param       elements
-     *              The elements in question.
+     *              The elements in question. If {@code null}, returns {@code this}.
      * @return      This {@link AugList}, with the given elements appended to it.
      * @see         tests.AugListTest#testAddAllVarargs()
      * @note        Varargs variant for {@link ArrayList#addAll()}.
-     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...)}
+     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...) addAll(T...)}
      * @tags        Mutator
      */
     @SafeVarargs
@@ -366,7 +365,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     public AugList<Integer> allIndicesOf(T element) {
         AugList<Integer> ret = new AugList<Integer>();
         for (int i = 0; i < ls.size(); i++) {
-            if (ls.get(i).equals(element)) {
+            if (Objects.isNull(element)) {
+                if (Objects.isNull(ls.get(i))) {
+                    ret.add(i);
+                }
+            }
+            else if (ls.get(i).equals(element)) {
                 ret.add(i);
             }
         }
@@ -376,8 +380,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Sees if all elements pass the given condition.
      * @param   condition
-     *          The condition in question.
-     * @return  {@code true} if all elements satisfy the condition, and {@code false} otherwise.
+     *          The condition in question. If {@code null}, returns {@code false}.
+     * @return  {@code true} if all elements satisfy the given condition, and {@code false} otherwise.
      * @see     #anySatisfy(Predicate)
      * @see     tests.AugListTest#testAllSatisfy()
      * @note    Based upon the C# methods {@code IEnumerable<T>.All()} and {@code List<T>.TrueForAll()}.
@@ -385,7 +389,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public boolean allSatisfy(Predicate<? super T> condition) {
         for (T e : ls) {
-            if (!condition.test(e)) {
+            if (Objects.isNull(condition) || !condition.test(e)) {
                 return false;
             }
         }
@@ -395,8 +399,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Sees if any element passes the given condition.
      * @param   condition
-     *          The condition in question.
-     * @return  {@code true} if any element satisfies the condition, and {@code false} otherwise.
+     *          The condition in question. If {@code null}, returns {@code false}.
+     * @return  {@code true} if any element satisfies the given condition, and {@code false} otherwise.
      * @see     #allSatisfy(Predicate)
      * @see     tests.AugListTest#testAnySatisfy()
      * @note    Inspired by {@link #allSatisfy(Predicate)}.
@@ -404,7 +408,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public boolean anySatisfy(Predicate<? super T> condition) {
         for (T e : ls) {
-            if (condition.test(e)) {
+            if (Objects.isNull(condition) || condition.test(e)) {
                 return true;
             }
         }
@@ -416,7 +420,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * <p>For a Terminator method, use {@link #forEach()}.</p>
      * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   func
-     *          The {@link UnaryOperator} in question.
+     *          The {@link UnaryOperator} in question. If {@code null}, does not alter this {@link AugList}.
      * @return  This {@link AugList}, with each element transformed as according to the function.
      * @see     #oneToOneMap(Function)
      * @see     #forEach(Consumer)
@@ -427,8 +431,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> applyAll(UnaryOperator<T> func) {
-        for (int i = 0; i < ls.size(); i++) {
-            ls.set(i, func.apply(ls.get(i)));
+        if (!Objects.isNull(func)) {
+            for (int i = 0; i < ls.size(); i++) {   
+                ls.set(i, func.apply(ls.get(i)));
+            }
         }
         return this;
     }
@@ -459,6 +465,25 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             i++;
         }
         return ret;
+        /**
+         * There is no way to supply null to this method without an earlier warning being produced.
+         * Consider the following examples:
+         * 
+         * int j = null; // Produces compile error (type mismatch)
+         * ALD.chunk(j);
+         * 
+         * AND
+         * 
+         * Integer i = null;
+         * AugList<Double> ALD = new AugList<Double>(1.0, 1.0, 1.0);
+         * ALD.chunk(i); // Produces runtime exception (cannot invoke methods on null)
+         * 
+         * In other words, it is impossible that:
+         * 
+         * Objects.isNull(size) == true
+         * 
+         * Hence there is no need to handle the such.
+         */
     }
 
     /**
@@ -515,113 +540,160 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
     
     /**
-     * Sees if this {@link AugList} contains all the given elements.
-     * @param       elements
-     *              The elements in question.
-     * @return      {@code true} if all elements are found, and {@code false} otherwise.
-     * @see         #contains(Object)
-     * @see         #containsAny(AugList)
-     * @see         #containsAny(T...)
-     * @see         tests.AugListTest#testContainsAll()
-     * @note        Replaces {@link java.util.Collection#containsAll(java.util.Collection)}
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}
-     * @tags        Terminator
+     * Internal method used to calculate {@link #containsAny(AugList)}, {@link #containsAny(T...)}, {@link #containsAll(AugList)} and {@link #containsAll(T...) containsAll(T...)}.
+     * 
+     * @param   elements
+     *          The elements to use. (see param {@code allOrAny})
+     * @param   allOrAny
+     *          If {@code true}, returns {@code true} if ALL elements are present.
+     *          If {@code false}, returns {@code true} if ANY element is present.
+     * @return  The desired result. (see param {@code allOrAny})
+     * @see     #containsAll(AugList)
+     * @see     #containsAll(T...) containsAll(T...)
+     * @see     #containsAny(AugList)
+     * @see     #containsAny(T...) containsAny(T...)
+     * @tags    Terminator
      */
-    public boolean containsAll(AugList<T> elements) {
-        for (T e : elements) {
-            if (!ls.contains(e)) {
-                return false;
+    private boolean containsBulk(AugList<T> elements, boolean allOrAny) {
+        if (!Objects.isNull(elements)) {
+            for (int i = 0; i < elements.size(); i++) {
+                if (Objects.isNull(elements.get(i))) {
+                    if (!Objects.isNull(ls.get(i))) {
+                        return !allOrAny;
+                    }
+                }
+                else if ((allOrAny ^ ls.contains(elements.get(i)))) {
+                    return !allOrAny;
+                }
             }
         }
-        return true;
+        return allOrAny;
     }
 
     /**
      * Sees if this {@link AugList} contains all the given elements.
      * @param       elements
-     *              The elements in question.
+     *              The elements in question. If {@code null}, returns {@code true}.
      * @return      {@code true} if all elements are found, and {@code false} otherwise.
      * @see         #contains(Object)
      * @see         #containsAny(AugList)
-     * @see         #containsAny(T...)
+     * @see         #containsAny(T...) containsAny(T...)
+     * @see         #containsBulk(AugList, boolean)
+     * @see         tests.AugListTest#testContainsAll()
+     * @note        Replaces {@link java.util.Collection#containsAll(java.util.Collection)}
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}
+     * @tags        Terminator
+     */
+    public boolean containsAll(AugList<T> elements) {
+        return containsBulk(elements, true);
+    }
+
+    /**
+     * Sees if this {@link AugList} contains all the given elements.
+     * @param       elements
+     *              The elements in question. If {@code null}, returns {@code true}.
+     * @return      {@code true} if all elements are found, and {@code false} otherwise.
+     * @see         #contains(Object)
+     * @see         #containsAny(AugList)
+     * @see         #containsAny(T...) containsAny(T...)
+     * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAllVarargs()
      * @note        Varargs overload for {@link #containsAll(AugList)}.
      *              <p>Functionality can be replicated with {@code this.allSatisfy(e -> this.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
      * @tags        Terminator
      */
     @SafeVarargs
     public final boolean containsAll(T... elements) {
-        for (T e : elements) {
-            if (!ls.contains(e)) {
-                return false;
-            }
-        }
-        return true;
+        return containsAll(new AugList<T>(elements));
     }
 
     /**
      * Sees if this {@link AugList} contains any of the given elements.
      * @param       elements
-     *              The elements in question.
+     *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
      * @see         #contains(Object)
      * @see         #containsAll(AugList)
-     * @see         #containsAll(T...)
+     * @see         #containsAll(T...) containsAll(T...)
+     * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAny()
      * @note        Inspired by {@link #containsAll(AugList)}.
      *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
      * @tags        Terminator
      */
     public final boolean containsAny(AugList<T> elements) {
-        for (T e : elements) {
-            if (ls.contains(e)) {
-                return true;
-            }
-        }
-        return false;
+        return containsBulk(elements, false);
     }
 
     /**
      * Sees if this {@link AugList} contains any of the given elements.
      * @param       elements
-     *              The elements in question.
+     *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
      * @see         #contains(Object)
      * @see         #containsAll(AugList)
-     * @see         #containsAll(T...)
+     * @see         #containsAll(T...) containsAll(T...)
+     * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAnyVarargs()
      * @note        Varargs overload of {@link #containsAny(AugList)}
      *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...)}.
+     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
      * @tags        Terminator
      */
     @SafeVarargs
     public final boolean containsAny(T... elements) {
-        for (T e : elements) {
-            if (ls.contains(e)) {
-                return true;
-            }
-        }
-        return false;
+        return containsAny(new AugList<T>(elements));
     }
 
     /**
-     * Counts the number of times each element appears and returns a Hashtable with the results.
-     * @return  A {@link Hashtable} that pairs each element with its frequency.
+     * Returns the number of times the given element occurs.
+     * @param   element
+     *          The element in question.
+     * @return  The number of times that element occurs.
+     * @see     #countsOfElements()
+     * @see     tests.AugListTest#testCountOf()
+     * @tags    Terminator
+     */
+    public int countOf(T element) {
+        Integer count = 0;
+        if (Objects.isNull(element)) {
+            for (int i = 0; i < size(); i++) {
+                if (Objects.isNull(get(i))) {
+                    count++;
+                }
+            }
+        }
+        else {
+            count = countsOfElements().get(element);
+            if (Objects.isNull(count)) {
+                return 0;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts the number of times each non-null element appears and returns a {@link Hashtable} with the results.
+     * @return  A {@link Hashtable} that pairs each non-null element with its frequency.
+     * @see     #countOf()
      * @see     tests.AugListTest#testCountsOfElements()
+     * @note    Does NOT provide a count of the number of nulls.
+     *          <p>To count the number of nulls, see {@link #countOf(T)}.
      * @tags    Converter
      */
     public Hashtable<T, Integer> countsOfElements() {
-        Hashtable<T,Integer> ret = new Hashtable<T, Integer>() {};
+        Hashtable<T, Integer> ret = new Hashtable<T, Integer>() {};
         for (int i = 0; i < ls.size(); i++) {
             T key = ls.get(i);
-            if (ret.containsKey(key)) {
-                ret.put(key, ret.get(key) + 1);
-            }
-            else {
-                ret.put(key, 1);
+            if (!Objects.isNull(key)) {
+                if (ret.containsKey(key)) {
+                    ret.put(key, ret.get(key) + 1);
+                }
+                else {
+                    ret.put(key, 1);
+                }
             }
         }
         return ret;
@@ -1039,7 +1111,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      This {@link AugList}, with the given elements inserted at the given index.
      * @see         #insert(int, Object)
      * @see         #insertAllAtRandom(AugList)
-     * @see         #insertAllAtRandom(T...) 
+     * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...) 
      * @see         tests.AugListTest#testInsertAll()
      * @note        Replaces {@link ArrayList#addAll(int, java.util.Collection)}:
      *              Elements parameter type changed to AugList, returns {@code this}, not {@code true}.
@@ -1062,7 +1134,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      This {@link AugList}, with the given elements inserted at the given index.
      * @see         #insert(int, Object)
      * @see         #insertAllAtRandom(AugList)
-     * @see         #insertAllAtRandom(T...)
+     * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...)
      * @see         tests.AugListTest#testInsertAllVarargs()
      * @note        Varargs overload of {@link #insertAll(int, AugList)}
      * @overloads   {@link #insertAll(int, AugList)}
@@ -1080,11 +1152,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question.
      * @return      This {@link AugList}, with the given elements inserted at random.
      * @see         #insertAll(int, AugList)
-     * @see         #insertAll(T...)
+     * @see         #insertAll(T...) insertAll(T...)
      * @see         #insertAtRandom(Object)
      * @see         tests.AugListTest#testInsertAllAtRandom()
      * @note        Randomized bulk non-varargs variant of {@link #insert(int, Object)}
-     * @overloads   {@link #insertAllAtRandom(T...)}
+     * @overloads   {@link #insertAllAtRandom(T...)  insertAllAtRandom(T...)}
      * @tags        Mutator
      */
     public AugList<T> insertAllAtRandom(AugList<T> elements) {
@@ -1100,7 +1172,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question.
      * @return      This {@link AugList}, with the given elements inserted at random.
      * @see         #insertAll(int, AugList)
-     * @see         #insertAll(T...)
+     * @see         #insertAll(T...) insertAll(T...)
      * @see         #insertAtRandom(Object)
      * @see         tests.AugListTest#testInsertAllAtRandomVarargs()
      * @note        Randomized bulk varargs variant of {@link #insert(int, Object)}
@@ -1122,7 +1194,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This list, with the given element inserted somewhere into this AugList.
      * @see     #insert(int, Object)
      * @see     #insertAllAtRandom(AugList)
-     * @see     #insertAllAtRandom(T...)
+     * @see     #insertAllAtRandom(T...)  insertAllAtRandom(T...)
      * @see     tests.AugListTest#testInsertAtRandom()
      * @note    Randomized variant of {@link #insert(T, int)}
      * @tags    Mutator
@@ -1425,7 +1497,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The {@link Object} to remove if present.
      * @return  {@code true} if removed, and {@code false} if it was not present.
      * @see     #removeAll(AugList)
-     * @see     #removeAll(T...)
+     * @see     #removeAll(T...) removeAll(T...)
      * @see     #removeAt(int)
      * @see     #removeIf(Predicate)
      * @see     #removeLast()
@@ -1452,7 +1524,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         java.util.Collection#retainAll(java.util.Collection)
      * @see         tests.AugListTest#testRemoveAll()
      * @note        Replaces {@link List#removeAll(java.util.Collection)}.
-     * @overloads   {@link #removeAll(T...)}
+     * @overloads   {@link #removeAll(T...) removeAll(T...)}
      * @tags        Terminator
      */
     public boolean removeAll(AugList<T> elements) {
@@ -2097,7 +2169,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Attempts to remove the first instance of each of the supplied items, if present, from this {@link AugList}.
-     * <p>For a Terminator method, use {@link #removeAll(T...)}.
+     * <p>For a Terminator method, use {@link #removeAll(T...) removeAll(T...)}.
      * @param       elements
      *              The elements in question.
      * @return      {@code this}.
@@ -2105,7 +2177,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         #removeAll(AugList)
      * @see         tests.AugListTest#testWithoutAllVarargs()
      * @overloads   {@link #withoutAll(AugList)}
-     * @note        Mutator variant of {@link #removeAll(T...)}.
+     * @note        Mutator variant of {@link #removeAll(T...) removeAll(T...)}.
      * @tags        Mutator
      */
     @SafeVarargs

@@ -37,6 +37,7 @@ Parameters have (except where additional context is helpful) been renamed to fol
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
 - Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)
 - Passing `null` into `addAll(AugList<T>)` / `addAll(T...)` returns this (as opposed to throwing `NullPointerException`)
+- `allIndicesOf(T)`, `allSatisfy(Predicate<? super T>)`, `anySatisfy(Predicate<? super T>)`, `containsAll(AugList<T>)`, `containsAll(T...)`, `countsOfElements()` now work as would be expected when provided `null` (as opposed to throwing `NullPointerException`)
 
 ## Testing changes
 

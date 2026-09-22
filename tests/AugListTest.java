@@ -18,6 +18,7 @@ import java.util.LinkedList;
 //import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.PriorityQueue;
 //import java.util.SortedSet;
 import java.util.Spliterator;
@@ -73,6 +74,7 @@ public class AugListTest implements MultiTest {
         testContainsAllVarargs();
         testContainsAny();
         testContainsAnyVarargs();
+        testCountOf();
         testCountsOfElements();
         testDistinctCopy();
         testDistinctSelf();
@@ -164,7 +166,7 @@ public class AugListTest implements MultiTest {
      * @see src.AugList#add(Object)
      */
     @Test
-    public void testAdd() {
+    public void testAdd() { 
         setupTestData();
         // Check append behaviour
         testDataDouble.add(7.0);
@@ -175,6 +177,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !]"));
         // Check functional paradigm style program is plausible
         assertTrue(testDataInt.add(25).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
+        // Check nulls
+        assertTrue(Objects.isNull((testDataDouble.add(null)).get(testDataDouble.size() - 1)));
     }
 
     /**
@@ -233,6 +237,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.addFirst("!").getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataInt.addFirst(25).isEquivalent("[25, 7, 11, 19, -24, 117, 145, -56, 43]"));
+        // Check nulls
+        assertTrue(Objects.isNull((testDataDouble.addFirst(null)).get(0)));
     }
 
     /**
@@ -247,8 +253,9 @@ public class AugListTest implements MultiTest {
         //testDataStr.oneToOneMap(s -> s.toLowerCase()).forEach(System.out::println);
         //System.out.println(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
         assertTrue(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
-        System.out.println(testDataString.allIndicesOf("the").parameterizedTypeDesc().equals("public final class java.lang.Integer"));
+        assertTrue(testDataString.allIndicesOf("the").parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         assertTrue(testDataInt.add(7).allIndicesOf(7).isEquivalent("[0, 8]"));
+        assertTrue(new AugList<Double>(null, null, 0.0).allIndicesOf(null).isEquivalent("[0, 1]"));
     }
 
     /**
@@ -265,6 +272,7 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataString.allSatisfy(s -> s.length() == 1));
         assertTrue(testDataInt.allSatisfy(i -> -60 < i && i < 150));
         assertFalse(testDataInt.allSatisfy(i -> 0 < i && i < 100));
+        assertFalse(testDataDouble.allSatisfy(null));
     }
 
     /**
@@ -281,6 +289,7 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataString.anySatisfy(s -> s.length() > 100));
         assertTrue(testDataInt.anySatisfy(i -> 3 < i && i < 8));
         assertFalse(testDataInt.anySatisfy(i -> 4 < i && i < 6));
+        assertFalse(testDataDouble.allSatisfy(null));
     }
 
     /**
@@ -296,6 +305,7 @@ public class AugListTest implements MultiTest {
         assertTrue(mappedALD.isEquivalent("[2.0, 3.0, 8.11, -1.5, 4.1415926]"));
         assertTrue(testDataString.applyAll(s -> s.substring(0, 1)).isEquivalent("[T, q, b, f, j, o, t, l]"));
         assertTrue(testDataInt.applyAll(i -> 2 * i).isEquivalent("[14, 22, 38, -48, 234, 290, -112, 86]"));
+        assertTrue(testDataDouble.applyAll(null).isEquivalent(testDataDouble));
     }
 
     /**
@@ -367,6 +377,8 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataString.contains("Lizard"));
         assertTrue(testDataInt.contains(11));
         assertFalse(testDataInt.contains(17));
+        assertFalse(testDataString.contains(null));
+        assertTrue(new AugList<Character>(' ', null).contains(null));
     }
 
     /**
@@ -386,6 +398,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataString.containsAll(new AugList<String>("Lizard")));
         assertTrue(testDataInt.containsAll(new AugList<Integer> (7, 11)));
         assertFalse(testDataInt.containsAll(new AugList<Integer>(7, 11, 17)));
+        AugList<Double> nullAL = null;
+        assertTrue(testDataDouble.containsAll(nullAL));
+        assertTrue(new AugList<Double>(null, 1.0).containsAll(nullAL));
+        assertTrue(new AugList<Double>(null, 1.0).containsAll(new AugList<Double>(null, 1.0)));
     }
 
     /**
@@ -405,6 +421,10 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataString.containsAll("Lizard"));
         assertTrue(testDataInt.containsAll(7, 11));
         assertFalse(testDataInt.containsAll(7, 11, 17));
+        Double[] nullArr = null;
+        assertTrue(testDataDouble.containsAll(nullArr));
+        assertTrue(new AugList<Double>(null, 1.0).containsAll(nullArr));
+        assertTrue(new AugList<Double>(null, 1.0).containsAll(null, 1.0));
     }
 
     /**
@@ -412,7 +432,7 @@ public class AugListTest implements MultiTest {
      * @see src.AugList#containsAny(AugList)
      */
     @Test
-    public void testContainsAny(){
+    public void testContainsAny() {
         setupTestData();
         // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.containsAny(new AugList<Double>(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)));
@@ -433,6 +453,19 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.containsAny("", "A", "an", "the", "this", "that", "there"));
         assertTrue(testDataInt.containsAny(2, 3, 5, 7, 11, 13, 17, 19));
         assertFalse(testDataDouble.containsAny());
+    }
+
+    /**
+     * JUnit tester for Individual Frequency
+     * @see src.AugList#countOf()
+     */
+    @Test
+    public void testCountOf() {
+        setupTestData();
+        assertTrue(testDataDouble.countOf(null) == 0);
+        assertTrue(testDataDouble.countOf(7.11) == 1);
+        assertTrue(new AugList<Double>(null, null, 1.0).countOf(null) == 2);
+        assertTrue(new AugList<Double>(new AugList<Double>(7.0), new AugList<Integer>(11)).countOf(7.0) == 11);
     }
 
     /**
@@ -466,6 +499,7 @@ public class AugListTest implements MultiTest {
                 fail();
             }
         });
+        assertTrue(new AugList<Double>(1.0, null).countsOfElements().size() == 1);
     }
 
     /**

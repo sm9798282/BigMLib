@@ -5,7 +5,9 @@
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - Test pulling from dev to a d- branch
-- Test nulls
+- Test nulls (In Progress)
+- Test with AugList<?>
+- Combine Basic Overloads
 
 ## Possible features
 
