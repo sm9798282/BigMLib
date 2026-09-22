@@ -3,7 +3,7 @@
 ## Additions
 
 - `equals()` reverted to `Object.equals()` behaviour, with `isEquivalent(Object)` getting enhanced V1 `equals()` behaviour
-- New Constructor from `? implements Iterable<T>`, replaces Constructors from `ArrayList<T>` and `List<T>`
+- New Constructor from `Iterable<T>`, replaces Constructors from `ArrayList<T>` and `List<T>`
 - New Constructor from `Spliterator<T>`
 - New Constructor from `Stream<T>`
 - New Constructor from a list of values and a list of counts (value-count pairs), [`new AugList<T>(Iterable<T>, Iterable<Integer>)`]
@@ -32,7 +32,7 @@ Parameters have (except where additional context is helpful) been renamed to fol
 
 ## Bugfixes
 
-- `clone()`'s Class now matches this Class i.e. `this.getClass() == this.clone().getClass()`
+- `clone()`'s, `filterCopy()`, `filterSelf()`, `listIntersection()`, `setIntersection()`, `setUnion()`, `skipWhile()` and `takeWhile()`'s Class now matches this Class i.e. `this.getClass() == this.clone().getClass()`
 - `toString()` no longer throws `NullPointerException` when attempting to represent `null`
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
 - Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)

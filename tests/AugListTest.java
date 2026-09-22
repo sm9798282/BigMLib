@@ -169,8 +169,9 @@ public class AugListTest implements MultiTest {
         // Check append behaviour
         testDataDouble.add(7.0);
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
-        // Check return type
+        // Check return type (and parameterized type)
         assertTrue(testDataString.add("!").getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataString.parameterizedTypeDesc().equals("public final class java.lang.String"));
         assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !]"));
         // Check functional paradigm style program is plausible
         assertTrue(testDataInt.add(25).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25]"));
@@ -188,8 +189,9 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
         // Check functional paradigm
         assertTrue(testDataString.addAll(new AugList<String>("!", "qwerty")).isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
-        // Check return type
+        // Check return type (and parameterized type)
         assertTrue(testDataInt.addAll(new AugList<Integer>(25, 125, 625)).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataInt.parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         assertTrue(testDataInt.isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
         // Check nulls
         Integer[] nullArr = null;
@@ -208,6 +210,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0]"));
         // Check return type
         assertTrue(testDataString.addAll("!", "qwerty").getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataString.parameterizedTypeDesc().equals("public final class java.lang.String"));
         assertTrue(testDataString.isEquivalent("[The, quick, brown, fox, jumps, over, the, lazy dog, !, qwerty]"));
         // Check functional paradigm
         assertTrue(testDataInt.addAll(25, 125, 625).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 25, 125, 625]"));
@@ -224,6 +227,8 @@ public class AugListTest implements MultiTest {
     public void testAddFirst() {
         setupTestData();
         testDataDouble.addFirst(7.0);
+        assertTrue(testDataDouble.getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.isEquivalent("[7.0, 1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataString.addFirst("!").getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
@@ -238,9 +243,11 @@ public class AugListTest implements MultiTest {
     public void testAllIndicesOf() {
         setupTestData();
         assertTrue(testDataDouble.allIndicesOf(-2.0).size() == 0);
+        assertTrue(testDataDouble.allIndicesOf(-2.0).getClass().toGenericString().equals("public class src.AugList<T>"));
         //testDataStr.oneToOneMap(s -> s.toLowerCase()).forEach(System.out::println);
-        System.out.println(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
+        //System.out.println(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
         assertTrue(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
+        System.out.println(testDataString.allIndicesOf("the").parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         assertTrue(testDataInt.add(7).allIndicesOf(7).isEquivalent("[0, 8]"));
     }
 
@@ -251,6 +258,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testAllSatisfy() {
         setupTestData();
+        // As boolean is a primitive type, there is no way to test for the return type.
         assertTrue(testDataDouble.allSatisfy(d -> d > -3.0));
         assertFalse(testDataDouble.allSatisfy(d -> d > -2.0));
         assertTrue(testDataString.allSatisfy(s -> s.length() != 0));
@@ -266,6 +274,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testAnySatisfy() {
         setupTestData();
+        // As boolean is a primitive type, there is no way to test for the return type.
         assertTrue(testDataDouble.anySatisfy(d -> d == -2.5));
         assertFalse(testDataDouble.anySatisfy(d -> 0 < d && d < 0.5));
         assertTrue(testDataString.anySatisfy(s -> s.length() == 4));
@@ -276,12 +285,15 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Function application
-     * @see src.AugList#applyAll(java.util.function.Function)
+     * @see src.AugList#applyAll(java.util.function.UnaryOperator)
      */
     @Test
     public void testApplyAll() {
         setupTestData();
-        assertTrue(testDataDouble.applyAll(d -> d + 1).isEquivalent("[2.0, 3.0, 8.11, -1.5, 4.1415926]"));
+        AugList<Double> mappedALD = testDataDouble.applyAll(d -> d + 1);
+        assertTrue(mappedALD.getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(mappedALD.parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(mappedALD.isEquivalent("[2.0, 3.0, 8.11, -1.5, 4.1415926]"));
         assertTrue(testDataString.applyAll(s -> s.substring(0, 1)).isEquivalent("[T, q, b, f, j, o, t, l]"));
         assertTrue(testDataInt.applyAll(i -> 2 * i).isEquivalent("[14, 22, 38, -48, 234, 290, -112, 86]"));
     }
@@ -293,6 +305,9 @@ public class AugListTest implements MultiTest {
     @Test
     public void testChunk() {
         setupTestData();
+        assertTrue(testDataDouble.chunk(3).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.chunk(3).parameterizedTypeDesc().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.chunk(3).get(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.chunk(3).isEquivalent("[[1.0, 2.0, 7.11], [-2.5, 3.1415926]]"));
         assertTrue(testDataString.chunk(3).isEquivalent("[[The, quick, brown], [fox, jumps, over], [the, lazy dog]]"));
         assertTrue(testDataInt.chunk(1).isEquivalent("[[7], [11], [19], [-24], [117], [145], [-56], [43]]"));
@@ -312,9 +327,9 @@ public class AugListTest implements MultiTest {
         setupTestData();
         testDataDouble.clear();
         assertTrue(testDataDouble.size() == 0);
-        testDataString.clear();
-        assertTrue(testDataString.isEmpty());
-        testDataInt.clear();
+        assertTrue(testDataString.clear().isEmpty());
+        assertTrue(testDataInt.clear().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataInt.parameterizedTypeDesc().equals("∅"));
         assertTrue(testDataInt.size() == 0);
     }
 
@@ -345,6 +360,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testContains() {
         setupTestData();
+        // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.contains(3.1415926));
         assertFalse(testDataDouble.contains(99999.9));
         assertTrue(testDataString.contains("fox"));
@@ -360,6 +376,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testContainsAll() {
         setupTestData();
+        // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.containsAll(new AugList<Double>(3.1415926d)));
         assertTrue(testDataDouble.containsAll(new AugList<Double>(-2.5, 3.1415926d)));
         assertTrue(testDataDouble.containsAll(new AugList<Double>(3.1415926d, -2.5))); // Test reversed order
@@ -378,6 +395,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testContainsAllVarargs() {
         setupTestData();
+        // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.containsAll(3.1415926d));
         assertTrue(testDataDouble.containsAll(2.0, 3.1415926d));
         assertTrue(testDataDouble.containsAll(3.1415926d, -2.5)); // Test reversed order
@@ -396,6 +414,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testContainsAny(){
         setupTestData();
+        // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.containsAny(new AugList<Double>(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)));
         assertTrue(testDataString.containsAny(new AugList<String>("", "A", "an", "the", "this", "that", "there")));
         assertTrue(testDataInt.containsAny(new AugList<Integer>(2, 3, 5, 7, 11, 13, 17, 19)));
@@ -409,6 +428,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testContainsAnyVarargs() {
         setupTestData();
+        // Return type is primitive so cannot enforce it with testing
         assertTrue(testDataDouble.containsAny(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0));
         assertTrue(testDataString.containsAny("", "A", "an", "the", "this", "that", "there"));
         assertTrue(testDataInt.containsAny(2, 3, 5, 7, 11, 13, 17, 19));
@@ -430,6 +450,22 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.countsOfElements().get(-2.5) == 2);
         assertTrue(testDataDouble.countsOfElements().get(7.0) == 1);
         assertTrue(testDataDouble.countsOfElements().get(12.0) == null);
+        String classStr = testDataDouble.toCollection().getClass().toGenericString();      
+        assertTrue(classStr.contains("class src.AugList$"));
+        AugList<Character> csAL = new AugList<Character>();
+        for (int i = 0; i < classStr.toCharArray().length; i++) {
+            csAL.add(classStr.toCharArray()[i]);
+        }
+        csAL.removeIf(ch -> (ch + "").toUpperCase() != (ch + "").toLowerCase());
+        csAL.forEach(ch -> {
+            try {
+                Integer.valueOf((ch + ""));
+            } catch (Exception e) {
+                System.out.println(ch);
+                System.out.println(csAL);
+                fail();
+            }
+        });
     }
 
     /**
@@ -445,6 +481,9 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.distinctCopy().isEquivalent("[THE, QUICK, BROWN, FOX, JUMPS, OVER, LAZY DOG]"));
         testDataInt.addAll(new AugList<Integer>(7, 8, 11, 19, 117, 119, 145, 145));
         assertTrue(testDataInt.distinctCopy().isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 8, 119]"));
+        assertNotSame(testDataInt, testDataInt.distinctCopy());
+        assertTrue(testDataInt.distinctCopy().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataInt.distinctCopy().parameterizedTypeDesc().equals("public final class java.lang.Integer"));
     }
 
     /**
@@ -457,10 +496,12 @@ public class AugListTest implements MultiTest {
         testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
         final AugList<String> LOWERSTRCLONE = testDataString.clone();
         assertTrue(LOWERSTRCLONE.isEquivalent(testDataString));
-        assertTrue(!LOWERSTRCLONE.isEquivalent(testDataString.distinctSelf()));
+        assertFalse(LOWERSTRCLONE.isEquivalent(testDataString.distinctSelf()));
         // distinctSelf() modifies the instance so the equality breaks.
-        assertTrue(!LOWERSTRCLONE.isEquivalent(testDataString));
+        assertFalse(LOWERSTRCLONE.isEquivalent(testDataString));
         assertTrue(testDataString.isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
+        assertTrue(testDataInt.distinctSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.distinctSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -470,6 +511,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testIsEquivalent() {
         setupTestData();
+        // Return type is primitive so cannot enforce type through testing
         assertTrue(testDataDouble.isEquivalent(testDataDouble.countsOfElements().keys()));
         assertFalse(testDataDouble.isEquivalent(testDataString.countsOfElements().keys()));
         assertTrue(testDataDouble.isEquivalent(testDataDouble.iterator()));
@@ -545,6 +587,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testFilterCopy() {
         setupTestData();
+        assertTrue(testDataDouble.filterCopy(d -> d != 0.023).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataInt.filterCopy(i -> i != 99999).parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         final AugList<Double> TESTDATADOUBLECOPY = testDataDouble.clone();
         final AugList<String> TESTDATASTRCOPY = testDataString.clone();
         final AugList<Integer> TESTDATAINTCOPY = testDataInt.clone();
@@ -572,6 +616,8 @@ public class AugListTest implements MultiTest {
         assertFalse(testDataDouble.isEquivalent(TESTDATADOUBLECOPY));
         assertFalse(testDataString.isEquivalent(TESTDATASTRCOPY));
         assertFalse(testDataInt.isEquivalent(TESTDATAINTCOPY));
+        assertTrue(testDataDouble.filterSelf(d -> d != 0.023).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataInt.filterSelf(i -> i != 99999).parameterizedTypeDesc().equals("public final class java.lang.Integer"));
     }
 
     /**
@@ -582,6 +628,7 @@ public class AugListTest implements MultiTest {
     public void testForEach() {
         setupTestData();
         // Since the return type is void, there is no way to automatically check the test works.
+        // (Similarly, there is no way to confirm the return type)
         // Check the Debug Console and confirm the output matches the following:
         /**
          * 1.0
@@ -635,9 +682,12 @@ public class AugListTest implements MultiTest {
             try {
                 testDataDouble.fragment();
             } catch (Exception e) {
-                assertTrue(false);
+                fail();
             }
         }
+        assertTrue(frag.getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(frag.parameterizedTypeDesc().equals("public class src.AugList<T>"));
+        assertTrue(frag.get(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -647,6 +697,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testGet() {
         setupTestData();
+        assertTrue(testDataDouble.get(0).getClass().toGenericString().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.get(0) == 1.0);
         assertTrue(testDataDouble.get(2) == 7.11);
         assertThrows(IndexOutOfBoundsException.class, () -> {
@@ -662,6 +713,9 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> {
             testDataInt.get(-711);
         });
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            new AugList<Character>().get(0);
+        });
     }
 
     /**
@@ -671,6 +725,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testGetLast() {
         setupTestData();
+        assertTrue(testDataDouble.getLast().getClass().toGenericString().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.getLast() == 3.1415926);
         assertTrue(testDataString.getLast() == "lazy dog");
         assertTrue(testDataInt.getLast() == 43);
@@ -702,6 +757,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testHashCode() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertTrue(testDataDouble.hashCode() == ARRLISTDOUBLE.hashCode());
         assertTrue(testDataString.hashCode() == ARRLISTSTR.hashCode());
         assertTrue(testDataInt.hashCode() == ARRLISTINT.hashCode());
@@ -714,6 +770,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testIndexOf() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertTrue(testDataDouble.indexOf(1.0) == 0);
         assertTrue(testDataDouble.indexOf(3.1415926) == 4);
         assertTrue(testDataDouble.indexOf(77) == -1);
@@ -734,6 +791,8 @@ public class AugListTest implements MultiTest {
     public void testInstantiateBlank() {
         setupTestData();
         assertTrue(new AugList<String>().size() == 0);
+        assertTrue(new AugList<Character>().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Double>().parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -743,7 +802,9 @@ public class AugListTest implements MultiTest {
     @Test
     public void testInstantiatePairs() {
         setupTestData();
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        AugList<String> ALS = new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), 
+                                                  new AugList<Integer>(1,   3,   4,    2));
+        assertTrue(ALS.isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
         assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
         assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
         assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
@@ -752,6 +813,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(null, null).size() == 0);
         assertTrue(new AugList<String>(new AugList<String>(), null).size() == 0);
         assertTrue(new AugList<String>(null, new AugList<Integer>()).size() == 0);
+        assertTrue(ALS.getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(ALS.parameterizedTypeDesc().equals("public final class java.lang.String"));
     }
 
     /**
@@ -764,6 +827,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
         Enumeration<Float> en = null;
         assertTrue(new AugList<Float>(en).size() == 0);
+        assertTrue(new AugList<Float>(en).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Float>(en).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -815,6 +880,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
         Iterable<Long> it = null;
         assertTrue(new AugList<Long>(it).size() == 0);
+        assertTrue(new AugList<Long>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Long>(it).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -827,6 +894,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
         Iterator<Short> it = null;
         assertTrue(new AugList<Short>(it).size() == 0);
+        assertTrue(new AugList<Short>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Short>(it).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -840,6 +909,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(testDataString.listIterator(2)).isEquivalent(testDataString.subList(2, testDataString.size())));
         ListIterator<Byte> li = null;
         assertTrue(new AugList<Byte>(li).size() == 0);
+        assertTrue(new AugList<Byte>(li).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Byte>(li).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -853,6 +924,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
         Spliterator<Character> sp = null;
         assertTrue(new AugList<Character>(sp).size() == 0);
+        assertTrue(new AugList<Character>(sp).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Character>(sp).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -868,6 +941,8 @@ public class AugListTest implements MultiTest {
         assertTrue(AL.isEquivalent("[1, *null*]"));
         Stream<String> t = null;
         assertTrue(new AugList<String>(t).size() == 0);
+        assertTrue(new AugList<String>(t).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<String>(t).parameterizedTypeDesc().equals("∅"));
     }
 
     /**
@@ -880,7 +955,9 @@ public class AugListTest implements MultiTest {
         Integer[] i = null;
         // Passing an Array acts the same as passing varargs
         assertTrue(new AugList<Integer>(i).size() == 0); 
-        assertTrue(new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43).isEquivalent(testDataInt));       
+        assertTrue(new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43).isEquivalent(testDataInt));   
+        assertTrue(new AugList<Integer>(i).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Integer>(i).parameterizedTypeDesc().equals("∅"));    
     }
 
     /**
@@ -890,17 +967,18 @@ public class AugListTest implements MultiTest {
     @Test
     public void testInsert() {
         setupTestData();
-        testDataDouble.insert(1,7.0);
+        testDataDouble.insert(1, 7.0);
         assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
         testDataString.insert(0, "!");
         assertTrue(testDataString.isEquivalent("[!, The, quick, brown, fox, jumps, over, the, lazy dog]"));
-        testDataInt.insert(2, 25);
-        assertTrue(testDataInt.isEquivalent("[7, 11, 25, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.insert(2, 25).isEquivalent("[7, 11, 25, 19, -24, 117, 145, -56, 43]"));
         assertThrows(IndexOutOfBoundsException.class,
             () -> {
                 testDataDouble.insert(1000, 1.0);
             }
         );
+        assertTrue(testDataDouble.insert(1, 1.0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insert(1, 1.0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -910,8 +988,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testInsertAll() {
         setupTestData();
-        testDataDouble.insertAll(1, new AugList<Double>(7.0));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.insertAll(1, new AugList<Double>(7.0)).isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
         testDataString.insertAll(0, new AugList<String>("!", "qwerty"));
         assertTrue(testDataString.isEquivalent("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
         testDataInt.insertAll(2, new AugList<Integer>(25, 125, 625));
@@ -921,6 +998,8 @@ public class AugListTest implements MultiTest {
                 testDataDouble.insertAll(1000, new AugList<Double>(1.0));
             }
         );
+        assertTrue(testDataDouble.insertAll(1, new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insertAll(1, new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -934,7 +1013,6 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.isEquivalent("[1.0, 7.0, 2.0, 7.11, -2.5, 3.1415926]"));
         testDataString.insertAll(0, "!", "qwerty");
         assertTrue(testDataString.isEquivalent("[!, qwerty, The, quick, brown, fox, jumps, over, the, lazy dog]"));
-        //It is not possible to use the varargs overload here due to overload ambiguity between varargs only and index + varargs arguments, so this test is skipped.
         testDataInt.insertAll(2, 25, 125, 625);
         assertTrue(testDataInt.isEquivalent("[7, 11, 25, 125, 625, 19, -24, 117, 145, -56, 43]"));
         assertThrows(IndexOutOfBoundsException.class,
@@ -942,6 +1020,8 @@ public class AugListTest implements MultiTest {
                 testDataDouble.insertAll(1000, new AugList<Double>(1.0));
             }
         );
+        assertTrue(testDataDouble.insertAll(1, 1.0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insertAll(1, 1.0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -960,6 +1040,8 @@ public class AugListTest implements MultiTest {
         AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
         testDataInt.insertAllAtRandom(new AugList<Integer>(25, 125, 625));
         assertTrue(expectedALI.isRearrangement(testDataInt));
+        assertTrue(testDataDouble.insertAllAtRandom(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insertAllAtRandom(new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -978,6 +1060,8 @@ public class AugListTest implements MultiTest {
         AugList<Integer> expectedALI = testDataInt.clone().addAll(new AugList<Integer>(25, 125, 625));
         testDataInt.insertAllAtRandom(25, 125, 625);
         assertTrue(expectedALI.isRearrangement(testDataInt));
+        assertTrue(testDataDouble.insertAllAtRandom(1.0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insertAllAtRandom(1.0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -996,6 +1080,8 @@ public class AugListTest implements MultiTest {
         AugList<Integer> expectedALI = testDataInt.clone().add(25);
         testDataInt.insertAtRandom(25);
         assertTrue(testDataInt.isRearrangement(expectedALI));
+        assertTrue(testDataDouble.insertAtRandom(1.0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.insertAtRandom(1.0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1005,6 +1091,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testIsEmpty() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.isEmpty());
         assertFalse(testDataString.isEmpty());
         assertFalse(testDataInt.isEmpty());
@@ -1023,6 +1110,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testIsRearrangement() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertTrue(testDataDouble.isRearrangement(testDataDouble));
         assertTrue(testDataDouble.isRearrangement(testDataDouble.shuffleCopy()));
         assertTrue(testDataString.isRearrangement(testDataString.shuffleCopy()));
@@ -1043,6 +1131,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testShuffleCopy() {
         testIsRearrangement();
+        assertTrue(testDataDouble.shuffleCopy().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.shuffleCopy().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1052,6 +1142,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testShuffleSelf() {
         testIsRearrangement();
+        assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.shuffleSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1067,6 +1159,8 @@ public class AugListTest implements MultiTest {
                          ALS_iterator = ARRLISTSTR.iterator();
         Iterator<Integer> TDI_iterator = testDataInt.iterator(),
                           ALI_iterator = ARRLISTINT.iterator();
+        assertTrue(testDataDouble.iterator().getClass().toGenericString().equals("private class java.util.ArrayList$Itr"));
+        assertTrue(new AugList<Double>(testDataDouble.iterator()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         while (TDD_iterator.hasNext()) {
             assertEquals(TDD_iterator.next(), ALD_iterator.next());
         }
@@ -1092,6 +1186,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testLastIndexOf() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertTrue(testDataDouble.lastIndexOf(1.0) == 0);
         assertTrue(testDataDouble.lastIndexOf(3.1415926) == 4);
         assertTrue(testDataDouble.lastIndexOf(77) == -1);
@@ -1112,6 +1207,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testListDifference() {
         setupTestData();
+        assertTrue(testDataDouble.listDifference(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.listDifference(new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.listDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.listDifference(testDataDouble).isEquivalent("/"));
         assertTrue(testDataDouble.listDifference(new AugList<Double>()).isEquivalent(testDataDouble));
@@ -1133,6 +1230,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testListIntersection() {
         setupTestData();
+        assertTrue(testDataDouble.listIntersection(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.listIntersection(testDataDouble).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("/"));
         assertTrue(testDataDouble.listIntersection(testDataDouble).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.listIntersection(new AugList<Double>()).isEquivalent("/"));
@@ -1161,6 +1260,8 @@ public class AugListTest implements MultiTest {
                              ALS_lIterator = ARRLISTSTR.listIterator();
         ListIterator<Integer> TDI_lIterator = testDataInt.listIterator(),
                               ALI_lIterator = ARRLISTINT.listIterator();
+        assertTrue(testDataDouble.listIterator().getClass().toGenericString().equals("private class java.ArrayList$ListItr"));
+        assertTrue(new AugList<Double>(testDataDouble.listIterator()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         while (TDD_lIterator.hasNext()) {
             assertEquals(TDD_lIterator.hasPrevious(), ALD_lIterator.hasPrevious());
             try {
@@ -1221,6 +1322,8 @@ public class AugListTest implements MultiTest {
                              ALS_lIterator = ARRLISTSTR.listIterator(2);
         ListIterator<Integer> TDI_lIterator = testDataInt.listIterator(1),
                               ALI_lIterator = ARRLISTINT.listIterator(1);
+        assertEquals(testDataDouble.listIterator(1).getClass().toGenericString(), "private class java.util.ArrayList$ListItr");
+        assertTrue(new AugList<Double>(testDataDouble.listIterator(1)).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         while (TDD_lIterator.hasNext()) {
             assertEquals(TDD_lIterator.hasPrevious(), ALD_lIterator.hasPrevious());
             try {
@@ -1275,7 +1378,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testListUnion() {
         setupTestData();
-        //testDataDouble.listUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).forEach(System.out::println);
+        assertTrue(testDataDouble.listUnion(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.listUnion(new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.listUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
         assertTrue(testDataDouble.listUnion(testDataDouble).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.listUnion(new AugList<Double>()).isEquivalent(testDataDouble));
@@ -1290,13 +1394,26 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.listUnion(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog, lazy, dog]"));
     }
 
+    /**
+     * JUnit tester for Mapping
+     * @see src.AugList#oneToOneMap(java.util.function.Function)
+     */
     @Test
     public void testOneToOneMap() {
         setupTestData();
-        assertTrue(testDataDouble.oneToOneMap(d -> 0).allSatisfy(d -> d == 0));
+        // Identity map (var x -> var x)
+        assertTrue(testDataDouble.oneToOneMap(x -> x).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.oneToOneMap(e -> e).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        // Map all to 0 (var x -> int 0)
+        assertTrue(testDataDouble.oneToOneMap(x -> 0).allSatisfy(d -> d == 0));
+        // Map to 1 less (double d -> double d - 1)
         assertTrue(testDataDouble.oneToOneMap(d -> d - 1).isEquivalent("[0.0, 1.0, 6.11, -3.5, 2.1415926]"));
-        assertTrue(testDataString.oneToOneMap(d -> d.length()).get(2) == 5);
+        // Map to length (String s -> int s.length())
+        assertTrue(testDataString.oneToOneMap(s -> s.length()).get(2) == 5);
+        // Map to even parity (int i -> boolean i % 2)
         assertTrue(testDataInt.oneToOneMap(i -> i % 2 == 0).countsOfElements().get(true) == 2);
+        // Map to 'c' (var x -> char 'c')
+        assertTrue(testDataDouble.oneToOneMap(x -> 'c').parameterizedTypeDesc().equals("public final class java.lang.Character"));
     }
 
     /**
@@ -1319,6 +1436,8 @@ public class AugListTest implements MultiTest {
         assertTrue(hash.get(711.0) == null);
         assertFalse(new AugList<Double>(null, 3.0).pairUp(new AugList<Double>(1.0, 2.0)).elements().asIterator().hasNext());
         assertFalse(new AugList<Double>(2.0, 3.0).pairUp(new AugList<Double>(null, 2.0)).elements().asIterator().hasNext());
+        assertTrue(hash.getClass().toGenericString().contains("class src.AugList$"));
+        assertTrue(new AugList<Double>(hash.keys()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1328,9 +1447,9 @@ public class AugListTest implements MultiTest {
     @Test
     public void testParallelStream() {
         setupTestData();
-        // Hashcodes don't match so we need to check every method has same functionality
+        // Hashcodes don't match, so check every method has same functionality
         // However this involves needing to deal with methods that alter state...
-        // For our use cases, we will assume that the state-altering methods will not be invoked.
+        // For our use cases, assume that the state-altering methods will not be invoked.
         assertTrue(testDataDouble.parallelStream().count() == ARRLISTDOUBLE.parallelStream().count());
         assertTrue(testDataDouble.parallelStream().isParallel() == ARRLISTDOUBLE.parallelStream().isParallel());
         assertTrue(testDataDouble.parallelStream().iterator().hasNext() == ARRLISTDOUBLE.parallelStream().iterator().hasNext());
@@ -1343,6 +1462,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
         assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
         assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(new AugList<Double>(testDataDouble.parallelStream()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }    
 
     /**
@@ -1350,9 +1471,9 @@ public class AugListTest implements MultiTest {
      * @see src.AugList#parameterizedTypeDesc()
      */
     @Test
-    public void testParameterizedTypeDesc()
-    {
+    public void testParameterizedTypeDesc() {
         setupTestData();
+        assertTrue(testDataDouble.parameterizedTypeDesc().getClass().toGenericString().equals("public final class java.lang.String"));
         assertTrue(testDataInt.parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         assertTrue(testDataString.parameterizedTypeDesc().equals("public final class java.lang.String"));
         assertTrue(testDataDouble.parameterizedTypeDesc().equals("public final class java.lang.Double"));
@@ -1366,6 +1487,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemove() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.remove(18));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.remove(1.0));
@@ -1390,6 +1512,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveAll() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.removeAll(new AugList<Double>(18.0)));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeAll(new AugList<Double>(1.0)));
@@ -1413,6 +1536,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveAllVarargs() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.removeAll(18.0));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeAll(1.0));
@@ -1434,6 +1558,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveAtIndex() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.removeAt(18); });
         assertTrue(testDataDouble.removeAt(0) == 1.0f);
         assertTrue(testDataDouble.isEquivalent("[2.0, 7.11, -2.5, 3.1415926]"));
@@ -1452,6 +1577,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveIf() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.removeIf(d -> d > 18));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.removeIf(d -> d <= 1.0));
@@ -1475,6 +1601,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveLast() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         assertFalse(testDataDouble.removeLast() == 3.1415926f);
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5]"));
         assertTrue(testDataDouble.removeLast() == -2.5f);
@@ -1493,6 +1620,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testRemoveRandom() {
         setupTestData();
+        // Return type is primitive so cannot be tested for
         AugList<Double> tddClone = testDataDouble.clone();
         AugList<AugList<Double>> validStates = new AugList<AugList<Double>>(
             new AugList<Double>(2.0, 7.11, -2.5, 3.1415926),
@@ -1553,6 +1681,8 @@ public class AugListTest implements MultiTest {
         //setupTestData();
         assertTrue(testDataString.clone().retainAll(new AugList<String>().toCollection()).isEquivalent("/"));
         assertThrows(NullPointerException.class, () -> { testDataString.clone().retainAll(null); });
+        assertTrue((testDataDouble.retainAll(new AugList<Double>().toCollection())).getClass().toGenericString().equals("public class src.AugList<T>"));
+        System.out.println((testDataDouble.retainAll(testDataDouble.toCollection())).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1562,6 +1692,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testReversed() {
         setupTestData();
+        assertTrue(testDataDouble.reversed().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.reversed().parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.reversed().isEquivalent("[3.1415926, -2.5, 7.11, 2.0, 1.0]"));
         assertTrue(testDataString.reversed().isEquivalent("[lazy dog, the, over, jumps, fox, brown, quick, The]"));
         assertTrue(testDataInt.reversed().isEquivalent("[43, -56, 145, 117, -24, 19, 11, 7]"));
@@ -1577,11 +1709,13 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.sample(5, false).isRearrangement(testDataDouble));
         assertTrue(testDataDouble.sample(0, false).isEquivalent("/"));
         assertTrue(testDataDouble.containsAll(testDataDouble.sample(1, false)));
-        // Technically speaking this assertion could fail, but the probability of the such is .8^100000000, a value so small it is effectively 0.
-        // (Plus, as the sample algorithm is only psuedo-random, I imagine that this assertion passing can be proven as either guaranteed or not.)
-        assertTrue(testDataDouble.sample(100000000, true).contains(1.0));
-        assertThrows(IllegalArgumentException.class, () -> { testDataString.sample(10000000, false); });
+        // Technically speaking this assertion could fail, but the probability of the such is .8^10000, or 1.2302319222*10^-970, which is effectively 0.
+        // (Plus, as the sample algorithm is only psuedo-random, I imagine that the above assertion passing can be proven as either guaranteed or not.)
+        assertTrue(testDataDouble.sample(10000, true).contains(1.0));
+        assertThrows(IllegalArgumentException.class, () -> { testDataString.sample(10000, false); });
         assertThrows(IllegalArgumentException.class, () -> { testDataInt.sample(-10, false); });
+        assertTrue(testDataDouble.reversed().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.reversed().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1594,6 +1728,10 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.set(0, 42.0d) == 1.0d);
         assertTrue(testDataDouble.get(0) == 42.0d);
         assertTrue(testDataDouble.isEquivalent("[42.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertThrows(IndexOutOfBoundsException.class, () -> {new AugList<Character>().set(0, ' '); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataDouble.set(-1, 1.0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> {testDataInt.set(100, 1); });
+        assertTrue(testDataDouble.set(0, 1.0).getClass().toGenericString().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1603,6 +1741,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testSetDifference() {
         setupTestData();
+        assertTrue(testDataDouble.setDifference(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.setDifference(new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.setDifference(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.setDifference(testDataDouble).isEquivalent("/"));
         assertTrue(testDataDouble.setDifference(new AugList<Double>()).isEquivalent(testDataDouble));
@@ -1625,6 +1765,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testSetIntersection() {
         setupTestData();
+        assertTrue(testDataDouble.setIntersection(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.setIntersection(testDataDouble).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("/"));
         assertTrue(testDataDouble.setIntersection(testDataDouble).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.setIntersection(new AugList<Double>()).isEquivalent("/"));
@@ -1647,6 +1789,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testSetUnion() {
         setupTestData();
+        assertTrue(testDataDouble.setUnion(new AugList<Double>()).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.setUnion(new AugList<Double>()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         //testDataDouble.setUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).forEach(System.out::println);
         assertTrue(testDataDouble.setUnion(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.0, 11.0, 19.0, -24.0, 117.0, 145.0, -56.0, 43.0]"));
         assertTrue(testDataDouble.setUnion(testDataDouble).isEquivalent(testDataDouble));
@@ -1670,6 +1814,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testSize() {
         setupTestData();
+        // Return type is primitive so cannot be tested
         assertTrue(testDataDouble.size() == 5);
         assertTrue(testDataString.size() == 8);
         assertTrue(testDataInt.size() == 8);
@@ -1682,6 +1827,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testSkipWhile() {
         setupTestData();
+        assertTrue(testDataDouble.skipWhile(d -> false).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.skipWhile(d -> false).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.skipWhile(d -> d < 0).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.skipWhile(d -> d > 0).isEquivalent("[-2.5, 3.1415926]"));
         assertTrue(testDataString.skipWhile(s -> s.length() != 9).isEquivalent("/"));
@@ -1720,6 +1867,13 @@ public class AugListTest implements MultiTest {
             }
         });
         assertTrue(testDataDouble.isEquivalent("[2.0, 1.0, 7.11, 3.1415926, -2.5]"));
+        Comparator<Double> allEqual = new Comparator<Double>() {
+            public int compare(Double o1, Double o2) {
+                return 0;
+            }
+        };
+        assertTrue(testDataDouble.sort(allEqual).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.sort(allEqual).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1735,6 +1889,8 @@ public class AugListTest implements MultiTest {
                             ALS_spliterator = ARRLISTSTR.spliterator();
         Spliterator<Integer> TDI_spliterator = testDataInt.spliterator(),
                              ALI_spliterator = ARRLISTINT.spliterator();
+        assertEquals(testDataDouble.spliterator().getClass().toGenericString(), ("final class java.util.ArrayList$ArrayListSpliterator"));
+        assertTrue(new AugList<Double>(testDataDouble.spliterator()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertEquals(TDD_spliterator.characteristics(), ALD_spliterator.characteristics());
         assertEquals(TDD_spliterator.estimateSize(), ALD_spliterator.estimateSize());
         assertEquals(TDD_spliterator.getExactSizeIfKnown(), ALD_spliterator.getExactSizeIfKnown());
@@ -1768,9 +1924,11 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.stream().count() == ARRLISTINT.stream().count());
         assertTrue(testDataInt.stream().isParallel() == ARRLISTINT.stream().isParallel());
         assertTrue(testDataInt.stream().iterator().hasNext() == ARRLISTINT.stream().iterator().hasNext());
-        assertTrue(testDataDouble.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
-        assertTrue(testDataString.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
-        assertTrue(testDataInt.parallelStream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataDouble.stream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataString.stream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataInt.stream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(testDataDouble.stream().getClass().toGenericString().equals("static class java.util.stream.ReferencePipeline$Head<E_IN,E_OUT>"));
+        assertTrue(new AugList<Double>(testDataDouble.stream()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1787,6 +1945,8 @@ public class AugListTest implements MultiTest {
         assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(9999, 1); });
         assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(1, -1); });
         assertThrows(IndexOutOfBoundsException.class, () -> {testDataString.swap(1, 9999); });
+        assertTrue(testDataDouble.swap(0, 0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.swap(0, 0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1809,6 +1969,8 @@ public class AugListTest implements MultiTest {
         assertTrue(discrepancies == 1);
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(999); });
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRandom(-1); });
+        assertTrue(testDataDouble.swapRandom(0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.swapRandom(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1831,6 +1993,8 @@ public class AugListTest implements MultiTest {
         assertTrue(discrepancies == 2);
         assertTrue(testDataDouble.get(swappedIndices.get(0)) == tddClone.get(swappedIndices.get(1)));
         assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
+        assertTrue(testDataDouble.swapRandom().parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.swapRandom().getClass().toGenericString().equals("public class src.AugList<T>"));
     }
 
     /**
@@ -1841,11 +2005,14 @@ public class AugListTest implements MultiTest {
     public void testSubList() {
         setupTestData();
         assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subList(1, 0); });
+        assertTrue(testDataString.subList(0, 0).size() == 0);
         assertTrue(testDataDouble.subList(1, 1).isEquivalent("/"));
         assertTrue(testDataDouble.subList(0, 1).isEquivalent("[1.0]"));
         assertTrue(testDataDouble.subList(0, 3).isEquivalent("[1.0, 2.0, 7.11]"));
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(0, 999); });
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(-1, 0); });
+        assertTrue(testDataDouble.subList(0, 1).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.subList(0, 1).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1855,6 +2022,8 @@ public class AugListTest implements MultiTest {
     @Test
     public void testTakeWhile() {
         setupTestData();
+        assertTrue(testDataDouble.takeWhile(d -> true).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.takeWhile(d -> true).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.takeWhile(d -> d < 0).isEquivalent("[1.0]"));
         assertTrue(testDataDouble.takeWhile(d -> d > 0).isEquivalent("[1.0, 2.0, 7.11, -2.5]"));
         assertTrue(testDataString.takeWhile(s -> s.length() == 9).isEquivalent("[The]"));
@@ -1872,6 +2041,8 @@ public class AugListTest implements MultiTest {
         String[] tDStrArr = testDataString.toArray(new String[] { });
         tDStrArr[2] = "red";
         assertTrue(tDStrArr[2] == "red");
+        assertTrue(tDStrArr.getClass().toGenericString().equals("java.lang.String[]"));
+        assertTrue(new AugList<String>(tDStrArr).parameterizedTypeDesc().equals("public final class java.lang.String"));
     }
 
     @Test
@@ -1898,9 +2069,11 @@ public class AugListTest implements MultiTest {
             } catch (Exception e) {
                 System.out.println(ch);
                 System.out.println(collAL);
-                assertTrue(false);
+                fail();
             }
         });
+        assertTrue(testDataDouble.toCollection().getClass().toGenericString().contains("class src.AugList$"));
+        assertTrue(new AugList<Double>(testDataDouble.toCollection()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     @Test
@@ -1909,6 +2082,8 @@ public class AugListTest implements MultiTest {
         String enumDesc = testDataDouble.toEnumeration().getClass().toGenericString();
         assertTrue(enumDesc.equals("private class java.util.Hashtable$Enumerator<T>"));
         assertTrue(new AugList<Double>(testDataDouble.toEnumeration()).isRearrangement(testDataDouble));
+        assertTrue(testDataDouble.toEnumeration().getClass().toGenericString().equals("private class java.util.Hashtable$Enumerator<T>"));
+        assertTrue(new AugList<Double>(testDataDouble.toEnumeration()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1927,6 +2102,7 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<String>("", ",", ",,").isEquivalent("[, ,, ,,]"));
         assertTrue(new AugList<String>(" ", ", ", "  ,, ").isEquivalent("[ , , ,   ,, ]"));
         assertTrue(new AugList<String>(null, null, null).isEquivalent("[*null*, *null*, *null*]"));
+        assertTrue(testDataDouble.toString().getClass().toGenericString().equals("public final class java.lang.String"));
     }
 
     /**
@@ -1944,6 +2120,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.without(8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.without(19).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.without(null).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataDouble.without(-7.27).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.without(-7.27).parameterizedTypeDesc().equals("public final class java.lang.Double"));
 	}
 
     /**
@@ -1961,7 +2139,9 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutAll(new AugList<Integer>(8)).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutAll(new AugList<Integer>(19, 43, 7, 7)).isEquivalent("[11, -24, 117, 145, -56]"));
         assertTrue((new AugList<Integer>(1, 2).withoutAll(new AugList<Integer>()).isEquivalent("[1, 2]")));
-	}
+        assertTrue(testDataDouble.withoutAll(new AugList<Double>(-7.27)).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.withoutAll(new AugList<Double>(-7.27)).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
 
     /**
      * JUnit tester for Varargs Bulk Removal
@@ -1978,7 +2158,9 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutAll(8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutAll(19, 43, 7, 7).isEquivalent("[11, -24, 117, 145, -56]"));
         assertTrue((new AugList<Integer>(1, 2).withoutAll().isEquivalent("[1, 2]")));
-	}
+        assertTrue(testDataDouble.withoutAll(-7.27).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.withoutAll(-7.27).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
 
     /**
      * JUnit tester for Targeted Removal
@@ -1992,6 +2174,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.withoutIndex(1).isEquivalent("[The, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataString.withoutIndex(6).isEquivalent("[The, brown, fox, jumps, over, the]"));
         assertTrue(testDataInt.withoutIndex(2).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataDouble.withoutIndex(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.withoutIndex(0).getClass().toGenericString().equals("public class src.AugList<T>"));
 	}
 
     /**
@@ -2005,6 +2189,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.withoutLast().isEquivalent("[1.0, 2.0, 7.11]"));
         assertTrue(testDataString.withoutLast().isEquivalent("[The, quick, brown, fox, jumps, over, the]"));
         assertTrue(testDataInt.withoutLast().isEquivalent("[7, 11, 19, -24, 117, 145, -56]"));
+        assertTrue(testDataDouble.withoutLast().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.withoutLast().parameterizedTypeDesc().equals("public final class java.lang.Double"));
 	}
 
     /**
@@ -2022,6 +2208,8 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataInt.withoutWhere(i -> i == 8).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutWhere(i -> 18 <= i && i <= 20).isEquivalent("[7, 11, -24, 117, 145, -56, 43]"));
         assertTrue(testDataInt.withoutWhere(a -> a.equals(null)).isEquivalent(testDataInt));
+        assertTrue(testDataDouble.withoutWhere(d -> false).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.withoutWhere(d -> false).parameterizedTypeDesc().equals("public final class java.lang.Double"));
 	}
 
     /**
@@ -2073,6 +2261,8 @@ public class AugListTest implements MultiTest {
         }
         assertTrue(validStates.get(stateIndex).isEquivalent(tddWithout));
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().withoutRandom(); });
+        assertTrue(testDataDouble.withoutRandom().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.withoutRandom().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     // #region Deprecated tests

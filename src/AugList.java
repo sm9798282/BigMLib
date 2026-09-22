@@ -638,7 +638,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> distinctCopy() {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (!ret.contains(e)) {
                 ret.add(e);
@@ -658,7 +658,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> distinctSelf() {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (!ret.contains(e)) {
                 ret.add(e);
@@ -844,7 +844,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> filterCopy(Predicate<? super T> condition) {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (condition.test(e)) {
                 ret.add(e);
@@ -865,7 +865,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> filterSelf(Predicate<? super T> condition) {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (condition.test(e)) {
                 ret.add(e);
@@ -1263,7 +1263,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         // As listIntersection needs to alter the state of B,
         // the state of B could change outside of scope.
         // This behaviour is not intended, hence replace B with a clone of itself.
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (augListB.contains(e)) {
                 ret.add(e);
@@ -1715,7 +1715,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         // As setIntersection needs to alter the state of B,
         // the state of B could change outside of scope.
         // This behaviour is not intended, hence replace B with a clone of itself.
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (setB.contains(e)) {
                 ret.add(e);
@@ -1742,7 +1742,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> setUnion(AugList<T> setB) {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         ret.addAll(this.distinctCopy());
         ret.addAll(setB.distinctCopy().filterSelf(e -> !ret.contains(e)));
         //ret.filterSelf(x -> ret.allIndicesOf(x).size() == 1); // Removes duplicates
@@ -1796,7 +1796,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> skipWhile(Predicate<? super T> condition) {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (int i = 0; i < ls.size(); i++) {
             if (!condition.test(ls.get(i))) {
                 for (int j = i; j < ls.size(); j++) {
@@ -1963,7 +1963,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Based on the C# method {IEnumerable<T>.TakeWhile()}.
      */
     public AugList<T> takeWhile(Predicate<? super T> condition) {
-        AugList<T> ret = new AugList<T>() {};
+        AugList<T> ret = new AugList<T>();
         for (int i = 0; i < ls.size(); i++) {
             ret.add(ls.get(i));
             if (!condition.test(ls.get(i))) {
