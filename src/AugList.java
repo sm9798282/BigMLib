@@ -130,7 +130,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags        Constructor
      */
     public AugList() {
-        this.ls = new ArrayList<T>() {};
+        ls = new ArrayList<T>() {};
     }
 
     /**
@@ -145,10 +145,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     @SafeVarargs
     public AugList(T... elements) {
         if (Objects.isNull(elements)) {
-            this.ls = new ArrayList<T>() {};
+            ls = new ArrayList<T>() {};
         }
         else {
-            this.ls = new ArrayList<T>(Arrays.asList(elements));
+            ls = new ArrayList<T>(Arrays.asList(elements));
         }
     }
 
@@ -161,11 +161,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(Enumeration<T> enumeration) {
-        this.ls = new ArrayList<T>() {};
+    @SuppressWarnings("unchecked")
+    public AugList(Enumeration<? super T> enumeration) {
+        ls = new ArrayList<T>() {};
         if (!Objects.isNull(enumeration)) {
             while (enumeration.hasMoreElements()) {
-                this.ls.add(enumeration.nextElement());
+                ls.add((T)enumeration.nextElement());
+                // Unchecked cast SHOULD be fine as any type that is a supertype of T should be able to cast to T
             }
         }
     }
@@ -179,11 +181,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
      * @tags        Constructor
      */
-    public AugList(Iterator<T> iterator) {
-        this.ls = new ArrayList<T>() {};
+    @SuppressWarnings("unchecked")
+    public AugList(Iterator<? super T> iterator) {
+        ls = new ArrayList<T>() {};
         if (!Objects.isNull(iterator)) {
             while (iterator.hasNext()) {
-                this.ls.add(iterator.next());
+                ls.add((T)iterator.next());
             }
         }
     }
@@ -196,12 +199,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(Iterable<T> iterable) {
+    public AugList(Iterable<? super T> iterable) {
         if (Objects.isNull(iterable)) {
-            this.ls = new ArrayList<T>() {};
+            ls = new ArrayList<T>() {};
         }
         else {
-            this.ls = new AugList<T>(iterable.iterator()).ls;
+            ls = new AugList<T>(iterable.iterator()).ls;
         }
     }
 
@@ -213,10 +216,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)} ,{@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(ListIterator<T> listIterator) {
-        this.ls = new ArrayList<T>() {};
+    @SuppressWarnings("unchecked")
+    public AugList(ListIterator<? super T> listIterator) {
+        ls = new ArrayList<T>() {};
         if (!Objects.isNull(listIterator)) {
-            listIterator.forEachRemaining(element -> ls.add(element));
+            listIterator.forEachRemaining(element -> ls.add((T)element));
         }
     }
 
@@ -232,9 +236,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(Iterable<T> values, Iterable<Integer> counts) {
+    public AugList(Iterable<? super T> values, Iterable<Integer> counts) {
         if (Objects.isNull(values) || Objects.isNull(counts)) {
-            this.ls = new ArrayList<T>() {};
+            ls = new ArrayList<T>() {};
         }
         else {
             AugList<T> ALvalues = new AugList<T>(values);
@@ -263,10 +267,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(Spliterator<T> spliterator) {
-        this.ls = new ArrayList<T>() {};
+    @SuppressWarnings("unchecked")
+    public AugList(Spliterator<? super T> spliterator) {
+        ls = new ArrayList<T>() {};
         if (!Objects.isNull(spliterator)) {
-            spliterator.forEachRemaining(e -> this.ls.add(e));
+            spliterator.forEachRemaining(e -> ls.add((T)e));
         }
     }
 
@@ -278,10 +283,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
-    public AugList(Stream<T> stream) {
-        this.ls = new ArrayList<T>() {};
+    public AugList(Stream<? super T> stream) {
+        ls = new ArrayList<T>() {};
         if (!Objects.isNull(stream)) {
-            this.ls = new AugList<T>(stream.iterator()).ls;
+            ls = new AugList<T>(stream.iterator()).ls;
         }
     }
 
@@ -310,7 +315,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #addAll(Iterable)}, {@link #addAll(T...) addAll(T...)}
      * @tags        Mutator
      */
-    public AugList<T> addAll(Iterable<T> elements) {
+    public AugList<T> addAll(Iterable<? super T> elements) {
         if (Objects.isNull(elements)) {
             return this;
         }
@@ -432,10 +437,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          <p>Very similar to {@link List#replaceAll(UnaryOperator)}.
      * @tags    Mutator
      */
-    public AugList<T> applyAll(UnaryOperator<T> func) {
+    @SuppressWarnings("unchecked")
+    public AugList<T> applyAll(UnaryOperator<? super T> func) {
         if (!Objects.isNull(func)) {
             for (int i = 0; i < ls.size(); i++) {   
-                ls.set(i, func.apply(ls.get(i)));
+                ls.set(i, (T)func.apply(ls.get(i)));
             }
         }
         return this;
@@ -556,7 +562,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #containsAny(T...) containsAny(T...)
      * @tags    Terminator
      */
-    private boolean containsBulk(AugList<T> elements, boolean allOrAny) {
+    private boolean containsBulk(AugList<? super T> elements, boolean allOrAny) {
         // Since containsBulk can only be called from 4 places,
         // all of which already handle nulls, handling nulls here is pointless. 
         // That being said,
@@ -592,7 +598,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #containsAll(Iterable)}, {@link #containsAll(T...) containsAll(T...)}
      * @tags        Terminator
      */
-    public boolean containsAll(Iterable<T> elements) {
+    public boolean containsAll(Iterable<? super T> elements) {
         return containsBulk(new AugList<T>(elements), true);
     }
 
@@ -631,7 +637,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}.
      * @tags        Terminator
      */
-    public final boolean containsAny(Iterable<T> elements) {
+    public final boolean containsAny(Iterable<? super T> elements) {
         return containsBulk(new AugList<T>(elements), false);
     }
 
@@ -1117,7 +1123,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #insertAll(int, T...) insertAll(int, T...)}, {@link #insertAll(int, Iterable)}
      * @tags        Mutator
      */
-    public AugList<T> insertAll(int index, Iterable<T> elements) {
+    public AugList<T> insertAll(int index, Iterable<? super T> elements) {
         AugList<T> e = new AugList<T>(elements); // Implicit null handling
         ls.addAll(index, e.ls);
         return this;
@@ -1158,7 +1164,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)}
      * @tags        Mutator
      */
-    public AugList<T> insertAllAtRandom(Iterable<T> elements) {
+    public AugList<T> insertAllAtRandom(Iterable<? super T> elements) {
         AugList<T> e = new AugList<T>(elements); // Implicit null handling
         for (int i = 0; i < e.size(); i++) {
             insertAtRandom(e.get(i));
@@ -1225,7 +1231,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Functionality is, to my knowledge, not implemented in Java or C#.
      * @tags    Terminator
      */
-    public boolean isRearrangement(Iterable<T> itrB) {
+    public boolean isRearrangement(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB);
         if (ls.size() != augListB.size()) {
             // If the two lists are different lengths, there is no world in which they are rearrangements of eachother.
@@ -1296,7 +1302,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          Works similarly, but not identically, to {@link java.util.Collection#retainAll(java.util.Collection)}
      * @tags    Creator
      */
-    public AugList<T> listDifference(Iterable<T> itrB) {
+    public AugList<T> listDifference(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
         AugList<T> ret = this.clone();
         for (int i = 0; i < augListB.size(); i++) {
@@ -1326,7 +1332,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          <p>"List Intersection" and "A∩`B" are not mathematically endorsed terminology.
      * @tags    Creator
      */
-    public AugList<T> listIntersection(Iterable<T> itrB) {
+    public AugList<T> listIntersection(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
         // if (this.equals(augListB)) {
         //     return augListB;
@@ -1396,7 +1402,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          <p>"List Union" and "AU`B" are not mathematically endorsed terminology.
      * @tags    Creator
      */
-    public AugList<T> listUnion(Iterable<T> itrB) {
+    public AugList<T> listUnion(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
         AugList<T> ret = this.clone();
         augListB = augListB.clone();
@@ -1456,7 +1462,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Based on the C# function {@code IEnumerable<T>.Zip()}.
      * @tags    Converter
      */
-    public <U> Hashtable<T, U> pairUp(Iterable<U> itrB) {
+    public <U> Hashtable<T, U> pairUp(Iterable<? super U> itrB) {
         AugList<U> augListB = new AugList<U>(itrB);
         Hashtable<T, U> ret = new Hashtable<T, U>() {};
         if (ls.size() != augListB.size() || this.anySatisfy(e -> e == null) || augListB.anySatisfy(e -> e == null)) {
@@ -1532,7 +1538,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @overloads   {@link #removeAll(Iterable)}, {@link #removeAll(T...) removeAll(T...)}
      * @tags        Terminator
      */
-    public boolean removeAll(Iterable<T> iterable) {
+    public boolean removeAll(Iterable<? super T> iterable) {
         AugList<T> elements = new AugList<T>(iterable); // Implicit null check
         boolean ret = false;
         for (int i = 0; i < elements.size(); i++) {
@@ -1753,7 +1759,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
      * @tags    Creator
      */
-    public AugList<T> setDifference(AugList<T> itrB) {
+    public AugList<T> setDifference(AugList<? super T> itrB) {
         AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         AugList<T> ret = this.distinctCopy();
         setB = setB.distinctCopy();
@@ -1783,7 +1789,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Based on the C# method {@code IEnumerable<T>.Intersect()}.
      * @tags    Creator
      */
-    public AugList<T> setIntersection(Iterable<T> itrB) {
+    public AugList<T> setIntersection(Iterable<? super T> itrB) {
         AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         if (this.isEquivalent(setB)) {
             return setB;
@@ -1818,7 +1824,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Based on the C# function {@code IEnumerable<T>.Union()}.
      * @tags    Creator
      */
-    public AugList<T> setUnion(Iterable<T> itrB) {
+    public AugList<T> setUnion(Iterable<? super T> itrB) {
         AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         AugList<T> ret = new AugList<T>();
         ret.addAll(this.distinctCopy());
@@ -2175,7 +2181,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note        Mutator variant of {@link #removeAll(Iterable)}.
      * @tags        Mutator
      */
-    public AugList<T> withoutAll(Iterable<T> elements) {
+    public AugList<T> withoutAll(Iterable<? super T> elements) {
         removeAll(elements);
         return this;
     }

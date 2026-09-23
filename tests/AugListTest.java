@@ -925,6 +925,7 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Long>(it).size() == 0);
         assertTrue(new AugList<Long>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(new AugList<Long>(it).parameterizedTypeDesc().equals("∅"));
+        assertTrue(new AugList<Long>(new AugList<Number>(1, 1, 1)).isEquivalent("[1, 1, 1]"));
     }
 
     /**

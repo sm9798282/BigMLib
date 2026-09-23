@@ -78,3 +78,7 @@ Separately:
 ## Known problems
 
 None
+
+## Potential issues
+
+- As some areas of code perform unchecked casts, it is possible that exceptions may be thrown.
