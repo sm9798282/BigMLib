@@ -53,7 +53,7 @@ import java.util.stream.Stream;
  * <h3>Replacements</h3>
  *
  * - Replaces {@link List#add(int, Object)} with {@link #insert(int, Object)}
- * - Replaces {@link List#addAll(int, Collection)} with {@link #insertAll(int, AugList)} / {@link #insertAll(int, T...) insertAll(int, T...)}
+ * - Replaces {@link List#addAll(int, Collection)} with {@link #insertAll(int, Iterable)} / {@link #insertAll(int, T...) insertAll(int, T...)}
  * - Replaces {@link List#replaceAll(UnaryOperator)} with {@link #applyAll(UnaryOperator)}
  *
  * <h3>Additions</h3>
@@ -63,23 +63,23 @@ import java.util.stream.Stream;
  * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
  * - {@link #applyAll(UnaryOperator)}, {@link #oneToOneMap(Function)},</p>
  * - {@link #chunk(int)}, {@link #fragment(int)},</p>
- * - {@link #containsAny(AugList)}, {@link #containsAny(T...) containsAny(T...)}</p>
+ * - {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}</p>
  * - {@link #countsOfElements()}, {@link #countOf(Object)},</p>
  * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
  * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
  * - {@link #forEach(Consumer)},</p>
  * - {@link #isEquivalent(Object)}, {@link #isRearrangement()},</p>
- * - {@link #listDifference(AugList)}, {@link #listIntersection(AugList)}, {@link #listUnion(AugList)},</p>
- * - {@link #pairUp(AugList)},</p>
+ * - {@link #listDifference(Iterable)}, {@link #listIntersection(Iterable)}, {@link #listUnion(Iterable)},</p>
+ * - {@link #pairUp(Iterable)},</p>
  * - {@link #parameterizedTypeDesc()},</p>
- * - {@link #retainAll(java.util.Collection)}, {@link #toCollection()},</p>
- * - {@link #setDifference(AugList)}, {@link #setIntersection(AugList)}, {@link #setUnion(AugList)},</p>
+ * - {@link #retainAll(Collection)}, {@link #toCollection()},</p>
+ * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},</p>
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},</p>
  * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},</p>
  * - {@link #toEnumeration()},</p>
- * - {@link #without(T)}, {@link #withoutAll(AugList)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
+ * - {@link #without(T)}, {@link #withoutAll(Iterable)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
  * - {@link #getRandom()}, {@link #removeRandom()},</p>
- * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(AugList)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)},</p>
+ * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)},</p>
  * - {@link #sample(int, boolean)},</p>
  * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
  *
@@ -106,7 +106,7 @@ import java.util.stream.Stream;
  *
  * Due to these methods falling under one of the following categories, they have been commented out / left unimplemented:</p>
  * 1: have identical functionality under another name:</p>
- * - {@link List#replaceAll()},</p>
+ * - {@link List#add(int, Object)}, {@link List#addAll(int, Collection)}, {@link List#replaceAll(UnaryOperator)},</p>
  * 2: are / have been made redundant by other methods:</p>
  * - {@link List#addLast()}, {@link List#removeFirst()}, {@code AugList<T>.subListToEnd()},</p>
  * 3: are impractical to use: </p>
@@ -307,7 +307,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      This {@link AugList}, with the given elements appended to it.
      * @see         tests.AugListTest#testAddAll()
      * @note        Replaces {@link ArrayList#addAll()}: Returns {@code this}, not {@code void}.
-     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...) addAll(T...)}
+     * @overloads   {@link #addAll(Iterable)}, {@link #addAll(T...) addAll(T...)}
      * @tags        Mutator
      */
     public AugList<T> addAll(Iterable<T> elements) {
@@ -326,16 +326,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      This {@link AugList}, with the given elements appended to it.
      * @see         tests.AugListTest#testAddAllVarargs()
      * @note        Varargs variant for {@link ArrayList#addAll()}.
-     * @overloads   {@link #addAll(AugList)}, {@link #addAll(T...) addAll(T...)}
+     * @overloads   {@link #addAll(Iterable)}, {@link #addAll(T...) addAll(T...)}
      * @tags        Mutator
      */
     @SafeVarargs
     public final AugList<T> addAll(T... elements) {
-        if (Objects.isNull(elements)) {
-            return this;
-        }
-        ls.addAll(new AugList<T>(elements).ls);
-        return this;
+        return addAll(new AugList<T>(elements));
     }
 
     /**
@@ -561,19 +557,24 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Terminator
      */
     private boolean containsBulk(AugList<T> elements, boolean allOrAny) {
-        if (!Objects.isNull(elements)) {
-            AugList<T> thisClone = this.clone();
-            for (int i = 0; i < elements.size(); i++) {
-                if (Objects.isNull(elements.get(i))) {
-                    if (!thisClone.remove(null)) {
-                        return !allOrAny;
-                    }
-                }
-                else if ((allOrAny ^ thisClone.remove(elements.get(i)))) {
+        // Since containsBulk can only be called from 4 places,
+        // all of which already handle nulls, handling nulls here is pointless. 
+        // That being said,
+        // If AugList is extended and the extending class were to call containsBulk,
+        // Be aware that at the current moment there is no Null detection.
+        //if (!Objects.isNull(elements)) {
+        AugList<T> thisClone = this.clone();
+        for (int i = 0; i < elements.size(); i++) {
+            if (Objects.isNull(elements.get(i))) {
+                if (!thisClone.remove(null)) {
                     return !allOrAny;
                 }
             }
+            else if ((allOrAny ^ thisClone.remove(elements.get(i)))) {
+                return !allOrAny;
+            }
         }
+        //}
         return allOrAny;
     }
 
@@ -583,16 +584,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question. If {@code null}, returns {@code true}.
      * @return      {@code true} if all elements are found, and {@code false} otherwise.
      * @see         #contains(Object)
-     * @see         #containsAny(AugList)
+     * @see         #containsAny(Iterable)
      * @see         #containsAny(T...) containsAny(T...)
      * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAll()
      * @note        Replaces {@link java.util.Collection#containsAll(java.util.Collection)}
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}
+     * @overloads   {@link #containsAll(Iterable)}, {@link #containsAll(T...) containsAll(T...)}
      * @tags        Terminator
      */
-    public boolean containsAll(AugList<T> elements) {
-        return containsBulk(elements, true);
+    public boolean containsAll(Iterable<T> elements) {
+        return containsBulk(new AugList<T>(elements), true);
     }
 
     /**
@@ -601,13 +602,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question. If {@code null}, returns {@code true}.
      * @return      {@code true} if all elements are found, and {@code false} otherwise.
      * @see         #contains(Object)
-     * @see         #containsAny(AugList)
+     * @see         #containsAny(Iterable)
      * @see         #containsAny(T...) containsAny(T...)
      * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAllVarargs()
-     * @note        Varargs overload for {@link #containsAll(AugList)}.
+     * @note        Varargs overload for {@link #containsAll(Iterable)}.
      *              <p>Functionality can be replicated with {@code this.allSatisfy(e -> this.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
+     * @overloads   {@link #containsAll(Iterable)}, {@link #containsAll(T...) containsAll(T...)}.
      * @tags        Terminator
      */
     @SafeVarargs
@@ -621,17 +622,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
      * @see         #contains(Object)
-     * @see         #containsAll(AugList)
+     * @see         #containsAll(Iterable)
      * @see         #containsAll(T...) containsAll(T...)
      * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAny()
-     * @note        Inspired by {@link #containsAll(AugList)}.
+     * @note        Inspired by {@link #containsAll(Iterable)}.
      *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
+     * @overloads   {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}.
      * @tags        Terminator
      */
-    public final boolean containsAny(AugList<T> elements) {
-        return containsBulk(elements, false);
+    public final boolean containsAny(Iterable<T> elements) {
+        return containsBulk(new AugList<T>(elements), false);
     }
 
     /**
@@ -640,13 +641,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
      * @see         #contains(Object)
-     * @see         #containsAll(AugList)
+     * @see         #containsAll(Iterable)
      * @see         #containsAll(T...) containsAll(T...)
      * @see         #containsBulk(AugList, boolean)
      * @see         tests.AugListTest#testContainsAnyVarargs()
-     * @note        Varargs overload of {@link #containsAny(AugList)}
+     * @note        Varargs overload of {@link #containsAny(Iterable)}
      *              <p>Functionality can be replicated with {@code this.anySatisfy(e -> elements.contains(e))}.</p>
-     * @overloads   {@link #containsAll(AugList)}, {@link #containsAll(T...) containsAll(T...) containsAll(T...)}.
+     * @overloads   {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}.
      * @tags        Terminator
      */
     @SafeVarargs
@@ -1108,18 +1109,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              {@code index < 0 || index >= this.size()}
      * @return      This {@link AugList}, with the given elements inserted at the given index.
      * @see         #insert(int, Object)
-     * @see         #insertAllAtRandom(AugList)
+     * @see         #insertAllAtRandom(Iterable)
      * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...) 
      * @see         tests.AugListTest#testInsertAll()
      * @note        Replaces {@link ArrayList#addAll(int, java.util.Collection)}:
      *              Elements parameter type changed to AugList, returns {@code this}, not {@code true}.
-     * @overloads   {@link #insertAll(int, T...)}
+     * @overloads   {@link #insertAll(int, T...) insertAll(int, T...)}, {@link #insertAll(int, Iterable)}
      * @tags        Mutator
      */
-    public AugList<T> insertAll(int index, AugList<T> elements) {
-        if (!Objects.isNull(elements)) {
-            ls.addAll(index, elements.ls);
-        }
+    public AugList<T> insertAll(int index, Iterable<T> elements) {
+        AugList<T> e = new AugList<T>(elements); // Implicit null handling
+        ls.addAll(index, e.ls);
         return this;
     }
 
@@ -1137,15 +1137,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...)
      * @see         tests.AugListTest#testInsertAllVarargs()
      * @note        Varargs overload of {@link #insertAll(int, AugList)}
-     * @overloads   {@link #insertAll(int, AugList)}
+     * @overloads   {@link #insertAll(int, T...) insertAll(int, T...)}, {@link #insertAll(int, Iterable)} 
      * @tags        Mutator
      */
     @SafeVarargs
     public final AugList<T> insertAll(int index, T... elements) {
-        if (!Objects.isNull(elements)) {
-            ls.addAll(index, new AugList<T>(elements).ls);
-        }
-        return this;
+        return insertAll(index, new AugList<T>(elements));
     }
 
     /**
@@ -1158,14 +1155,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         #insertAtRandom(Object)
      * @see         tests.AugListTest#testInsertAllAtRandom()
      * @note        Randomized bulk non-varargs variant of {@link #insert(int, Object)}
-     * @overloads   {@link #insertAllAtRandom(T...)  insertAllAtRandom(T...)}
+     * @overloads   {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)}
      * @tags        Mutator
      */
-    public AugList<T> insertAllAtRandom(AugList<T> elements) {
-        if (!Objects.isNull(elements)) {
-            for (int i = 0; i < elements.size(); i++) {
-                insertAtRandom(elements.get(i));
-            }
+    public AugList<T> insertAllAtRandom(Iterable<T> elements) {
+        AugList<T> e = new AugList<T>(elements); // Implicit null handling
+        for (int i = 0; i < e.size(); i++) {
+            insertAtRandom(e.get(i));
         }
         return this;
     }
@@ -1180,7 +1176,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         #insertAtRandom(Object)
      * @see         tests.AugListTest#testInsertAllAtRandomVarargs()
      * @note        Randomized bulk varargs variant of {@link #insert(int, Object)}
-     * @overloads   {@link #insertAllAtRandom(AugList)}
+     * @overloads   {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)}
      * @tags        Mutator
      */
     @SafeVarargs
@@ -1218,10 +1214,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Compares whether or not two {@link AugList AugLists} have the same elements. (Order does not matter)
+     * Compares whether or not this {@link AugList} has the same elements as the given {@link Iterable}. (Order does not matter)
      * <p>For a stricter equality function, use {@link #equals()}.</p>
-     * @param   augListB
-     *          The second {@link AugList} to compare against.
+     * @param   itrB
+     *          The {@link Iterable} B to use in the comparison.
      * @return  {@code true} if the lists are rearrangements; {@code false} otherwise.
      * @see     #equals(Object)
      * @see     #isEquivalent(Object)
@@ -1229,7 +1225,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Functionality is, to my knowledge, not implemented in Java or C#.
      * @tags    Terminator
      */
-    public boolean isRearrangement(AugList<T> augListB) {
+    public boolean isRearrangement(Iterable<T> itrB) {
+        AugList<T> augListB = new AugList<T>(itrB);
         if (ls.size() != augListB.size()) {
             // If the two lists are different lengths, there is no world in which they are rearrangements of eachother.
             // So rather than wasting compute time, we can terminate early.
@@ -1276,11 +1273,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the "list difference" between this (A) and the given {@link AugList} (B).
-     * <p>For a method that calculates the set difference, use {@link #setDifference(AugList)}.
-     * <p>For methods with similar functionality, see {@link #removeAll(AugList)} and {@code #retainAll(java.util.Collection)} 
-     * @param   augListB
-     *          The {@link AugList} in question, with which to take the difference of. If {@code null}, treated as an empty {@link AugList}.
+     * Returns the "list difference" between this (A) and the given {@link Iterable} (B).
+     * <p>For a method that calculates the set difference, use {@link #setDifference(Iterable)}.
+     * <p>For methods with similar functionality, see {@link #removeAll(Iterable)} and {@link #retainAll(java.util.Collection)}.
+     * @param   itrB
+     *          The {@link Iterable} in question, with which to take the difference of. If {@code null}, treated as an empty {@link AugList}.
      * @return  The "list difference", "A\`B".
      *          <p>i.e. [1,2]\`[1] = [2], 
      *                  [2]\`[1,2] = [], 
@@ -1288,10 +1285,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  [1,1,2]\`[1,1,3] = [2],
      *                  [1,1]\`[] = [1,1]
      *          <p>Output is a list, which may be a mathematical set.
-     * @see     #listIntersection(AugList)
-     * @see     #listUnion(AugList)
-     * @see     #setDifference(AugList)
-     * @see     #removeAll(AugList)
+     * @see     #listIntersection(Iterable)
+     * @see     #listUnion(Iterable)
+     * @see     #setDifference(Iterable)
+     * @see     #removeAll(Iterable)
      * @see     java.util.Collection#retainAll(java.util.Collection)
      * @see     tests.AugListTest#testListDifference()
      * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
@@ -1299,10 +1296,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          Works similarly, but not identically, to {@link java.util.Collection#retainAll(java.util.Collection)}
      * @tags    Creator
      */
-    public AugList<T> listDifference(AugList<T> augListB) {
-        if (Objects.isNull(augListB)) {
-            augListB = new AugList<T>();
-        }
+    public AugList<T> listDifference(Iterable<T> itrB) {
+        AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
         AugList<T> ret = this.clone();
         for (int i = 0; i < augListB.size(); i++) {
             if (ret.contains(augListB.get(i))) {
@@ -1313,31 +1308,29 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the "list intersection" between this (A) and the given {@link AugList} (B).
-     * <p>For a method that calculates the set intersection, use {@link #setIntersection(AugList)}.
-     * @param   augListB
-     *          The {@link AugList} in question, with which to take the intersection of. If {@code null}, treated as an empty {@link AugList}.
+     * Returns the "list intersection" between this (A) and the given {@link Iterable} (B).
+     * <p>For a method that calculates the set intersection, use {@link #setIntersection(Iterable)}.
+     * @param   itrB
+     *          The {@link Iterable} in question, with which to take the intersection of. If {@code null}, treated as an empty {@link AugList}.
      * @return  The "list intersection", "A∩`B".
      *          <p>i.e. [1,1,2]∩`[1,2,3] = [1,2],
      *                  [1,2,3]∩`[1,1,2] = [1,2],
      *                  [1,1,1,2]∩`[1,1,2,3] = [1,1,2],
      *                  []∩`[1,1,3,7] = [].
      *          <p>Output is a list, which may be a mathematical set.
-     * @see     #listDifference(AugList)
-     * @see     #listUnion(AugList)
-     * @see     #setIntersection(AugList)
+     * @see     #listDifference(Iterable)
+     * @see     #listUnion(Iterable)
+     * @see     #setIntersection(Iterable)
      * @see     tests.AugListTest#testListIntersection()
      * @note    Based upon the C# method {@code IEnumerable<T>.Intersect()}.
      *          <p>"List Intersection" and "A∩`B" are not mathematically endorsed terminology.
      * @tags    Creator
      */
-    public AugList<T> listIntersection(AugList<T> augListB) {
-        if (Objects.isNull(augListB)) {
-            augListB = new AugList<T>();
-        }
-        if (this.equals(augListB)) {
-            return augListB;
-        }
+    public AugList<T> listIntersection(Iterable<T> itrB) {
+        AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
+        // if (this.equals(augListB)) {
+        //     return augListB;
+        // }
         augListB = augListB.clone();
         // As listIntersection needs to alter the state of B,
         // the state of B could change outside of scope.
@@ -1359,7 +1352,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         #spliterator()
      * @see         tests.AugListTest#testListIterator()
      * @note        Encapsulates {@link List#listIterator()}.
-     * @overloads   {@link #listIterator(int)}
+     * @overloads   {@link #listIterator()}, {@link #listIterator(int)}
      * @tags        Converter
      */
     public ListIterator<T> listIterator() {
@@ -1375,7 +1368,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         tests.AugListTest#testListIteratorFromIndex()
      * @return      A {@link ListIterator} over this {@link AugList} starting at the given index.
      * @note        Encapsulates {@link List#listIterator(int)}.
-     * @overloads   {@link #listIterator()}
+     * @overloads   {@link #listIterator()}, {@link #listIterator(int)}
      * @tags        Converter
      */
     public ListIterator<T> listIterator(int index) {
@@ -1384,29 +1377,27 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the "list union" between this (A) and the given {@link AugList} (B).
-     * <p>For a method that calculates the set union, use {@link #setUnion(AugList)}.
-     * @param   augListB
-     *          The {@link AugList} in question, with which to take the union on. If {@code null}, treated as an empty {@link AugList}.
-     * @return  The "list union" , "AU`B".
+     * Returns the "list union" between this (A) and the given {@link Iterable} (B).
+     * <p>For a method that calculates the set union, use {@link #setUnion(Iterable)}.
+     * @param   itrB
+     *          The {@link Iterable} in question, with which to take the union on. If {@code null}, treated as an empty {@link AugList}.
+     * @return  The "list union", "AU`B".
      *          <p>i.e. [1,1,2]U`[1,2,3] = [1,1,2,3],
      *                  [1,1,1,2]U`[1,1,2,3] = [1,1,1,2,3],
      *                  [1,2]U`[1,3] = [1,2,3],
      *                  [1,3]U`[] = [1,3],
      *                  []U`[1,3] = [1,3].
      *          <p>Output is a list, which may be a set.
-     * @see     #listDifference(AugList)
-     * @see     #listIntersection(AugList)
-     * @see     #setUnion(AugList)
+     * @see     #listDifference(Iterable)
+     * @see     #listIntersection(Iterable)
+     * @see     #setUnion(Iterable)
      * @see     tests.AugListTest#testListUnion()
      * @note    Based on the C# method {@code IEnumerable<T>.Union()}.
      *          <p>"List Union" and "AU`B" are not mathematically endorsed terminology.
      * @tags    Creator
      */
-    public AugList<T> listUnion(AugList<T> augListB) {
-        if (Objects.isNull(augListB)) {
-            augListB = new AugList<T>();
-        }
+    public AugList<T> listUnion(Iterable<T> itrB) {
+        AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
         AugList<T> ret = this.clone();
         augListB = augListB.clone();
         // As listUnion needs to alter the state of B,
@@ -1452,21 +1443,22 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a {@link Hashtable} where each element in this {@link AugList} is paired with its corresponding entry in the given {@link AugList}.
+     * Creates a {@link Hashtable} where each element in this {@link AugList} is paired with its corresponding entry in the given {@link Iterable}.
      * @param   <U>
      *          The type of elements in {@code AugListB}.
-     * @param   augListB
-     *          The {@link AugList} in question.
-     * @return  A {@link HashTable} that pairs up elements,
-     *          or an empty {@link Hashtable} if either
-     *          <p>- the lengths do not match, or
+     * @param   itrB
+     *          The {@link Iterable} in question.
+     * @return  A {@link Hashtable} that pairs up elements,
+     *          or an empty {@link Hashtable} if either:<p>
+     *          - the lengths do not match, or
      *          - at least 1 entry in either list is {@code null}.
      * @see     tests.AugListTest#testPairUp()
      * @note    Based on the C# function {@code IEnumerable<T>.Zip()}.
      * @tags    Converter
      */
-    public <U> Hashtable<T,U> pairUp(AugList<U> augListB) {
-        Hashtable<T,U> ret = new Hashtable<T,U>() {};
+    public <U> Hashtable<T, U> pairUp(Iterable<U> itrB) {
+        AugList<U> augListB = new AugList<U>(itrB);
+        Hashtable<T, U> ret = new Hashtable<T, U>() {};
         if (ls.size() != augListB.size() || this.anySatisfy(e -> e == null) || augListB.anySatisfy(e -> e == null)) {
             return ret;
         }
@@ -1492,6 +1484,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Returns a {@link String} that describes the parameterized type of this {@link AugList}.
      * @see     tests.AugListTest#testParameterizedTypeDesc()
      * @return  A {@link String} describing the parameterized type, or "∅" if {@link #isEmpty()}.
+     * @tags    Terminator
      */
     public String parameterizedTypeDesc() {
         if (isEmpty()) {
@@ -1508,7 +1501,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The {@link Object} to remove if present.
      * @return  {@code true} if removed, and {@code false} if it was not present.
-     * @see     #removeAll(AugList)
+     * @see     #removeAll(Iterable)
      * @see     #removeAll(T...) removeAll(T...)
      * @see     #removeAt(int)
      * @see     #removeIf(Predicate)
@@ -1527,26 +1520,25 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Attempts to remove the first instance of each of the supplied elements, if present, from this {@link AugList}.
      * <p>For a Mutator method, see {@link #withoutAll(AugList)}.
      * <p>For methods with similar functionality, use {@link #listDifference(AugList)} and {@code #retainAll(java.util.Collection)}.
-     * @param       elements
-     *              The elements to remove in question. If {@code null}, returns {@code false}.
+     * @param       iterable
+     *              The source of the elements to remove in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
-     * @see         #withoutAll(AugList)
+     * @see         #withoutAll(Iterable)
      * @see         #remove(Object)
      * @see         #listDifference(AugList)
      * @see         java.util.Collection#retainAll(java.util.Collection)
      * @see         tests.AugListTest#testRemoveAll()
      * @note        Replaces {@link List#removeAll(java.util.Collection)}.
-     * @overloads   {@link #removeAll(T...) removeAll(T...)}
+     * @overloads   {@link #removeAll(Iterable)}, {@link #removeAll(T...) removeAll(T...)}
      * @tags        Terminator
      */
-    public boolean removeAll(AugList<T> elements) {
+    public boolean removeAll(Iterable<T> iterable) {
+        AugList<T> elements = new AugList<T>(iterable); // Implicit null check
         boolean ret = false;
-        if (!Objects.isNull(elements)) {
-            for (int i = 0; i < elements.size(); i++) {
-                if (ls.contains(elements.get(i))) {
-                    ret = true;
-                    ls.remove(elements.get(i));
-                }
+        for (int i = 0; i < elements.size(); i++) {
+            if (ls.contains(elements.get(i))) {
+                ret = true;
+                ls.remove(elements.get(i));
             }
         }
         return ret;
@@ -1561,11 +1553,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
      * @see         #withoutAll(T...) withoutAll(T...)
      * @see         #remove(Object)
-     * @see         #listDifference(AugList)
+     * @see         #listDifference(Iterable)
      * @see         java.util.Collection#retainAll(java.util.Collection)
      * @see         tests.AugListTest#testRemoveAllVarargs()
-     * @note        Varargs variant of {@link #removeAll(AugList)}.
-     * @overloads   {@link #removeAll(AugList)}
+     * @note        Varargs variant of {@link #removeAll(Iterable)}.
+     * @overloads   {@link #removeAll(Iterable)}, {@link #removeAll(T...) removeAll(T...)}
      * @tags        Terminator
      */
     @SafeVarargs
@@ -1741,9 +1733,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Returns the set difference between this (A) and the provided set (B). (i.e. A\B)
-     * <p>For a method that calculates the "List difference", see {@link #listDifference(AugList)}
-     * @param   setB
-     *          The set of elements to take the difference with. If {@code null}, treated as an empty set.
+     * <p>For a method that calculates the "List difference", see {@link #listDifference(Iterable)}
+     * @param   itrB
+     *          The source of the set of elements to take the difference with. If {@code null}, treated as an empty set.
      *          (If not already a mathematical set, will be turned into one first.)
      * @return  The set difference (A\B).
      *          <p>i.e. {1,2}\{1} = {2}, 
@@ -1754,18 +1746,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  {1,2}\{1,3} = {2}, 
      *                  [1,1,2]\{2} = {1}
      *          <p>Output is a mathematical set.
-     * @see     #setIntersection(AugList)
-     * @see     #setUnion(AugList)
-     * @see     #listDifference(AugList)
+     * @see     #setIntersection(Iterable)
+     * @see     #setUnion(Iterable)
+     * @see     #listDifference(Iterable)
      * @see     tests.AugListTest#testSetDifference()
      * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
      * @tags    Creator
      */
-    public AugList<T> setDifference(AugList<T> setB) {
+    public AugList<T> setDifference(AugList<T> itrB) {
+        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         AugList<T> ret = this.distinctCopy();
-        if (Objects.isNull(setB)) {
-            setB = new AugList<T>();
-        }
         setB = setB.distinctCopy();
         for (int i = 0; i < setB.size(); i++) {
             if (ret.contains(setB.get(i))) {
@@ -1776,27 +1766,25 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the set intersection between this (A) and the given {@link AugList} (B). (I.e. A∩B)
-     * <p>For a method that calculates the "List Intersection", see {@link #listIntersection(AugList)}.
-     * @param   setB
-     *          The set of elements to take the intersection with.  If {@code null}, treated as an empty set.
+     * Returns the set intersection between this (A) and the given set (B). (I.e. A∩B)
+     * <p>For a method that calculates the "List Intersection", see {@link #listIntersection(Iterable)}.
+     * @param   itrB
+     *          The source of the set of elements to take the intersection with. If {@code null}, treated as an empty set.
      *          (If not already a mathematical set, will be turned into one first.)
      * @return  The set intersection (A∩B), or an AugList with elements that appear in both sets. 
      *          <p>i.e. [1,1,2]∩[1,2,3] = {1,2}, 
      *                  [1,1,1,2]∩[1,1,2,3] = {1,2},
      *                  {}∩[1,1,3,7] = {}.
      *          <p>Output is a mathematical set.
-     * @see     #setDifference(AugList)
-     * @see     #setUnion(AugList)
-     * @see     #listIntersection(AugList)
+     * @see     #setDifference(Iterable)
+     * @see     #setUnion(Iterable)
+     * @see     #listIntersection(Iterable)
      * @see     tests.AugListTest#testSetIntersection()
      * @note    Based on the C# method {@code IEnumerable<T>.Intersect()}.
      * @tags    Creator
      */
-    public AugList<T> setIntersection(AugList<T> setB) {
-        if (Objects.isNull(setB)) {
-            setB = new AugList<T>();
-        }
+    public AugList<T> setIntersection(Iterable<T> itrB) {
+        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         if (this.isEquivalent(setB)) {
             return setB;
         }
@@ -1816,25 +1804,23 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Returns the set union between this and the given set. (i.e. AUB)
-     * <p>For a method that returns the "List Union", see {@link #listUnion(AugList)}.
-     * @param   setB
-     *          The set of elements to union with. (If not one already, is made into one first.) If {@code null}, treated as an empty set.
+     * <p>For a method that returns the "List Union", see {@link #listUnion(Iterable)}.
+     * @param   itrB
+     *          The source of the set of elements to union with. (If not one already, is made into one first.) If {@code null}, treated as an empty set.
      * @return  The set union (AUB).
      *          <p>i.e. {0,1,2}U{1,2,3} = {0,1,2,3},
      *                  [1,1,1,2]U[1,1,2,3] = {1,2,3}.
      *          <p>Output is a mathematical set.
-     * @see     #setDifference(AugList)
-     * @see     #setIntersection(AugList)
-     * @see     #listUnion(AugList)
+     * @see     #setDifference(Iterable)
+     * @see     #setIntersection(Iterable)
+     * @see     #listUnion(Iterable)
      * @see     tests.AugListTest#testSetUnion()
      * @note    Based on the C# function {@code IEnumerable<T>.Union()}.
      * @tags    Creator
      */
-    public AugList<T> setUnion(AugList<T> setB) {
+    public AugList<T> setUnion(Iterable<T> itrB) {
+        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
         AugList<T> ret = new AugList<T>();
-        if (Objects.isNull(setB)) {
-            setB = new AugList<T>();
-        }
         ret.addAll(this.distinctCopy());
         ret.addAll(setB.distinctCopy().filterSelf(e -> !ret.contains(e)));
         return ret;
@@ -2116,7 +2102,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Converter
      */
     public Enumeration<T> toEnumeration() {
-        Hashtable<T,T> hashtable = new Hashtable<T,T>() {};
+        Hashtable<T, T> hashtable = new Hashtable<T, T>() {};
         for (T element : ls) {
             hashtable.put(element, element);
         }
@@ -2160,7 +2146,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The {@link Object} to remove if present.
      * @return  {@code this}.
-     * @see     #withoutAll(AugList)
+     * @see     #withoutAll(Iterable)
      * @see     #withoutAll(T...)
      * @see     #withoutIndex(int)
      * @see     #withoutWhere(Predicate)
@@ -2178,18 +2164,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Attempts to remove the first instance of each of the supplied elements, if present, from this {@link AugList}.
-     * <p>For a Terminator method, use {@link #removeAll(AugList)}.
+     * <p>For a Terminator method, use {@link #removeAll(Iterable)}.
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code this} unaltered.
      * @return      {@code this}.
      * @see         #without(Object)
-     * @see         #removeAll(AugList)
+     * @see         #removeAll(Iterable)
      * @see         tests.AugListTest#testRemoveAll()
-     * @overloads   {@link #withoutAll(T...)}
-     * @note        Mutator variant of {@link #removeAll(AugList)}.
+     * @overloads   {@link #withoutAll(Iterable)}, {@link #withoutAll(T...) withoutAll(T...)}
+     * @note        Mutator variant of {@link #removeAll(Iterable)}.
      * @tags        Mutator
      */
-    public AugList<T> withoutAll(AugList<T> elements) {
+    public AugList<T> withoutAll(Iterable<T> elements) {
         removeAll(elements);
         return this;
     }
@@ -2201,9 +2187,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              The elements in question. If {@code null}, returns {@code this} unaltered.
      * @return      {@code this}.
      * @see         #without(Object)
-     * @see         #removeAll(AugList)
+     * @see         #removeAll(Iterable)
      * @see         tests.AugListTest#testWithoutAllVarargs()
-     * @overloads   {@link #withoutAll(AugList)}
+     * @overloads   {@link #withoutAll(Iterable)}, {@link #withoutAll(T...) withoutAll(T...)}
      * @note        Mutator variant of {@link #removeAll(T...) removeAll(T...)}.
      * @tags        Mutator
      */

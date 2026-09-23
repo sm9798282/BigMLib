@@ -48,9 +48,9 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________clear()`
 - `AugList<T>___________clone()`
 - `boolean______________contains(T)`
-- `boolean______________containsAll(AugList<T>)`
+- `boolean______________containsAll(Iterable<T>)`
 - `boolean______________containsAll(T...)`
-- `boolean______________containsAny(AugList<T>)`
+- `boolean______________containsAny(Iterable<T>)`
 - `boolean______________containsAny(T...)`
 - `int__________________countOf()`
 - `AugList<Integer>_____countsOfElements()`
@@ -68,47 +68,47 @@ Provided with AugList V2 are the following:
 - `int__________________hashCode()`
 - `int__________________indexOf(Object)`
 - `AugList<T>___________insert(int, T)`
-- `AugList<T>___________insertAll(int, AugList<T>)`
+- `AugList<T>___________insertAll(int, Iterable<T>)`
 - `AugList<T>___________insertAll(int, T...)`
-- `AugList<T>___________insertAllAtRandom(AugList<T>)`
+- `AugList<T>___________insertAllAtRandom(Iterable<T>)`
 - `AugList<T>___________insertAllAtRandom(T...)`
 - `AugList<T>___________insertAtRandom(T)`
 - `boolean______________isEmpty()`
 - `boolean______________isEquivalent()`
 - PLANNED `isPalindrome()`
-- `boolean______________isRearrangement(AugList<T>)`
+- `boolean______________isRearrangement(Iterable<T>)`
 - PLANNED `isSet()`
 - `Iterator<T>__________iterator()`
 - `boolean______________lastIndexOf(Object)`
-- `AugList<T>___________listDifference(AugList<T>)`
-- `AugList<T>___________listIntersection(AugList<T>)`
+- `AugList<T>___________listDifference(Iterable<T>)`
+- `AugList<T>___________listIntersection(Iterable<T>)`
 - `ListIterator<T>______listIterator()`
 - `ListIterator<T>______listIterator(int)`
-- `AugList<T>___________listUnion(AugList<T>)`
-- PLANNED `massOverwriteRandom(AugList<T>)`
+- `AugList<T>___________listUnion(Iterable<T>)`
+- PLANNED `massOverwriteRandom(Iterable<T>)`
 - `AugList<U>___________oneToOneMap(Function<? super T, U>)`
 - `void_________________notify()`
 - `void_________________notifyAll()`
 - PLANNED `overwriteRandom(T)`
-- `Hashtable<T,U>_______pairUp(AugList<U>)`
+- `Hashtable<T,U>_______pairUp(Iterable<U>)`
 - `Stream<T>____________parallelStream()`
 - `String_______________parameterizedTypeDesc()`
 - `boolean______________remove(Object)`
-- `boolean______________removeAll(AugList<T>)`
+- `boolean______________removeAll(Iterable<T>)`
 - `boolean______________removeAll(T...)`
 - `boolean______________removeAt(int)`
 - `boolean______________removeIf(Predicate<? super T>)`
 - `boolean______________removeLast()`
 - `boolean______________removeRandom()`
-- `AugList<T>___________retainAll(java.util.Collection<? super T>)`
+- `AugList<T>___________retainAll(Collection<? super T>)`
 - `AugList<T>___________reversed()`
 - `AugList<T>___________sample(int, boolean)`
 - `T____________________set(int, T)`,
-- `AugList<T>___________setDifference(AugList<T>)`
-- `AugList<T>___________setIntersection(AugList<T>)`
-- PLANNED `setMany(AugList<Integer> indices, AugList<T> values)`
-- PLANNED `setRange(int, AugList<T>)`
-- `AugList<T>___________setUnion(AugList<T>)`
+- `AugList<T>___________setDifference(Iterable<T>)`
+- `AugList<T>___________setIntersection(Iterable<T>)`
+- PLANNED `setMany(Iterable<Integer> indices, Iterable<T> values)`
+- PLANNED `setRange(int, Iterable<T>)`
+- `AugList<T>___________setUnion(Iterable<T>)`
 - `AugList<T>___________shuffleCopy()`
 - `AugList<T>___________shuffleSelf()`
 - `AugList<T>___________skipWhile(Predicate<? super T>)`
@@ -131,7 +131,7 @@ Provided with AugList V2 are the following:
 - `void_________________wait(long)`
 - `void_________________wait(long, int)`
 - `AugList<T>___________without(T)`
-- `AugList<T>___________withoutAll(AugList<T>)`
+- `AugList<T>___________withoutAll(Iterable<T>)`
 - `AugList<T>___________withoutAll(T...)`
 - `AugList<T>___________withoutIndex(int)`
 - `AugList<T>___________withoutLast()`

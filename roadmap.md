@@ -5,20 +5,18 @@
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - Test pulling from dev to a d- branch
-- Test nulls (In Progress)
 - Test with AugList<?>
-- Combine Basic Overloads (In progress)
 
 ## Possible features
 
 ### AugList V2 Planned
 
-- Parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param (IN PROGRESS)
 - Where possible, parameters that have param type `T` changed to `? super T` on d-param
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
 - `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write
 - Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-write
 - `countCombinations()` (combinatorics) on d-csma
+- `isPalindrom()` sees if AugList is palindrome on d-csma
 - `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-csma
 - `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-csma
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
@@ -85,7 +83,10 @@
 
 ## Completed
 
-- Test non-primitive return types (IN PROGRESS)
+- Most parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param
+- Test nulls
+- Combine Basic Overloads
+- Test non-primitive return types
 - Test gets from empty lists (and throw `NoSuchElementException` where necessary)
 - `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
 - Change testAdd family of tests to check the returned AugList
