@@ -75,7 +75,8 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________insertAtRandom(T)`
 - `boolean______________isEmpty()`
 - `boolean______________isEquivalent()`
-- `boolean______________isRearrangement()`
+- PLANNED `isPalindrome()`
+- `boolean______________isRearrangement(AugList<T>)`
 - PLANNED `isSet()`
 - `Iterator<T>__________iterator()`
 - `boolean______________lastIndexOf(Object)`

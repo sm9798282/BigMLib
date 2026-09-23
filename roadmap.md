@@ -7,7 +7,7 @@
 - Test pulling from dev to a d- branch
 - Test nulls (In Progress)
 - Test with AugList<?>
-- Combine Basic Overloads
+- Combine Basic Overloads (In progress)
 
 ## Possible features
 

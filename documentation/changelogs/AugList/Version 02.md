@@ -10,12 +10,14 @@
 - New Random "family" of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
 - And new Random-adjacent methods too: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
+- New method `countOf(T)` as an individual alternative to `countsOfElements()` that also supports `null`s.
 
 ## Behavioural changes
 
 - `toString()` now represents `null` as `"*null*"`.
 - V1 `equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for enhanced V1 behaviour.
 - V1 `applyAll(Function<? super T, T>)` changed to V2 `applyAll(UnaryOperator<T>)`
+- `forEach(null)` now does nothing (as opposed to throwing `NullPointerException`)
 
 ## Naming changes
 
@@ -37,7 +39,7 @@ Parameters have (except where additional context is helpful) been renamed to fol
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
 - Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)
 - Passing `null` into `addAll(AugList<T>)` / `addAll(T...)` returns this (as opposed to throwing `NullPointerException`)
-- `allIndicesOf(T)`, `allSatisfy(Predicate<? super T>)`, `anySatisfy(Predicate<? super T>)`, `containsAll(AugList<T>)`, `containsAll(T...)`, `countsOfElements()` now work as would be expected when provided `null` (as opposed to throwing `NullPointerException`)
+- `allIndicesOf(T)`, `allSatisfy(Predicate<? super T>)`, `anySatisfy(Predicate<? super T>)`, `containsAll(AugList<T>)`, `containsAll(T...)`, `countsOfElements()`, `filterCopy(Predicate<? super T>)`, `filterSelf(Predicate<? super T>)`, `forEach(Consumer<? super T>)`, `insertAll(int, AugList<T>)`, `insertAll(int, T...)`, `listDifference(AugList<T>)`, `listIntersection(AugList<T>)`, `listUnion(AugList<T>)`, `removeAll(AugList<T>)`, `removeAll(T...)`, `removeIf(Predicate<? super T>)`, `setDifference(AugList<T>)`, `setIntersection(AugList<T>)`, `setUnion(AugList<T>)`, `skipWhile(Predicate<? super T>)`, `sort(Comparator<? super T>)`, `takeWhile(Predicate<? super T>)`, `withoutAll(AugList<T>)`, `withoutAll(T...)` now work as would be expected when provided `null` (as opposed to throwing `NullPointerException`)
 
 ## Testing changes
 

@@ -55,7 +55,7 @@ These methods have applications in set theory, probability, statistics, function
 - Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
 - For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
 - `toString()` bug where attempting to print a list with nulls throws a `NullPointerException`.
-- Constructors and `allIndices()` bug where supplying `null` throws a `NullPointerException`.
+- Supplying `null` throws a `NullPointerException` for the following methods: Constructors, `allIndicesOf(T)`, `allSatisfy(Predicate<? super T>)`, `anySatisfy(Predicate<? super T>)`, `containsAll(AugList<T>)`, `containsAll(T...)`, `countsOfElements()`, `filterCopy(Predicate<? super T>)`, `filterSelf(Predicate<? super T>)`, `forEach(Consumer<? super T>)`, `insertAll(int, AugList<T>)`, `insertAll(int, T...)`, `listDifference(AugList<T>)`, `listIntersection(AugList<T>)`, `listUnion(AugList<T>)`, `removeAll(AugList<T>)`, `removeAll(T...)`, `removeIf(Predicate<? super T>)`, `setDifference(AugList<T>)`, `setIntersection(AugList<T>)`, `setUnion(AugList<T>)`, `skipWhile(Predicate<? super T>)`, `sort(Comparator<? super T>)`, `takeWhile(Predicate<? super T>)`, `withoutAll(AugList<T>)`, `withoutAll(T...)`.
 - `isEqual()` bug where `"[1.0]"` != `"[1.0]"`.
 - `addAll(AugList<T>)` / `addAll(T...)` bug where passing a `null` throws `NullPointerException`
 - `clone()`, `filterCopy()`, `filterSelf()`, `listIntersection()`, `setIntersection()`, `setUnion()`, `skipWhile()` and `takeWhile()`'s bug where i.e. `this.getClass() != this.clone().getClass()`
