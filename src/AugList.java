@@ -134,25 +134,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Creates a new {@link AugList} from the given {@link T}[].
-     * @param       elements
-     *              The varargs array of objects that will make up this {@link AugList}.
-     *              <p>If {@code elements.equals(null)}, the resulting {@link AugList} is empty.
-     * @see         tests.AugListTest#testInstantiateVarargs()
-     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
-     * @tags        Constructor
-     */
-    @SafeVarargs
-    public AugList(T... elements) {
-        if (Objects.isNull(elements)) {
-            ls = new ArrayList<T>() {};
-        }
-        else {
-            ls = new ArrayList<T>(Arrays.asList(elements));
-        }
-    }
-
-    /**
      * Creates a new {@link AugList} from the given {@link Enumeration}.
      * @param       enumeration
      *              The {@link Enumeration} object to source the elements for this {@link AugList} from.
@@ -287,6 +268,25 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         ls = new ArrayList<T>() {};
         if (!Objects.isNull(stream)) {
             ls = new AugList<T>(stream.iterator()).ls;
+        }
+    }
+
+    /**
+     * Creates a new {@link AugList} from the given {@link T}[].
+     * @param       elements
+     *              The varargs array of objects that will make up this {@link AugList}.
+     *              <p>If {@code elements.equals(null)}, the resulting {@link AugList} is empty.
+     * @see         tests.AugListTest#testInstantiateVarargs()
+     * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @tags        Constructor
+     */
+    @SafeVarargs
+    public AugList(T... elements) {
+        if (Objects.isNull(elements)) {
+            ls = new ArrayList<T>() {};
+        }
+        else {
+            ls = new ArrayList<T>(Arrays.asList(elements));
         }
     }
 
@@ -754,170 +754,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ret;
     }
 
-    /** 
-     * Sees if the given {@link Object} may be equal to this {@link AugList}.
-     * <p>If the {@link Object} in question is any of the following,
-     * it will be considered equivalent if that object constructs to an {@link AugList} that:
-     * - {@link Enumeration}: Same values, even if a {@link #isRearrangement(AugList) Rearrangement}
-     * - {@link Iterator}: Same values, same order
-     * - {@link Iterable}: Same values, same order
-     * - {@link ListIterator}: Same values, same order
-     * - {@link Spliterator}: Same values, same order
-     * - {@link Stream}: Same values, same order
-     * <p>Separately:
-     * - A {@link String} is equivalent if it matches the {@link #toString()} representation.
-     * - A {@link Number} is equivalent if it matches the {@link #hashCode()}.
-     * <p>If the given {@link Object} is none of the above, it cannot be equivalent.
-     * @param   o
-     *          The object in question.
-     * @see     #isRearrangement(AugList)
-     * @see     #equals(Object)
-     * @see     tests.AugListTest#testIsEquivalent()
-     * @return  {@code true} if equivalent, and {@code false} otherwise.
-     * @note    Breaks the contract that states that two equal objects have equal {@link #hashCode() hashcodes},
-     *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
-     * @tags    Terminator
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public boolean isEquivalent(Object o) {
-        if (Objects.isNull(o)) {
-            return false;
-        }
-        if (o instanceof String) {
-            // o is a String; If it is the same as this.toString(), it will be treated as equal.
-            return o.equals(this.toString());
-        }
-        if (o instanceof Number) {
-            return ((Number)(o)).intValue() == this.hashCode();
-        }
-        if (o instanceof Enumeration) {
-            //try {
-            // If o is an Enumeration<? extends T>, it will cast without throwing.
-            // Enumerations come from Hashtables, so are usually unordered - hence the isRearrangement leniency.
-            return isRearrangement(new AugList<T>((Enumeration<T>)o));
-            // Since unchecked casting does not throw (I believe...), this try-catch is unnecessary.
-            // } catch (Exception e) {
-            //     // If o's parameterized type is not "? extends T", it will throw upon casting.
-            //     // Since the parameterized type cannot be meaningfully compared against, return false.
-            //     return false;
-            // }
-        }
-        AugList ALo = new AugList();
-        // ListIterator is an Iterator, so they do not need to explicitly be included in this filter.
-        if (o instanceof Iterator || o instanceof Spliterator || o instanceof Iterable || o instanceof Stream) {
-            if (o instanceof ListIterator) {
-                ListIterator oListIterator = (ListIterator)o;
-                ALo = new AugList(oListIterator);
-            }
-            if (o instanceof Iterator && !(o instanceof ListIterator)) {
-                Iterator oIterator = (Iterator)o;
-                ALo = new AugList(oIterator);
-            }
-            if (o instanceof Iterable) {
-                Iterable oIterable = (Iterable)o;
-                ALo = new AugList(oIterable);
-            }
-            if (o instanceof Spliterator) {
-                Spliterator oSpliterator = (Spliterator)o;
-                ALo = new AugList(oSpliterator);
-            }
-            if (o instanceof Stream) {
-                Stream oStream = (Stream)o;
-                ALo = new AugList(oStream);
-            }
-            String oPType = "", thisPType = "";
-                try {
-                    oPType = ALo.get(0).getClass().toGenericString();
-                } catch (IndexOutOfBoundsException e) {
-                    // If an exception is thrown, AL = ∅.
-                    try {
-                        this.getLast();
-                        // If an exception has not been thrown, AL = ∅ and this != ∅
-                        // So return false.
-                        return false; 
-                    } catch (NoSuchElementException ex) {
-                        // If an exception is thrown, it is because this = ∅.
-                        // Whilst the parameterized type for both o and this are unknown,
-                        // from a mathematical standpoint ∅ = ∅, thus return true.
-                        return true;
-                    }
-                }
-                try {
-                    thisPType = this.getLast().getClass().toGenericString();
-                    // If the parameterized type doesn't match, or the lists are different lengths, they cannot be equivalent.
-                    if (!thisPType.equals(oPType) || size() != ALo.size()) {
-                        return false;
-                    }
-                    for (int i = 0; i < this.size(); i++) {
-                        // If any element mismatches, the lists cannot be equivalent.
-                        if (!this.get(i).equals(ALo.get(i))) {
-                            return false;
-                        }
-                    }
-                    return true;
-                } catch (NoSuchElementException e) {
-                    // If an exception has been thrown, AL != ∅, this = ∅
-                    // So return false
-                    return false;
-                }
-            }
-        return false; // If it is not any of the supported types, then assume non-equivalence.
-
-        // if (o instanceof AugList) {
-        //     @SuppressWarnings({ "rawtypes" })
-        //     // Suppress the rawtypes caution as o is an AugList.
-        //     // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
-        //     AugList oAsAugList = (AugList) o;
-        //     // We know o is an AugList:
-        //     // Firstly, are the lists the same size?
-        //     if (ls.size() != oAsAugList.size()) {
-        //         return false;
-        //     }
-        //     // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
-        //     {
-        //         // // If they are, do they have the same generic type?
-        //         // try {
-        //         //     /**
-        //         //      * Credit: There's no way I would be able to do this without StackOverflow.
-        //         //      * Based off the following:
-        //         //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
-        //         //      */
-        //         //     Class<?> testClass = TypeFinder.class;
-                    
-        //         //     Field oALF = testClass.getDeclaredField("genericAugList");
-        //         //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
-        //         //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
-        //         //     System.out.println(oALClass.toString()); // class java.lang.String
-
-        //         //     Field tALF = testClass.getDeclaredField("thisAugList");
-        //         //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
-        //         //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
-        //         //     System.out.println(tALClass.toString()); // class java.lang.Integer
-
-        //         //     // If the generic fields have different names, the lists are treated as unequal.
-        //         //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
-        //         //         return false;
-        //         //     }
-        //         // } catch (NoSuchFieldException e) {
-        //         //     return false;
-        //         // }
-        //     }
-            
-        //     // If they are, are the sequences identical?
-        //     for (int i = 0; i < ls.size(); i++) {
-        //         if (!ls.get(i).equals(oAsAugList.get(i))) {
-        //             return false;
-        //         }
-        //     }
-        //     // If they are, assume equality.
-        //     return true;
-        // }
-        // if (o instanceof List) {
-        //     // Delegate the job of answering this to built-in methods.
-        //     return ls.equals(o);
-        // }
-    }
-
     /**
      * Creates a new {@link AugList} with exactly the elements that satisfy the given filter.
      * <p>For a Mutator method, use {@link #filterSelf()}.
@@ -1217,6 +1053,177 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public boolean isEmpty() {
         return ls.isEmpty();
+    }
+
+    /** 
+     * Sees if the given {@link Object} may be equal to this {@link AugList}.
+     * <p>If the {@link Object} in question is any of the following,
+     * it will be considered equivalent if that object constructs to an {@link AugList} that:
+     * - {@link Enumeration}: Same values, even if a {@link #isRearrangement(AugList) Rearrangement}
+     * - {@link Iterator}: Same values, same order
+     * - {@link Iterable}: Same values, same order
+     * - {@link ListIterator}: Same values, same order
+     * - {@link Spliterator}: Same values, same order
+     * - {@link Stream}: Same values, same order
+     * <p>Separately:
+     * - A {@link String} is equivalent if it matches the {@link #toString()} representation.
+     * - A {@link Number} is equivalent if it matches the {@link #hashCode()}.
+     * <p>If the given {@link Object} is none of the above, it cannot be equivalent.
+     * @param   o
+     *          The object in question.
+     * @see     #isRearrangement(AugList)
+     * @see     #equals(Object)
+     * @see     tests.AugListTest#testIsEquivalent()
+     * @return  {@code true} if equivalent, and {@code false} otherwise.
+     * @note    Breaks the contract that states that two equal objects have equal {@link #hashCode() hashcodes},
+     *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
+     * @tags    Terminator
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public boolean isEquivalent(Object o) {
+        if (Objects.isNull(o)) {
+            return false;
+        }
+        if (o instanceof String) {
+            // o is a String; If it is the same as this.toString(), it will be treated as equal.
+            return o.equals(this.toString());
+        }
+        if (o instanceof Number) {
+            return ((Number)(o)).intValue() == this.hashCode();
+        }
+        if (o instanceof Enumeration) {
+            //try {
+            // If o is an Enumeration<? extends T>, it will cast without throwing.
+            // Enumerations come from Hashtables, so are usually unordered - hence the isRearrangement leniency.
+            return isRearrangement(new AugList<T>((Enumeration<T>)o));
+            // Since unchecked casting does not throw (I believe...), this try-catch is unnecessary.
+            // } catch (Exception e) {
+            //     // If o's parameterized type is not "? extends T", it will throw upon casting.
+            //     // Since the parameterized type cannot be meaningfully compared against, return false.
+            //     return false;
+            // }
+        }
+        AugList ALo = new AugList();
+        // ListIterator is an Iterator, so they do not need to explicitly be included in this filter.
+        if (o instanceof Iterator || o instanceof Spliterator || o instanceof Iterable || o instanceof Stream) {
+            if (o instanceof ListIterator) {
+                ListIterator oListIterator = (ListIterator)o;
+                ALo = new AugList(oListIterator);
+            }
+            if (o instanceof Iterator && !(o instanceof ListIterator)) {
+                Iterator oIterator = (Iterator)o;
+                ALo = new AugList(oIterator);
+            }
+            if (o instanceof Iterable) {
+                Iterable oIterable = (Iterable)o;
+                ALo = new AugList(oIterable);
+            }
+            if (o instanceof Spliterator) {
+                Spliterator oSpliterator = (Spliterator)o;
+                ALo = new AugList(oSpliterator);
+            }
+            if (o instanceof Stream) {
+                Stream oStream = (Stream)o;
+                ALo = new AugList(oStream);
+            }
+            String oPType = "", thisPType = "";
+                try {
+                    oPType = ALo.get(0).getClass().toGenericString();
+                } catch (IndexOutOfBoundsException e) {
+                    // If an exception is thrown, AL = ∅.
+                    try {
+                        this.getLast();
+                        // If an exception has not been thrown, AL = ∅ and this != ∅
+                        // So return false.
+                        return false; 
+                    } catch (NoSuchElementException ex) {
+                        // If an exception is thrown, it is because this = ∅.
+                        // Whilst the parameterized type for both o and this are unknown,
+                        // from a mathematical standpoint ∅ = ∅, thus return true.
+                        return true;
+                    }
+                }
+                try {
+                    thisPType = this.getLast().getClass().toGenericString();
+                    // If the parameterized type doesn't match, or the lists are different lengths, they cannot be equivalent.
+                    if (!thisPType.equals(oPType) || size() != ALo.size()) {
+                        return false;
+                    }
+                    for (int i = 0; i < this.size(); i++) {
+                        // If any element mismatches, the lists cannot be equivalent.
+                        if (!this.get(i).equals(ALo.get(i))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } catch (NoSuchElementException e) {
+                    // If an exception has been thrown, AL != ∅, this = ∅
+                    // So return false
+                    return false;
+                }
+            }
+        return false;
+        /** 
+         * If o is not any of the supported types, then assume non-equivalence.
+         * (Whilst it may be possible that o's Hashcode matches this Hashcode and o is not a supported type,
+         *  This equivalence function does not consider that possibility.
+         *  (This is mostly because testing the such would be quite difficult.)
+         *  Hence, not all objects that are equal will be equivalent, and vice versa.)
+         */
+
+        // if (o instanceof AugList) {
+        //     @SuppressWarnings({ "rawtypes" })
+        //     // Suppress the rawtypes caution as o is an AugList.
+        //     // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
+        //     AugList oAsAugList = (AugList) o;
+        //     // We know o is an AugList:
+        //     // Firstly, are the lists the same size?
+        //     if (ls.size() != oAsAugList.size()) {
+        //         return false;
+        //     }
+        //     // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
+        //     {
+        //         // // If they are, do they have the same generic type?
+        //         // try {
+        //         //     /**
+        //         //      * Credit: There's no way I would be able to do this without StackOverflow.
+        //         //      * Based off the following:
+        //         //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
+        //         //      */
+        //         //     Class<?> testClass = TypeFinder.class;
+                    
+        //         //     Field oALF = testClass.getDeclaredField("genericAugList");
+        //         //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
+        //         //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
+        //         //     System.out.println(oALClass.toString()); // class java.lang.String
+
+        //         //     Field tALF = testClass.getDeclaredField("thisAugList");
+        //         //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
+        //         //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
+        //         //     System.out.println(tALClass.toString()); // class java.lang.Integer
+
+        //         //     // If the generic fields have different names, the lists are treated as unequal.
+        //         //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
+        //         //         return false;
+        //         //     }
+        //         // } catch (NoSuchFieldException e) {
+        //         //     return false;
+        //         // }
+        //     }
+            
+        //     // If they are, are the sequences identical?
+        //     for (int i = 0; i < ls.size(); i++) {
+        //         if (!ls.get(i).equals(oAsAugList.get(i))) {
+        //             return false;
+        //         }
+        //     }
+        //     // If they are, assume equality.
+        //     return true;
+        // }
+        // if (o instanceof List) {
+        //     // Delegate the job of answering this to built-in methods.
+        //     return ls.equals(o);
+        // }
     }
 
     /**
@@ -2153,7 +2160,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The {@link Object} to remove if present.
      * @return  {@code this}.
      * @see     #withoutAll(Iterable)
-     * @see     #withoutAll(T...)
+     * @see     #withoutAll(T...) withoutAll(T...)
      * @see     #withoutIndex(int)
      * @see     #withoutWhere(Predicate)
      * @see     #withoutLast()
@@ -2284,13 +2291,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // /**
     //  * Create a new AugList that is the given length, filled with the given value.
-    //  * @param   fill
-    //  *          What to fill this AugList with.
-    //  * @param   size
-    //  *          How long the AugList should be.
-    //  * @throws  IllegalArgumentException
-    //  *          {@code size < 0}
     //  * @deprecated
+    //  * @param       fill
+    //  *              What to fill this AugList with.
+    //  * @param       size
+    //  *              How long the AugList should be.
+    //  * @throws      IllegalArgumentException
+    //  *              {@code size < 0}
+    //  * @tags        Constructor
     //  */
     // public AugList(T fill, int size) {
     //     if (size < 0) {
@@ -2301,16 +2309,15 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //     }
     // }
 
-    // I have no idea how or why ensureCapacity would be used as it has no discernable impact on internal state.
     // /**
     //  * Increases the maximum number of elements this AugList can take to {@code minCapacity}.
     //  * Does nothing if capacity is already sufficient.
     //  * 
-    //  * @deprecated (Other methods already perform the same task.)
-    //  * @param   minCapacity
-    //  *          The minimum capacity this AugList is desired to have.
-    //  * @apiNote Encapsulates {@code ArrayList<T>.ensureCapacity()}.
-    //  * @deprecated
+    //  * @deprecated  (Other methods already perform the same task.)
+    //  * @param       minCapacity
+    //  *              The minimum capacity this AugList is desired to have.
+    //  * @note        Encapsulates {@code ArrayList<T>.ensureCapacity()}.
+    //  * @tags        Terminator
     //  */
     // public void ensureCapacity(int minCapacity) {
     //     ls.ensureCapacity(minCapacity);
@@ -2333,15 +2340,15 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //     }
     // }
 
-    // Currently no need for this method?
     // /**
     //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
-    //  * @param   index
-    //  *          The index of the item to get.
-    //  * @return  The value at that index (which will be the default value if {@code index >= this.size()})
-    //  * @throws  IllegalArgumentException
-    //  *          If {@code index < 0}
-    //  * @deprecated
+    //  * @deprecated  
+    //  * @param       index
+    //  *              The index of the item to get.
+    //  * @return      The value at that index (which will be the default value if {@code index >= this.size()})
+    //  * @throws      IllegalArgumentException
+    //  *              If {@code index < 0}
+    //  * @tags        Terminator
     //  */
     // public T getAndAppendIfEmpty(int index) {
     //     if (index < 0) {
@@ -2360,21 +2367,22 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // Method currently unnecessary, so has been commented.
     /**
-     * Finds if the two AugLists are in an Equivalence Relationship.
-     * @param   augListB
-     *          The second AugList.
-     * @return  {@code true} if the lists are in a EqRel, and {@code false} otherwise.
-     * @apiNote Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.isEquivalent()}.
-     * @implNote If ~ is a relation (a mapping), then if it fulfils the following:
-     *           <p>Reflexive (x ~ x)
-     *           <p>Symmetric (x ~ y <=> y ~ x)
-     *           <p>Transitive (x ~ y ^ y ~ z => x ~ z)
-     *           <p>Consistent (x ~ y => x ~ y for as long as x, y are constant)
-     *           <p>Non-null equivalence ( x != null <=> x !~ null )
-     *           <p>Then they must be equivalent.
-     *           <p>Any such relation is called an equivalence relation.
-     *           <p>(Notably any such EqRel is a one to one mapping.)
-     * @deprecated
+     * Finds if the two {@link AugList AugLists} are in an Equivalence Relationship.
+     * @deprecated  
+     * @param       augListB
+     *              The second {@link AugList}.
+     * @return      {@code true} if the lists are in a EqRel, and {@code false} otherwise.
+     * @note        Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.isEquivalent()}.
+     *              <p>If ~ is a relation (a mapping), then if it fulfils the following:
+     *               <p>Reflexive (x ~ x)
+     *               <p>Symmetric (x ~ y <=> y ~ x)
+     *               <p>Transitive (x ~ y ^ y ~ z => x ~ z)
+     *               <p>Consistent (x ~ y => x ~ y for as long as x, y are constant)
+     *               <p>Non-null equivalence ( x != null <=> x !~ null )
+     *               <p>Then they must be equivalent.
+     *               <p>Any such relation is called an equivalence relation.
+     *               <p>(Notably any such EqRel is a one to one mapping.)
+     * @tags        Terminator
      */
     // public boolean isEqRel(AugList<T> augListB) {
         // if (ls.size() != augListB.size()) {
@@ -2433,15 +2441,15 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Increases the maximum number of elements this {@link AugList} can take to at least the given capacity.
      * Reduces number of array resizing operations needed when handling repeated, large-scale additions to this AugList.
      * Does nothing if capacity is already sufficient.
+     * @deprecated  Due to:
+     *              - Being impossible to write tests for
+     *              - Enabling only miniscule performance gains for repeated, exceptionally-large-scale addition operations.
      * @param       minCapacity
      *              The minimum capacity in question.
      * @see         tests.AugListTest#testEnsureCapacity()
      * @note        Encapsulates {@link ArrayList#ensureCapacity(int)}.
      *              Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Due to:
-     *              - Being impossible to write tests for
-     *              - Enabling only miniscule performance gains for repeated, exceptionally-large-scale addition operations.
      * @tags        Terminator
      */
     // public void ensureCapacity(int minCapacity) {
@@ -2451,13 +2459,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Reduces the allocated storage space to this {@link AugList} to the minimum possible.
      * Only useful when dealing with deleting swaths of data from large datasets.
+     * @deprecated  Due to:
+     *              - Being impossible to write tests for
+     *              - Enabling only miniscule storage space gains after large-scale deletions of data.
      * @see         tests.AugListTest#testTrimToSize()
      * @note        Encapsulates {@link ArrayList#trimToSize()}.
      *              Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Due to:
-     *              - Being impossible to write tests for
-     *              - Enabling only miniscule storage space gains after large-scale deletions of data.
      * @tags        Terminator
      */
     // public void trimToSize() {
@@ -2465,17 +2473,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // }
 
     /**
-     * Create an array copy of this AugList via use of the given {@code generator}
+     * Create an array copy of this AugList via use of the given generator.
+     * @deprecated  Due to difficulty of use.
+     *              Classes that implement or refer to IntFunctions are very niche,
+     *              and examples on how to create and use them are non-existent,
+     *              at least from cursory research.
      * @param       generator
      *              The {@link java.util.function.IntFunction} generator in question.
      * @return      An array copy of this AugList.
      * @note        Encapsulates {@link ArrayList#toArray(java.util.function.IntFunction)}.
      *              Should be fully functional if uncommented, though even calling this method may prove difficult.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Due to difficulty of use.
-     *              Classes that implement or refer to IntFunctions are very niche,
-     *              and examples on how to create and use them are non-existent,
-     *              at least from cursory research.
      * @tags        Converter
      */
     // public T[] toArray(java.util.function.IntFunction<T[]> generator) {
@@ -2495,12 +2503,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@link ArrayList}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       arrayList
      *              The {@link ArrayList} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(ArrayList<T> arrayList) {
@@ -2509,12 +2517,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@code ? implements} {@link List}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}. 
      * @param       list
      *              The {@link List} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(List<T> list) {
@@ -2523,12 +2531,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@link AugList}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       augList
      *              The {@link AugList} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(AugList<T> augList) {
@@ -2537,12 +2545,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@code ? implements} {@link java.util.Deque}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       deque
      *              The {@link java.util.Deque} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(java.util.Deque<T> deque) {
@@ -2551,12 +2559,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@link java.util.PriorityQueue}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       prioQueue
      *              The {@link java.util.PriorityQueue} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(java.util.PriorityQueue<T> prioQueue) {
@@ -2565,12 +2573,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@link java.util.HashSet}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       hashSet
      *              The {@link HashSet} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(java.util.HashSet<T> hashSet) {
@@ -2579,12 +2587,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} from the given {@link java.util.TreeSet}.
+     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @param       treeSet
      *              The {@link java.util.TreeSet} in question.
      * @see         #AugList(Iterable)
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
-     * @deprecated  Made redundant by {@code AugList(Iterable<T>))}.
      * @tags        Constructor
      */
     // public AugList(java.util.TreeSet<T> treeSet) {
@@ -2600,13 +2608,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Creates a new {@link AugList} of the given length, filled with the given value.
+     * @deprecated  Due to lack of use cases, at least at current (2026-09-24).
      * @param       fill
      *              What to fill this {@link AugList} with.
      * @param       size
      *              How long the {@link AugList} should be.
      * @throws      IllegalArgumentException
      *              {@code size < 0}
-     * @deprecated  Due to lack of use cases, at least at current (26-09-04).
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
@@ -2622,12 +2630,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Gets the value at the given index. If the given index is out of bounds, fills the missing entries with {@code null} and returns {@code null}.
+     * @deprecated  Due to lack of use cases, at least at current (2026-09-24).
      * @param       index
      *              The index of the item to get.
      * @return      The value at that index (which will be {@code null} if {@code index >= this.size()})
      * @throws      IllegalArgumentException
      *              If {@code index < 0}
-     * @deprecated  Due to lack of use cases, at least at current (26-09-04).
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Mutator, Terminator
@@ -2645,25 +2653,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //         ls = newLs;
     //     }
     //     return get(index);
-    // }
-    //#endregion
-
-    //#region Cut Classes
-    // Was a part of an attempted change to .Equals() that went nowhere.
-    // /**
-    //  * Helper class that is used in Equals(), consisting of 2 fields and a single constructor.
-    //  * @deprecated
-    //  */
-    // private class TypeFinder {
-    //     // This only works if we don't force a parameter on the AugList.
-    //     @SuppressWarnings({ "rawtypes", "unused" })
-    //     AugList genericAugList;
-    //     AugList<T> thisAugList;
-
-    //     public TypeFinder(@SuppressWarnings("rawtypes") AugList genericAugList, AugList<T> thisAugList) {
-    //         this.genericAugList = genericAugList;
-    //         this.thisAugList = thisAugList;
-    //     }
     // }
     //#endregion
 }

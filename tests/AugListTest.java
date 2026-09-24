@@ -80,8 +80,6 @@ public class AugListTest implements MultiTest {
         testCountsOfElements();
         testDistinctCopy();
         testDistinctSelf();
-        // testEnsureCapacity();
-        testIsEquivalent();
         testFilterCopy();
         testFilterSelf();
         testForEach();
@@ -107,6 +105,7 @@ public class AugListTest implements MultiTest {
         testInstantiateStream();
         testInstantiateVarargs();
         testIsEmpty();
+        testIsEquivalent();
         testIsRearrangement();
         testIterator();
         testLastIndexOf();
@@ -133,17 +132,17 @@ public class AugListTest implements MultiTest {
         testSetDifference();
         testSetIntersection();
         testSetUnion();
-        testSize();
         testShuffleCopy();
         testShuffleSelf();
+        testSize();
         testSkipWhile();
         testSort();
         testSpliterator();
         testStream();
+        testSubList();
         testSwap();
         testSwapRandom();
         testSwapRandomNoParam();
-        testSubList();
         testTakeWhile();
         testToArrayGivenType();
         testToCollection();
@@ -152,7 +151,6 @@ public class AugListTest implements MultiTest {
         testWithout();
         testWithoutAll();
         testWithoutAllVarargs();
-        testWithoutIndex();
         testWithoutIndex();
         testWithoutLast();
         testWithoutRandom();
@@ -543,82 +541,6 @@ public class AugListTest implements MultiTest {
     }
 
     /**
-     * JUnit tester for Equivalence
-     * @see src.AugList#isEquivalent(Object)
-     */
-    @Test
-    public void testIsEquivalent() {
-        setupTestData();
-        // Return type is primitive so cannot enforce type through testing
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.countsOfElements().keys()));
-        assertFalse(testDataDouble.isEquivalent(testDataString.countsOfElements().keys()));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.iterator()));
-        assertFalse(testDataDouble.isEquivalent(testDataString.iterator()));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.spliterator()));
-        assertFalse(testDataDouble.isEquivalent(testDataString.spliterator()));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.listIterator()));
-        assertFalse(testDataDouble.isEquivalent(testDataString.listIterator()));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.stream()));
-        assertFalse(testDataDouble.isEquivalent(testDataString.stream()));
-        assertFalse(testDataDouble.isEquivalent(null));
-        assertTrue(testDataString.isEquivalent(testDataString.hashCode()));
-        assertFalse(testDataDouble.isEquivalent(testDataDouble.hashCode() + 1));
-        assertFalse(testDataDouble.isEquivalent(-1.2));
-        assertFalse(testDataDouble.isEquivalent('A'));
-        assertFalse(new AugList<Character>().isEquivalent(testDataDouble));
-        assertTrue(new AugList<String>().isEquivalent(new AugList<String>()));
-        assertTrue(new AugList<String>().isEquivalent(new AugList<Integer>()));
-        final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
-        assertTrue(TESTDATA.isEquivalent(TESTDATA));
-        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
-        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
-        assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
-        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
-        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
-        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
-        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
-        assertFalse(new AugList<Double>().isEquivalent(""));
-        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
-        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
-        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
-        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
-        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
-        assertFalse(new AugList<Double>().isEquivalent(""));
-        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble));
-        assertTrue(testDataInt.isEquivalent(testDataInt));
-        assertTrue(testDataString.isEquivalent(testDataString));
-        assertFalse(testDataDouble.isEquivalent(testDataInt));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1, 2, 7.11, -2.5, 3.1415926]"));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble.clone()));
-        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
-        AugList<Double> shuffled = testDataDouble.shuffleCopy();
-        if (shuffled.isEquivalent(testDataDouble)) {
-            shuffled.swap(0, 1);
-        }
-        assertFalse(testDataDouble.isEquivalent(shuffled));
-    }
-
-    /**
      * JUnit tester for filtering
      * @see src.AugList#filterCopy(java.util.function.Predicate)
      */
@@ -827,184 +749,6 @@ public class AugListTest implements MultiTest {
     }
 
     /**
-     * JUnit tester for instantiating an empty {@link AugList}.
-     * @see src.AugList#AugList()
-     */
-    @Test
-    public void testInstantiateBlank() {
-        setupTestData();
-        assertTrue(new AugList<String>().size() == 0);
-        assertTrue(new AugList<Character>().getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Double>().parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from Pairs.
-     * @see src.AugList#AugList(AugList, AugList)
-     */
-    @Test
-    public void testInstantiatePairs() {
-        setupTestData();
-        AugList<String> ALS = new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), 
-                                                  new AugList<Integer>(1,   3,   4,    2));
-        assertTrue(ALS.isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
-        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, -999, 4, -7) ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
-        assertTrue(new AugList<String>(new AugList<String>(), new AugList<Integer>()).size() == 0);
-        assertTrue(new AugList<String>(null, null).size() == 0);
-        assertTrue(new AugList<String>(new AugList<String>(), null).size() == 0);
-        assertTrue(new AugList<String>(null, new AugList<Integer>()).size() == 0);
-        assertTrue(ALS.getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(ALS.parameterizedTypeDesc().equals("public final class java.lang.String"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link Enumeration}.
-     * @see src.AugList#AugList(Enumeration)
-     */
-    @Test
-    public void testInstantiateEnumeration() {
-        setupTestData();
-        assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
-        Enumeration<Float> en = null;
-        assertTrue(new AugList<Float>(en).size() == 0);
-        assertTrue(new AugList<Float>(en).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Float>(en).parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link Iterable}.
-     * @see src.AugList#AugList(Iterable)
-     */
-    @Test
-    public void testInstantiateIterable() {
-        setupTestData();
-        // From ? implements List<T> (Which itself implements Iterable<T>)
-        assertTrue(new AugList<String>(new ArrayList<String>(Arrays.asList(""))).add("1").get(1).equals("1"));
-        // From LinkedList<T> (Which implements Iterable<T>)
-        LinkedList<String> l = new LinkedList<String>();
-        assertTrue(new AugList<String>(l).isEquivalent("/"));
-        // From Vector<T> (Which implements Iterable<T>)
-        Vector<String> v = new Vector<String>();
-        assertTrue(new AugList<String>(v).isEquivalent("/"));
-        // From AugList<T> (Which implements Iterable<T>)
-        assertTrue(new AugList<String>(testDataString).isEquivalent(testDataString));
-        // From HashSet<T> (and LinkedHashSet<T>) (Which both implement Iterable<T>)
-        HashSet<String> h = new HashSet<String>();
-        assertTrue(new AugList<String>(h).isEquivalent("/"));
-        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-        assertTrue(new AugList<String>(lhs).isEquivalent("/"));
-        h.add("Hello");
-        h.add("World");
-        h.add("!");
-        assertTrue(new AugList<String>(h).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From TreeSet<T> (Which implements Iterable<T>)
-        TreeSet<String> t = new TreeSet<String>();
-        assertTrue(new AugList<String>(t).isEquivalent("/"));
-        t.add("Hello");
-        t.add("World");
-        t.add("!");
-        assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From ? implements Deque<T> (Which implements Iterable<T>)
-        ArrayDeque<String> ad = new ArrayDeque<String>();
-        assertTrue(new AugList<String>(ad).isEquivalent("/"));
-        ad.add("Hello");
-        ad.add("World");
-        ad.add("!");
-        assertTrue(new AugList<String>(ad).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        // From a PriorityQueue<T> (Which implements Iterable<T>)
-        PriorityQueue<String> pq = new PriorityQueue<String>();
-        assertTrue(new AugList<String>(pq).isEquivalent("/"));
-        pq.add("Hello");
-        pq.add("World");
-        pq.add("!");
-        assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
-        Iterable<Long> it = null;
-        assertTrue(new AugList<Long>(it).size() == 0);
-        assertTrue(new AugList<Long>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Long>(it).parameterizedTypeDesc().equals("∅"));
-        assertTrue(new AugList<Long>(new AugList<Number>(1, 1, 1)).isEquivalent("[1, 1, 1]"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link Iterator}.
-     * @see src.AugList#AugList(Iterator)
-     */
-    @Test
-    public void testInstantiateIterator() {
-        setupTestData();
-        assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
-        Iterator<Short> it = null;
-        assertTrue(new AugList<Short>(it).size() == 0);
-        assertTrue(new AugList<Short>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Short>(it).parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link ListIterator}.
-     * @see src.AugList#AugList(ListIterator)
-     */
-    @Test
-    public void testInstantiateListIterator() {
-        setupTestData();
-        assertTrue(new AugList<String>(testDataString.listIterator()).isEquivalent(testDataString));
-        assertTrue(new AugList<String>(testDataString.listIterator(2)).isEquivalent(testDataString.subList(2, testDataString.size())));
-        ListIterator<Byte> li = null;
-        assertTrue(new AugList<Byte>(li).size() == 0);
-        assertTrue(new AugList<Byte>(li).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Byte>(li).parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link Spliterator}.
-     * @see src.AugList#AugList(Spliterator)
-     */
-    @Test
-    public void testInstantiateSpliterator() {
-        setupTestData();
-        // From Spliterator<T>
-        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
-        Spliterator<Character> sp = null;
-        assertTrue(new AugList<Character>(sp).size() == 0);
-        assertTrue(new AugList<Character>(sp).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Character>(sp).parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from an {@link Stream}.
-     * @see src.AugList#AugList(Stream)
-     */
-    @Test
-    public void testInstantiateStream() {
-        setupTestData();
-        // From a Stream<T>
-        Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
-        AugList<Integer> AL = new AugList<Integer>(s);
-        assertTrue(AL.isEquivalent("[1, *null*]"));
-        Stream<String> t = null;
-        assertTrue(new AugList<String>(t).size() == 0);
-        assertTrue(new AugList<String>(t).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<String>(t).parameterizedTypeDesc().equals("∅"));
-    }
-
-    /**
-     * JUnit tester for instantiating from a varargs {@link Arrays array}.
-     * @see src.AugList#AugList(Object...)
-     */
-    @Test
-    public void testInstantiateVarargs() {
-        setupTestData();
-        Integer[] i = null;
-        // Passing an Array acts the same as passing varargs
-        assertTrue(new AugList<Integer>(i).size() == 0); 
-        assertTrue(new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43).isEquivalent(testDataInt));   
-        assertTrue(new AugList<Integer>(i).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(new AugList<Integer>(i).parameterizedTypeDesc().equals("∅"));    
-    }
-
-    /**
      * JUnit tester for Single Insertion
      * @see src.AugList#insert(int, Object)
      */
@@ -1134,6 +878,184 @@ public class AugListTest implements MultiTest {
     }
 
     /**
+     * JUnit tester for instantiating an empty {@link AugList}.
+     * @see src.AugList#AugList()
+     */
+    @Test
+    public void testInstantiateBlank() {
+        setupTestData();
+        assertTrue(new AugList<String>().size() == 0);
+        assertTrue(new AugList<Character>().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Double>().parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Enumeration}.
+     * @see src.AugList#AugList(Enumeration)
+     */
+    @Test
+    public void testInstantiateEnumeration() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.countsOfElements().keys()).isRearrangement(testDataString));
+        Enumeration<Float> en = null;
+        assertTrue(new AugList<Float>(en).size() == 0);
+        assertTrue(new AugList<Float>(en).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Float>(en).parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Iterable}.
+     * @see src.AugList#AugList(Iterable)
+     */
+    @Test
+    public void testInstantiateIterable() {
+        setupTestData();
+        // From ? implements List<T> (Which itself implements Iterable<T>)
+        assertTrue(new AugList<String>(new ArrayList<String>(Arrays.asList(""))).add("1").get(1).equals("1"));
+        // From LinkedList<T> (Which implements Iterable<T>)
+        LinkedList<String> l = new LinkedList<String>();
+        assertTrue(new AugList<String>(l).isEquivalent("/"));
+        // From Vector<T> (Which implements Iterable<T>)
+        Vector<String> v = new Vector<String>();
+        assertTrue(new AugList<String>(v).isEquivalent("/"));
+        // From AugList<T> (Which implements Iterable<T>)
+        assertTrue(new AugList<String>(testDataString).isEquivalent(testDataString));
+        // From HashSet<T> (and LinkedHashSet<T>) (Which both implement Iterable<T>)
+        HashSet<String> h = new HashSet<String>();
+        assertTrue(new AugList<String>(h).isEquivalent("/"));
+        LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+        assertTrue(new AugList<String>(lhs).isEquivalent("/"));
+        h.add("Hello");
+        h.add("World");
+        h.add("!");
+        assertTrue(new AugList<String>(h).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From TreeSet<T> (Which implements Iterable<T>)
+        TreeSet<String> t = new TreeSet<String>();
+        assertTrue(new AugList<String>(t).isEquivalent("/"));
+        t.add("Hello");
+        t.add("World");
+        t.add("!");
+        assertTrue(new AugList<String>(t).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From ? implements Deque<T> (Which implements Iterable<T>)
+        ArrayDeque<String> ad = new ArrayDeque<String>();
+        assertTrue(new AugList<String>(ad).isEquivalent("/"));
+        ad.add("Hello");
+        ad.add("World");
+        ad.add("!");
+        assertTrue(new AugList<String>(ad).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        // From a PriorityQueue<T> (Which implements Iterable<T>)
+        PriorityQueue<String> pq = new PriorityQueue<String>();
+        assertTrue(new AugList<String>(pq).isEquivalent("/"));
+        pq.add("Hello");
+        pq.add("World");
+        pq.add("!");
+        assertTrue(new AugList<String>(pq).isRearrangement(new AugList<String>("Hello", "World", "!")));
+        Iterable<Long> it = null;
+        assertTrue(new AugList<Long>(it).size() == 0);
+        assertTrue(new AugList<Long>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Long>(it).parameterizedTypeDesc().equals("∅"));
+        assertTrue(new AugList<Long>(new AugList<Number>(1, 1, 1)).isEquivalent("[1, 1, 1]"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Iterator}.
+     * @see src.AugList#AugList(Iterator)
+     */
+    @Test
+    public void testInstantiateIterator() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.iterator()).isEquivalent(testDataString));
+        Iterator<Short> it = null;
+        assertTrue(new AugList<Short>(it).size() == 0);
+        assertTrue(new AugList<Short>(it).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Short>(it).parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link ListIterator}.
+     * @see src.AugList#AugList(ListIterator)
+     */
+    @Test
+    public void testInstantiateListIterator() {
+        setupTestData();
+        assertTrue(new AugList<String>(testDataString.listIterator()).isEquivalent(testDataString));
+        assertTrue(new AugList<String>(testDataString.listIterator(2)).isEquivalent(testDataString.subList(2, testDataString.size())));
+        ListIterator<Byte> li = null;
+        assertTrue(new AugList<Byte>(li).size() == 0);
+        assertTrue(new AugList<Byte>(li).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Byte>(li).parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from Pairs.
+     * @see src.AugList#AugList(AugList, AugList)
+     */
+    @Test
+    public void testInstantiatePairs() {
+        setupTestData();
+        AugList<String> ALS = new AugList<String>(new AugList<String>("a", "b", "cd", "eef"), 
+                                                  new AugList<Integer>(1,   3,   4,    2));
+        assertTrue(ALS.isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef", "aaaaaaaa"),  new AugList<Integer>(1, 3, 4, 2)     ).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 3, 4, 2, 999)).isEquivalent("[a, b, b, b, cd, cd, cd, cd, eef, eef]"));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, 0, 4, 0)     ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        assertTrue(new AugList<String>(new AugList<String>("a", "b", "cd", "eef"),              new AugList<Integer>(1, -999, 4, -7) ).isEquivalent("[a, cd, cd, cd, cd]"                   ));
+        assertTrue(new AugList<String>(new AugList<String>(), new AugList<Integer>()).size() == 0);
+        assertTrue(new AugList<String>(null, null).size() == 0);
+        assertTrue(new AugList<String>(new AugList<String>(), null).size() == 0);
+        assertTrue(new AugList<String>(null, new AugList<Integer>()).size() == 0);
+        assertTrue(ALS.getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(ALS.parameterizedTypeDesc().equals("public final class java.lang.String"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Spliterator}.
+     * @see src.AugList#AugList(Spliterator)
+     */
+    @Test
+    public void testInstantiateSpliterator() {
+        setupTestData();
+        // From Spliterator<T>
+        assertTrue(new AugList<String>(new AugList<String>("b", "a", "ce", "ddd").spliterator()).isEquivalent("[b, a, ce, ddd]"));
+        Spliterator<Character> sp = null;
+        assertTrue(new AugList<Character>(sp).size() == 0);
+        assertTrue(new AugList<Character>(sp).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Character>(sp).parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from an {@link Stream}.
+     * @see src.AugList#AugList(Stream)
+     */
+    @Test
+    public void testInstantiateStream() {
+        setupTestData();
+        // From a Stream<T>
+        Stream<Integer> s = Arrays.stream(Arrays.asList(1).toArray((new Integer[2])));
+        AugList<Integer> AL = new AugList<Integer>(s);
+        assertTrue(AL.isEquivalent("[1, *null*]"));
+        Stream<String> t = null;
+        assertTrue(new AugList<String>(t).size() == 0);
+        assertTrue(new AugList<String>(t).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<String>(t).parameterizedTypeDesc().equals("∅"));
+    }
+
+    /**
+     * JUnit tester for instantiating from a varargs {@link Arrays array}.
+     * @see src.AugList#AugList(Object...)
+     */
+    @Test
+    public void testInstantiateVarargs() {
+        setupTestData();
+        Integer[] i = null;
+        // Passing an Array acts the same as passing varargs
+        assertTrue(new AugList<Integer>(i).size() == 0); 
+        assertTrue(new AugList<Integer>(7, 11, 19, -24, 117, 145, -56, 43).isEquivalent(testDataInt));   
+        assertTrue(new AugList<Integer>(i).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(new AugList<Integer>(i).parameterizedTypeDesc().equals("∅"));    
+    }
+
+    /**
      * JUnit tester for Emptiness check (A = ∅)
      * @see src.AugList#isEmpty()
      */
@@ -1148,6 +1070,82 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Integer>().isEmpty());
     }
 
+    /**
+     * JUnit tester for Equivalence
+     * @see src.AugList#isEquivalent(Object)
+     */
+    @Test
+    public void testIsEquivalent() {
+        setupTestData();
+        // Return type is primitive so cannot enforce type through testing
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.countsOfElements().keys()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.countsOfElements().keys()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.iterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.iterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.spliterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.spliterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.listIterator()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.listIterator()));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.stream()));
+        assertFalse(testDataDouble.isEquivalent(testDataString.stream()));
+        assertFalse(testDataDouble.isEquivalent(null));
+        assertTrue(testDataString.isEquivalent(testDataString.hashCode()));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.hashCode() + 1));
+        assertFalse(testDataDouble.isEquivalent(-1.2));
+        assertFalse(testDataDouble.isEquivalent('A'));
+        assertFalse(new AugList<Character>().isEquivalent(testDataDouble));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<String>()));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<Integer>()));
+        final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
+        assertTrue(TESTDATA.isEquivalent(TESTDATA));
+        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
+        assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
+        assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
+        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
+        assertFalse(new AugList<Double>().isEquivalent(""));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
+        assertFalse(new AugList<Double>().isEquivalent(""));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble));
+        assertTrue(testDataInt.isEquivalent(testDataInt));
+        assertTrue(testDataString.isEquivalent(testDataString));
+        assertFalse(testDataDouble.isEquivalent(testDataInt));
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1, 2, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.isEquivalent(testDataDouble.clone()));
+        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
+        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        AugList<Double> shuffled = testDataDouble.shuffleCopy();
+        if (shuffled.isEquivalent(testDataDouble)) {
+            shuffled.swap(0, 1);
+        }
+        assertFalse(testDataDouble.isEquivalent(shuffled));
+    }
+
     // As all 3 of isRearrangement(), shuffleSelf() and shuffleCopy() are tested here,
     // making testShuffleSelf() and testShuffleCopy() call testIsRearrangement()
     // preserves the integrity of the tests whilst saving file size.
@@ -1155,6 +1153,8 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Rearrangement test
      * @see src.AugList#isRearrangement()
+     * @see #testShuffleCopy()
+     * @see #testShuffleSelf()
      */
     @Test
     public void testIsRearrangement() {
@@ -1171,28 +1171,6 @@ public class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>().isRearrangement(testDataDouble));
         assertTrue(new AugList<Double>().isRearrangement(new AugList<Double>()));
         assertFalse(new AugList<Double>(1.0).isRearrangement(new AugList<Double>(2.0)));
-    }
-
-    /**
-     * JUnit tester for Shuffling
-     * @see src.AugList#shuffleCopy()
-     */
-    @Test
-    public void testShuffleCopy() {
-        testIsRearrangement();
-        assertTrue(testDataDouble.shuffleCopy().getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(testDataDouble.shuffleCopy().parameterizedTypeDesc().equals("public final class java.lang.Double"));
-    }
-
-    /**
-     * JUnit tester for Shuffling
-     * @see src.AugList#shuffleSelf()
-     */
-    @Test
-    public void testShuffleSelf() {
-        testIsRearrangement();
-        assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(testDataDouble.shuffleSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -1870,6 +1848,28 @@ public class AugListTest implements MultiTest {
     }
 
     /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleCopy()
+     */
+    @Test
+    public void testShuffleCopy() {
+        testIsRearrangement();
+        assertTrue(testDataDouble.shuffleCopy().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.shuffleCopy().parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
+
+    /**
+     * JUnit tester for Shuffling
+     * @see src.AugList#shuffleSelf()
+     */
+    @Test
+    public void testShuffleSelf() {
+        testIsRearrangement();
+        assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.shuffleSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
+
+    /**
      * JUnit tester for Length
      * @see src.AugList#size()
      */
@@ -1996,6 +1996,24 @@ public class AugListTest implements MultiTest {
     }
 
     /**
+     * JUnit tester for Sublist
+     * @see src.AugList#subList()
+     */
+    @Test
+    public void testSubList() {
+        setupTestData();
+        assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subList(1, 0); });
+        assertTrue(testDataString.subList(0, 0).size() == 0);
+        assertTrue(testDataDouble.subList(1, 1).isEquivalent("/"));
+        assertTrue(testDataDouble.subList(0, 1).isEquivalent("[1.0]"));
+        assertTrue(testDataDouble.subList(0, 3).isEquivalent("[1.0, 2.0, 7.11]"));
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(0, 999); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(-1, 0); });
+        assertTrue(testDataDouble.subList(0, 1).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.subList(0, 1).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
+
+    /**
      * JUnit tester for Swapping
      * @see src.AugList#swap()
      */
@@ -2059,24 +2077,6 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
         assertTrue(testDataDouble.swapRandom().parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.swapRandom().getClass().toGenericString().equals("public class src.AugList<T>"));
-    }
-
-    /**
-     * JUnit tester for Sublist
-     * @see src.AugList#subList()
-     */
-    @Test
-    public void testSubList() {
-        setupTestData();
-        assertThrows(IllegalArgumentException.class, () -> { testDataDouble.subList(1, 0); });
-        assertTrue(testDataString.subList(0, 0).size() == 0);
-        assertTrue(testDataDouble.subList(1, 1).isEquivalent("/"));
-        assertTrue(testDataDouble.subList(0, 1).isEquivalent("[1.0]"));
-        assertTrue(testDataDouble.subList(0, 3).isEquivalent("[1.0, 2.0, 7.11]"));
-        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(0, 999); });
-        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.subList(-1, 0); });
-        assertTrue(testDataDouble.subList(0, 1).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(testDataDouble.subList(0, 1).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**

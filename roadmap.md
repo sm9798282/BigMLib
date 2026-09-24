@@ -14,79 +14,178 @@
 - Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
 - `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write
 - Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-write
-- `countCombinations()` (combinatorics) on d-csma
 - `isPalindrome()` sees if AugList is palindrome on d-csma
 - `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-csma
 - `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-csma
 - `crossProduct(Iterable<U>)` d-csma (Source from previous projects)
 - `crossProduct(Iterable<Iterable<U>>)` d-csma (Source from previous projects)
+- `swapRange(int, int, int)` d-csma
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
-- PLANNED `AugList<Byte> ALFactory.fromByteBuff(ByteBuffer)`
-- PLANNED `AugList<Character> ALFactory.fromCharBuff(CharBuffer)`
-- PLANNED `AugList<Character> ALFactory.fromStr(String)`
-- PLANNED `AugList<Character> ALFactory.fromCharIter(CharacterIterator)`
-- PLANNED `AugList<Double> ALFactory.fromDblBuff(DoubleBuffer)`
-- PLANNED `AugList<Double> ALFactory.fromDblStream(DoubleStream)`
-- PLANNED `AugList<Float> ALFactory.fromFloatBuff(FloatBuffer)`
-- PLANNED `AugList<Integer> ALFactory.fromIntBuff(IntBuffer)`
-- PLANNED `AugList<Integer> ALFactory.fromDigits(int)`
-- PLANNED `AugList<Integer> ALFactory.fromUnicode(String)`
-- PLANNED `AugList<Integer> ALFactory.fromIntStream(IntStream)`
-- PLANNED `AugList<Long> ALFactory.fromLongBuff(LongBuffer)`
-- PLANNED `AugList<Long> ALFactory.fromLongStream(LongStream)`
-- PLANNED `AugList<Short> ALFactory.fromShortBuff(ShortBuffer)`
-- PLANNED `AugList<String> ALFactory.fromCharSq(CharSequence)`
-- PLANNED `AugList<String> ALFactory.fromFile(Path)`
-- PLANNED `AugList<String> ALFactory.fromFile(String)`
-- PLANNED `AugList<String> ALFactory.fromRepString(String)`
-- PLANNED `AugList<String> ALFactory.fromStrBuff(StringBuffer)`
-- PLANNED `ByteBuffer ALFactory.fromALByte(AugList<Byte>)`
-- PLANNED `CharBuffer ALFactory.fromALChar(AugList<Character>)`
-- PLANNED `CharSequence ALFactory.ALStrToCharSq(AugList<String>)`
-- PLANNED `DoubleBuffer ALFactory.DBfromALDbl(AugList<Double>)`
-- PLANNED `DoubleStream ALFactory.DSfromALDbl(AugList<Double>)`
-- PLANNED `FloatBuffer ALFactory.fromALFloat(AugList<Float>)`
-- PLANNED `IntBuffer ALFactory.IBFromALInt(AugList<Integer>)`
-- PLANNED `IntStream ALFactory.ISfromALInt(AugList<Integer>)`
-- PLANNED `LongBuffer ALFactory.LBfromALLong(AugList<Long>)`
-- PLANNED `LongStream ALFactory.LSfromALLong(AugList<Long>)`
-- `int ALFactory.quickSelectKth(AugList<Integer>, int k)`
-- `double ALFactory.quickSelectKth(AugList<Double>, int k)`
+  - `AugList<Byte> ALFactory.fromByteBuff(ByteBuffer)`
+  - `AugList<Character> ALFactory.fromCharBuff(CharBuffer)`
+  - `AugList<Character> ALFactory.fromStr(String)`
+  - `AugList<Character> ALFactory.fromCharIter(CharacterIterator)`
+  - `AugList<Double> ALFactory.fromDblBuff(DoubleBuffer)`
+  - `AugList<Double> ALFactory.fromDblStream(DoubleStream)`
+  - `AugList<Float> ALFactory.fromFloatBuff(FloatBuffer)`
+  - `AugList<Integer> ALFactory.fromIntBuff(IntBuffer)`
+  - `AugList<Integer> ALFactory.fromDigits(int)`
+  - `AugList<Integer> ALFactory.fromUnicode(String)`
+  - `AugList<Integer> ALFactory.fromIntStream(IntStream)`
+  - `AugList<Long> ALFactory.fromLongBuff(LongBuffer)`
+  - `AugList<Long> ALFactory.fromLongStream(LongStream)`
+  - `AugList<Short> ALFactory.fromShortBuff(ShortBuffer)`
+  - `AugList<String> ALFactory.fromCharSq(CharSequence)`
+  - `AugList<String> ALFactory.fromFile(Path)`
+  - `AugList<String> ALFactory.fromFile(String)`
+  - `AugList<String> ALFactory.fromRepString(String)`
+  - `AugList<String> ALFactory.fromStrBuff(StringBuffer)`
+  - `ByteBuffer ALFactory.fromALByte(AugList<Byte>)`
+  - `CharBuffer ALFactory.fromALChar(AugList<Character>)`
+  - `CharSequence ALFactory.ALStrToCharSq(AugList<String>)`
+  - `DoubleBuffer ALFactory.DBfromALDbl(AugList<Double>)`
+  - `DoubleStream ALFactory.DSfromALDbl(AugList<Double>)`
+  - `FloatBuffer ALFactory.fromALFloat(AugList<Float>)`
+  - `IntBuffer ALFactory.IBFromALInt(AugList<Integer>)`
+  - `IntStream ALFactory.ISfromALInt(AugList<Integer>)`
+  - `LongBuffer ALFactory.LBfromALLong(AugList<Long>)`
+  - `LongStream ALFactory.LSfromALLong(AugList<Long>)`
+  - `int ALFactory.quickSelectKth(AugList<Integer>, int k)`
+  - `double ALFactory.quickSelectKth(AugList<Double>, int k)`
 - Push AugList V2 to main without terminating dev
 
 ## Other planned
 
-- `BoolAlg` class provides Boolean Algebra functions NOT, AND, OR, XOR, Implies, LSL, LSR, ADD, Compliment, SUB, MUX, toLong, fromLong
+- `BoolAlg` class provides Boolean Algebra functions  
+  - NOT, AND, OR, XOR
+  - Implies
+  - LSL, LSR
+  - ADD, Compliment, SUB
+  - MUX
+  - toLong, fromLong
 - `ALHamcrestCompat` class provides casts from `Hamcrest-core` classes to `AugList`
-- `class Statistics` with features from R and SAS (Arithmetic/Geometric/Harmonic Sum, Product, Mean; Median, Mode, Standard Deviation etc) (Source from previous projects)
-- `class Mathematics` with features like Lerp, PolarToFromRectangular, DistPointToLine, VectorAngle, (Source from previous projects) QuaternionToFromEuler?
+- `class Statistics` with features from R and SAS  (Source from previous projects)
+  - Arithmetic/Geometric/Harmonic/Quadratic Sum, Product, Mean
+  - Median, Mode
+  - Standard Deviation, Variance
+  - Cov (E(XY)-E(X)E(Y)), Corr (Cov/sqrt(VarAVarB)), y=b0+b1x+epsilon, Sum squares, Sum products (b1hat = Sxy/Sxx, b0 = ybar-b1hat\*xbar), RSS (Syy-Sxy^2/Sxx), varhat (SSE/n-2), PMCC (Sxy/sqrt(sxx\*Syy)), R^2
+  - Prediction/Sample Intervals
+  - Sample Variance, Standard Error
+  - Proportion
+  - `interface OutlierMethod`
+    - IQR_OM implements OutlierMethod
+    - SD_OM implements OutlierMethod
+    - FindOutliers()
+  - CI Variance, Mean, Proportion, b0hat, b1hat
+  - Pooled Sample Variance
+  - Hypothesis Testing
+    - 2 sample t
+    - Paired t
+    - ChiSq
+    - Significance of Correlation (ANOVA)
+    - CMI Hyp test
+  - Risk and Odds
+    - Risk, Odds
+    - Standard Error
+    - CI
+    - Confounders
+    - MH Odds
+    - CMI Hyp test
+- `class Probability`
+  - P(A|B) (P Intersect / P(B))
+  - A, B Independent (P(A)P(B) = P Intersect)
+  - `interface MVDistribution`
+    - E(X), Var(X),
+    - P(X=x), P(X<=x), P(X>x), P(a<=x<=b),
+    - Percentiles, Sample
+    - Bernoulli, Binomial, Geometric, NegativeBinomial, Hypergeometric, Poisson
+    - RealUniform, Normal, Gamma, Beta, Exponential, StudentT, ChiSq, F implements MVDistribution
+  - BVN
+- `class Combinatorics`
+  - Factorial, nPk n!/k!, nCk n!/(n-k)!k!
+  - `countCombinations()`
+- `class MVectors`
+  - VectorAngle, (Source from previous projects)
+  - DotProduct, CrossProduct
+- `class Imag`
+  - Im, Re, Complement, Abs, Arg
+  - Add, Sub, Mult, Div, Exp (De Moivre)
+  - Quaternions?
+  - QuaternionToFromEuler?
+- `class Mathematics`
+  - DistPointToLine
+  - GetHeadingBetweenPoints
+  - PolarToFromRectangular
+  - Range sums n(n+1)/2, (1/6)n(n+1)(2n+1), (n(n+1)/2)^2
+  - PrimesBelowN, Factorise
+  - Function Composition, IsSurjective, IsInjective, IsBijective, Inverse
+  - UnionAll, IntersectAll
+  - AllSubsets?
+  - Divisible, LCM, GCD (Euclidean Algorithm)
+  - Mapping isReflexive, isSymmetric, isTransitive, isEqRel, isAssociative
+  - Groups isBinOperator, identity, inverse
+- `class Calc`
+  - Differentiate, Integrate
+  - Standard
+  - NearSep
+  - Bern
+  - Exact
+  - IFExact
+  - 2ndLinConstInhom
+  - 2ndLinConstHom
+  - ReduceOrder
+  - Equidim
+  - VarPar
+  - Population models
+- Decision
+  - Bucket Filling
+  - Simplex, 2 Stage, Big M
+  - `class Graph` (Maybe source from previous projects)
+  - Dijkstra
+  - Floyd's Algorithm (Maybe source from previous projects)
+  - MST
+  - GanttChart
+  - Travelling Salesman
+- `class LinearAlgebra`
+  - Matrices, +-, Scal*, Mat*
+  - IsSquare, Transpose, Trace, Det, CharacteristicPolynomial, Inverse
+  - IsSymmetric, IsSkewSymmetric, IsOrthagonal, IsHermitian, isUnitary, IsDiagonal
+  - Diagonalisable, EigenValues, EigenVectors, Diagonalise
+  - RREF
+  - ker
+  - adjucate, MatMinors
+  - dim, span, basis
+  - nullity, rank
+  - IsSubspace
+  - IsLinearMapping
+  - IsVectorSpace
 - `class Generics` with an implementation of `parameterizedTypeDesc()`
-- `interface UI` with methods like `getBool()`, `getInt()`, `getDouble()`, `getStr()`, `writeStr()`
-- `CLI implements UI`
-- `GUI implements UI`
-- `HTMLUI implements UI`
+- `interface UI`
+  - `getBool()`, `getInt()`, `getDouble()`, `getStr()`
+  - `writeStr()`
+  - `CLI implements UI`
+  - `GUI implements UI`
+  - `HTMLUI implements UI`
 - `class Transition`
 - `class State`
 - `class FSM` composes `Transition`, `State` and provides methods to traverse FSM
-- `class Graph` with `GetHeadings()` (Maybe source from previous projects)
 - `interface Distance`
-- `class PythagDist implements Distance`
-- `class TaxicabDist implements Distance`
-- `class MaxDist implements Distance`
+  - `class PythagDist implements Distance`
+  - `class TaxicabDist implements Distance`
+  - `class MaxDist implements Distance`
 - `interface Interpolate`
-- `class Lerp implements Interpolate`
-- `class EaseIn implements Interpolate`
-- `class EaseOut implements Interpolate`
-- `class EaseInOut implements Interpolate`
+  - `class Lerp implements Interpolate`
+  - `class EaseIn implements Interpolate`
+  - `class EaseOut implements Interpolate`
+  - `class EaseInOut implements Interpolate`
 - `FileHandler` helper class that provides easy Read/Write functions
 - `class FibonacciHeap`
 - `interface SortingAlgorithm`
-- `BubbleSort`, `SelectionSort`, `MergeSort`, `BinInsertionSort`, `HeapSort`, `QuickSort` implements `SortingAlgorithm`
+  - `BubbleSort`, `SelectionSort`, `MergeSort`, `BinInsertionSort`, `HeapSort`, `QuickSort` implements `SortingAlgorithm`
 - `interface SqTile<T>`
-- `BlankTile<T>`, `ValueTile<T>`, `DiagDivisorTile<T>`, `MultiTile<T>` implements `SqTile`
+  - `BlankTile<T>`, `ValueTile<T>`, `DiagDivisorTile<T>`, `MultiTile<T>` implements `SqTile`
 - `interface HexTile`
-- Hex grid handler
-- Floyd's Algorithm (Maybe source from previous projects)
+  - Hex grid handler
 
 - Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess
 

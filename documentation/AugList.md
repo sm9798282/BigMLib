@@ -111,8 +111,8 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________setUnion(Iterable<T>)`
 - `AugList<T>___________shuffleCopy()`
 - `AugList<T>___________shuffleSelf()`
-- `AugList<T>___________skipWhile(Predicate<? super T>)`
 - `int__________________size()`
+- `AugList<T>___________skipWhile(Predicate<? super T>)`
 - `AugList<T>___________sort(Comparator<? super T>)`
 - PLANNED `split3(int)`
 - PLANNED `splitDelim(T)`

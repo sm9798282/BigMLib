@@ -3,15 +3,14 @@
 ## Major changes
 
 - `equals()` reverted to `Object.equals()` behaviour, with `isEquivalent(Object)` getting enhanced V1 `equals()` behaviour
-- New Constructor from `Iterable<T>`, replaces Constructors from `ArrayList<T>` and `List<T>`
-- New Constructor from `Spliterator<T>`
-- New Constructor from `Stream<T>`
-- New Constructor from a list of values and a list of counts (value-count pairs), [`new AugList<T>(Iterable<T>, Iterable<Integer>)`]
-- New Random "family" of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
-- And new Random-adjacent methods too: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
+- New Constructor from `Iterable<T>`, replaces V1 Constructors from `ArrayList<T>` and `List<T>`
+- New Constructors from `Spliterator<T>`, `Stream<T>` and value-count pairs [`new AugList<T>(Iterable<T>, Iterable<Integer>)`].
+- New Random family of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
+- New Random-adjacent methods: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
 - New method `countOf(T)` as an individual alternative to `countsOfElements()` that also supports `null`s.
-- V1 Methods that took `AugList<T>` now take `Iterable<T>`
+- Methods that used to take `AugList<T>` parameters now take `Iterable<T>` instead, increasing flexibility.
+- `AugList<T> implements Cloneable`
 
 ## Behavioural changes
 
@@ -40,7 +39,21 @@ Parameters have (except where additional context is helpful) been renamed to fol
 - `isEquivalent()` now evaluates i.e. `"[1.0]" == "[1.0]"` and `"[Hello, World]" == "[Hello, World]"` to `true` (as opposed to `false`)
 - Constructors now create an empty `AugList` when supplied `null` (as opposed to throwing `NullPointerException`)
 - Passing `null` into `addAll(AugList<T>)` / `addAll(T...)` returns this (as opposed to throwing `NullPointerException`)
-- `allIndicesOf(T)`, `allSatisfy(Predicate<? super T>)`, `anySatisfy(Predicate<? super T>)`, `containsAll(Iterable<T>)`, `containsAll(T...)`, `countsOfElements()`, `filterCopy(Predicate<? super T>)`, `filterSelf(Predicate<? super T>)`, `forEach(Consumer<? super T>)`, `insertAll(int, Iterable<T>)`, `insertAll(int, T...)`, `listDifference(Iterable<T>)`, `listIntersection(Iterable<T>)`, `listUnion(Iterable<T>)`, `removeAll(Iterable<T>)`, `removeAll(T...)`, `removeIf(Predicate<? super T>)`, `setDifference(Iterable<T>)`, `setIntersection(Iterable<T>)`, `setUnion(Iterable<T>)`, `skipWhile(Predicate<? super T>)`, `sort(Comparator<? super T>)`, `takeWhile(Predicate<? super T>)`, `withoutAll(Iterable<T>)`, `withoutAll(T...)` now work as would be expected when provided `null` (as opposed to throwing `NullPointerException`)
+- All of the following now work as expected when provided `null` (as opposed to throwing `NullPointerException`):
+  - Constructors,
+  - `allIndicesOf(T)`,
+  - Bulk Satisfaction family of methods
+  - Bulk Containment family of methods
+  - `countsOfElements()`,
+  - Filter family of methods,
+  - `forEach(Consumer<? super T>)`,
+  - Bulk Insertion family of methods,
+  - "List Theory" family of methods,
+  - Bulk Removal family of methods,
+  - `removeIf(Predicate<? super T>)`,
+  - Set Theory family of methods,
+  - Do While family of methods,
+  - `sort(Comparator<? super T>)`.
 
 ## Testing changes
 
