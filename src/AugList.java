@@ -1,6 +1,9 @@
 package src;
 
+import static org.junit.Assert.*;
+
 //import java.util.ArrayDeque;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -230,15 +233,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             ls = new ArrayList<T>() {};
         }
         else {
-            AugList<T> ALvalues = new AugList<T>(values);
-            AugList<Integer> ALcounts = new AugList<Integer>(counts);
-            while (ALvalues.size() > ALcounts.size()) {
-                ALcounts.add(0);
-            }
-            while (ALcounts.size() > ALvalues.size()) {
-                ALcounts.removeLast();
-            }
-            ALcounts.oneToOneMap(count -> count > 0 ? count : 0);
+            SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseAndFilter(values, counts, false);
+            AugList<T> ALvalues = res.getKey();
+            AugList<Integer> ALcounts = res.getValue();
             ls = new ArrayList<T>() {};
             for (int i = 0; i < ALvalues.size(); i++) {
                 for (int j = 0; j < ALcounts.get(i); j++) {
@@ -297,10 +294,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseLengths(keys, ints);
         AugList<T> ALvalues = res.getKey();
         AugList<Integer> ALints = res.getValue();
-        ALints.oneToOneMap(count -> count > 0 ? count : 0); // Set negatives to 0
+        ALints.applyAll(count -> count > 0 ? count : 0); // Set negatives to 0
         if (intsAreIndices) {
             // Set indices over the maximum index to within bounds
-            ALints.oneToOneMap(count -> count >= size() ? size() - 1 : count);
+            ALints.applyAll(count -> count >= size() ? size() - 1 : count);
         }
         // Repackage result
         return new SimpleEntry<AugList<T>, AugList<Integer>>(ALvalues, ALints);
@@ -506,7 +503,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The {@link UnaryOperator} in question. If {@code null}, does not alter this {@link AugList}.
      * @return  This {@link AugList}, with each element transformed as according to the function.
      * @since   AugList V1
-     * @see     #oneToOneMap(Function)
+     * @see     #oneToOneMapCopy(Function)
      * @see     #forEach(Consumer)
      * @see     List#replaceAll(UnaryOperator)
      * @see     tests.AugListTest#testApplyAll()
@@ -893,7 +890,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The action to perform.
      * @since   AugList V1
      * @see     #applyAll(Function)
-     * @see     #oneToOneMap(Function)
+     * @see     #oneToOneMapCopy(Function)
      * @see     tests.AugListTest#testForEach()
      * @note    Encapsulates {@code ArrayList<T>.forEach(Consumer<? super E>)}.
      * @tags    Terminator
@@ -1553,14 +1550,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  NullPointerException
      *          If the given {@link Function} is {@code null}.
      * @return  A new {@link AugList}, with each element transformed as according to the function.
-     * @since   AugList V1
+     * @since   Method name since AugList V2, functionality since V1
      * @see     #applyAll(Function)
      * @see     #forEach(Consumer)
      * @see     tests.AugListTest#testOneToOneMap()
      * @note    Replaces {@link ArrayList#forEach(Consumer)}.
      * @tags    Creator
      */
-    public <U> AugList<U> oneToOneMap(Function<? super T, U> func) {
+    public <U> AugList<U> oneToOneMapCopy(Function<? super T, U> func) {
         AugList<U> ret = new AugList<U>();
         for (T element : ls) {
             ret.add(func.apply(element));
@@ -1569,6 +1566,23 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         // As oneToOneMap holds the contract that this.size() == this.oneToOneMap(func).size(),
         // and as there is no way to instantiate a new T or a new U,
         // This method throws when given a null.
+    }
+
+    /**
+     * Writes the given element to a random position in this {@link AugList}.
+     * @param   element
+     *          The element in question.
+     * @return  This {@link AugList}.
+     * @since   AugList V2
+     * @see     #set(int, Object)
+     * @see     #massOverwriteRandom(T...) massOverwriteRandom(T...)
+     * @see     #massOverwriteRandom(Iterable)
+     * @see     tests.AugListTest#testOverwriteRandom()
+     * @tags    Mutator
+     */
+    public AugList<T> overwriteRandom(T element) {
+        set(new Random().nextInt(size()), element);
+        return this;
     }
 
     /**

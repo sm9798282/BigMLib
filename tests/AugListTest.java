@@ -212,7 +212,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Bulk Varargs Append
      * @since   AugList V1
-     * @see     src.AugList#addAll(Object...)
+     * @see     src.AugList#addAll(Object...) addAll(T...)
      */
     @Test
     public void testAddAllVarargs() {
@@ -262,7 +262,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.allIndicesOf(-2.0).getClass().toGenericString().equals("public class src.AugList<T>"));
         //testDataStr.oneToOneMap(s -> s.toLowerCase()).forEach(System.out::println);
         //System.out.println(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the"));
-        assertTrue(testDataString.oneToOneMap(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
+        assertTrue(testDataString.oneToOneMapCopy(s -> s.toLowerCase()).allIndicesOf("the").size() == 2);
         assertTrue(testDataString.allIndicesOf("the").parameterizedTypeDesc().equals("public final class java.lang.Integer"));
         assertTrue(testDataInt.add(7).allIndicesOf(7).isEquivalent("[0, 8]"));
         assertTrue(new AugList<Double>(null, null, 0.0).allIndicesOf(null).isEquivalent("[0, 1]"));
@@ -370,7 +370,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.clone().isEquivalent(testDataDouble));
         assertTrue(testDataDouble.getClass() == (testDataDouble.clone().getClass()));
         // assertNotEquals checks for both contents and memory locations being identical to throw (which by use of clone() will never be true.)
-        assertTrue(testDataDouble.clone().oneToOneMap(x -> x).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().oneToOneMapCopy(x -> x).isEquivalent(testDataDouble));
         assertTrue(testDataString.clone().distinctCopy().isEquivalent(testDataString.distinctCopy()));
         assertTrue(testDataInt.clone().filterCopy(x -> x != 100).isEquivalent(testDataInt));
         assertNotSame(testDataDouble, testDataDouble.clone());
@@ -426,7 +426,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Varargs Mass Containment (A ⊆ B)
      * @since   AugList V1
-     * @see     src.AugList#containsAll(Object...)
+     * @see     src.AugList#containsAll(Object...) containsAll(T...)
      */
     @Test
     public void testContainsAllVarargs() {
@@ -465,7 +465,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Varargs Any Contains (∃a ∈ A: a ∈ B)
      * @since   AugList V1
-     * @see     src.AugList#containsAny(Object...)
+     * @see     src.AugList#containsAny(Object...) containsAny(T...)
      */
     @Test
     public void testContainsAnyVarargs() {
@@ -500,7 +500,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testCountsOfElements() {
         setupTestData();
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.countsOfElements().get("the") == 2);
         assertTrue(testDataString.countsOfElements().get("THE") == null);
         testDataDouble.addAll(7.0, 11.0, -2.5, 7.11, 7.11);
@@ -537,7 +537,7 @@ public class AugListTest implements MultiTest {
         setupTestData();
         testDataDouble.addAll(1.0, 7.2, -9.221, 1.0, 7.11, -2.5, 19.0);
         assertTrue(testDataDouble.distinctCopy().isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 7.2, -9.221, 19.0]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toUpperCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toUpperCase());
         assertTrue(testDataString.distinctCopy().isEquivalent("[THE, QUICK, BROWN, FOX, JUMPS, OVER, LAZY DOG]"));
         testDataInt.addAll(new AugList<Integer>(7, 8, 11, 19, 117, 119, 145, 145));
         assertTrue(testDataInt.distinctCopy().isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43, 8, 119]"));
@@ -554,7 +554,7 @@ public class AugListTest implements MultiTest {
     @Test
     public void testDistinctSelf() {
         setupTestData();
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         final AugList<String> LOWERSTRCLONE = testDataString.clone();
         assertTrue(LOWERSTRCLONE.isEquivalent(testDataString));
         assertFalse(LOWERSTRCLONE.isEquivalent(testDataString.distinctSelf()));
@@ -771,7 +771,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.indexOf(1.0) == 0);
         assertTrue(testDataDouble.indexOf(3.1415926) == 4);
         assertTrue(testDataDouble.indexOf(77) == -1);
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.indexOf("the") == 0);
         assertTrue(testDataString.indexOf("jumps") == 4);
         assertTrue(testDataString.indexOf("") == -1);
@@ -830,7 +830,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Varargs Bulk Insertion
      * @since   AugList V1
-     * @see     src.AugList#insertAll(int, Object...)
+     * @see     src.AugList#insertAll(int, Object...) insertAll(int, T...)
      */
     @Test
     public void testInsertAllVarargs() {
@@ -1091,7 +1091,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for instantiating from a varargs {@link Arrays array}.
      * @since   Method since V2, tested since AugList V1
-     * @see     src.AugList#AugList(Object...)
+     * @see     src.AugList#AugList(Object...) AugList(T...)
      */
     @Test
     public void testInstantiateVarargs() {
@@ -1154,8 +1154,8 @@ public class AugListTest implements MultiTest {
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
-        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataDouble.clone().oneToOneMapCopy(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMapCopy(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
         assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
         assertFalse(testDataDouble.isEquivalent(testDataString));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
@@ -1167,8 +1167,8 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
         assertFalse(new AugList<Double>().isEquivalent(""));
         assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
-        assertFalse(testDataDouble.clone().oneToOneMap(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMap(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataDouble.clone().oneToOneMapCopy(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMapCopy(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
         assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
         assertFalse(testDataDouble.isEquivalent(testDataString));
         assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
@@ -1271,7 +1271,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.lastIndexOf(1.0) == 0);
         assertTrue(testDataDouble.lastIndexOf(3.1415926) == 4);
         assertTrue(testDataDouble.lastIndexOf(77) == -1);
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.lastIndexOf("the") == 6);
         assertTrue(testDataString.lastIndexOf("jumps") == 4);
         assertTrue(testDataString.lastIndexOf("") == -1);
@@ -1299,7 +1299,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[2.0, -2.5]"));
         assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[2.0, -2.5]"));
         assertTrue(testDataDouble.listDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[2.0, -2.5]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.listDifference(new AugList<String>()).isEquivalent(testDataString));
         assertTrue(testDataString.listDifference(new AugList<String>("the")).isEquivalent("[quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataString.listDifference(new AugList<String>("the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
@@ -1325,7 +1325,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
         assertTrue(testDataDouble.listIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
         assertTrue(testDataDouble.listIntersection(new AugList<Double>(7.11, 1.0)).isEquivalent("[1.0, 7.11]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.listIntersection(new AugList<String>()).isEquivalent("/"));
         assertTrue(testDataString.listIntersection(new AugList<String>("the")).isEquivalent("[the]"));
         assertTrue(testDataString.listIntersection(new AugList<String>("the", "the")).isEquivalent("[the, the]"));
@@ -1475,7 +1475,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
         assertTrue(testDataDouble.listUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 1.0]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.listUnion(new AugList<String>()).isEquivalent(testDataString));
         assertTrue(testDataString.listUnion(new AugList<String>("the")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
         assertTrue(testDataString.listUnion(new AugList<String>("the", "the")).isEquivalent("[the, quick, brown, fox, jumps, over, the, lazy dog]"));
@@ -1487,26 +1487,75 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Mapping
      * @since   AugList V1
-     * @see     src.AugList#oneToOneMap(java.util.function.UnaryOperator)
+     * @see     src.AugList#oneToOneMapCopy(java.util.function.UnaryOperator)
      */
     @Test
     public void testOneToOneMap() {
         setupTestData();
         // Identity map (var x -> var x)
-        assertTrue(testDataDouble.oneToOneMap(x -> x).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(testDataDouble.oneToOneMap(e -> e).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.oneToOneMapCopy(x -> x).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.oneToOneMapCopy(e -> e).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         // Map all to 0 (var x -> int 0)
-        assertTrue(testDataDouble.oneToOneMap(x -> 0).allSatisfy(d -> d == 0));
+        assertTrue(testDataDouble.oneToOneMapCopy(x -> 0).allSatisfy(d -> d == 0));
         // Map to 1 less (double d -> double d - 1)
-        assertTrue(testDataDouble.oneToOneMap(d -> d - 1).isEquivalent("[0.0, 1.0, 6.11, -3.5, 2.1415926]"));
+        assertTrue(testDataDouble.oneToOneMapCopy(d -> d - 1).isEquivalent("[0.0, 1.0, 6.11, -3.5, 2.1415926]"));
         // Map to length (String s -> int s.length())
-        assertTrue(testDataString.oneToOneMap(s -> s.length()).get(2) == 5);
+        assertTrue(testDataString.oneToOneMapCopy(s -> s.length()).get(2) == 5);
         // Map to even parity (int i -> boolean i % 2)
-        assertTrue(testDataInt.oneToOneMap(i -> i % 2 == 0).countsOfElements().get(true) == 2);
+        assertTrue(testDataInt.oneToOneMapCopy(i -> i % 2 == 0).countsOfElements().get(true) == 2);
         // Map to 'c' (var x -> char 'c')
-        assertTrue(testDataDouble.oneToOneMap(x -> 'c').parameterizedTypeDesc().equals("public final class java.lang.Character"));
-        assertThrows(NullPointerException.class, () -> { testDataInt.oneToOneMap(null); });
-        testDataInt.oneToOneMap(i -> null).isEquivalent("[*null*, *null*, *null*, *null*, *null*, *null*, *null*, *null*]");
+        assertTrue(testDataDouble.oneToOneMapCopy(x -> 'c').parameterizedTypeDesc().equals("public final class java.lang.Character"));
+        assertThrows(NullPointerException.class, () -> { testDataInt.oneToOneMapCopy(null); });
+        testDataInt.oneToOneMapCopy(i -> null).isEquivalent("[*null*, *null*, *null*, *null*, *null*, *null*, *null*, *null*]");
+    }
+
+    /**
+     * JUnit tester for random overwriting
+     * @since   AugList V2
+     * @see     src.AugList#overwriteRandom()
+     */
+    @Test
+    public void testOverwriteRandom() {
+        setupTestData();
+        AugList<AugList<Double>> validStates = new AugList<AugList<Double>>(
+            new AugList<Double>(12.0, 2.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 12.0, 7.11, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 12.0, -2.5, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, 12.0, 3.1415926),
+            new AugList<Double>(1.0, 2.0, 7.11, -2.5, 12.0)
+        );
+        testDataDouble.overwriteRandom(12.0);
+        Integer stateIndex = -1;
+        /*
+         * Starting with 
+         * [1.0, 2.0, 7.11, -2.5, 3.1415926], 
+         * the possible states after a random deletion are:
+         * 
+         * testDataDouble                   
+         * [12 , 2.0, 7.11, -2.5, 3.1415926],
+         * [1.0, 12 , 7.11, -2.5, 3.1415926],
+         * [1.0, 2.0, 12  , -2.5, 3.1415926],
+         * [1.0, 2.0, 7.11, 12  , 3.1415926],
+         * [1.0, 2.0, 7.11, -2.5, 12       ]
+         * 
+         * If the list is not one of these 5, then auto fail the test.
+         */
+        if (testDataDouble.get(0) != 1.0) {
+            stateIndex = 0;
+        }
+        else if (testDataDouble.get(1) != 2.0) {
+            stateIndex = 1;
+        }
+        else if (testDataDouble.get(2) != 7.11) {
+            stateIndex = 2;
+        }
+        else if (testDataDouble.get(3) != -2.5) {
+            stateIndex = 3;
+        }
+        else {
+            stateIndex = 4;
+        }
+        assertTrue(validStates.get(stateIndex).isEquivalent(testDataDouble));
     }
 
     /**
@@ -1632,7 +1681,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Varargs Bulk Removal
      * @since   AugList V1
-     * @see     src.AugList#removeAll(Object...)
+     * @see     src.AugList#removeAll(Object...) removeAll(T...)
      */
     @Test
     public void testRemoveAllVarargs() {
@@ -1865,7 +1914,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent("[2.0, -2.5]"));
         assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[2.0, -2.5]"));
         assertTrue(testDataDouble.setDifference(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[2.0, -2.5]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         AugList<String> TDStrSet = testDataString.clone();
         TDStrSet.removeAt(6);
         assertTrue(testDataString.setDifference(new AugList<String>()).isEquivalent(TDStrSet));
@@ -1892,7 +1941,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
         assertTrue(testDataDouble.setIntersection(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 7.11, 3.1415926]"));
         assertTrue(testDataDouble.setIntersection(new AugList<Double>(7.11, 1.0)).isEquivalent("[1.0, 7.11]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         assertTrue(testDataString.setIntersection(new AugList<String>()).isEquivalent("/"));
         assertTrue(testDataString.setIntersection(new AugList<String>("the")).isEquivalent("[the]"));
         assertTrue(testDataString.setIntersection(new AugList<String>("the", "the")).isEquivalent("[the]"));
@@ -1918,7 +1967,7 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926)).isEquivalent(testDataDouble));
         assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 100.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926, 100.0]"));
         assertTrue(testDataDouble.setUnion(new AugList<Double>(1.0, 7.11, 3.1415926, 1.0)).isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        testDataString = testDataString.oneToOneMap(s -> s.toLowerCase());
+        testDataString = testDataString.oneToOneMapCopy(s -> s.toLowerCase());
         AugList<String> TDStrSet = testDataString.withoutIndex(6);
         assertTrue(testDataString.setUnion(new AugList<String>()).isEquivalent(TDStrSet));
         assertTrue(testDataString.setUnion(new AugList<String>("the")).isEquivalent("[the, quick, brown, fox, jumps, over, lazy dog]"));
@@ -2320,7 +2369,7 @@ public class AugListTest implements MultiTest {
     /**
      * JUnit tester for Varargs Bulk Removal
      * @since   AugList V1
-     * @see     src.AugList#withoutAll(Object...)
+     * @see     src.AugList#withoutAll(Object...) withoutAll(T...)
      */
     @Test
 	public void testWithoutAllVarargs() {
