@@ -62,29 +62,31 @@ import java.util.stream.Stream;
  * <h3>Additions</h3>
  *
  * Adds the following methods:<p>
- * - {@link #allIndicesOf(Object)},</p>
- * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},</p>
- * - {@link #applyAll(UnaryOperator)}, {@link #oneToOneMap(Function)},</p>
- * - {@link #chunk(int)}, {@link #fragment(int)},</p>
- * - {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}</p>
- * - {@link #countsOfElements()}, {@link #countOf(Object)},</p>
- * - {@link #distinctSelf()}, {@link #distinctCopy()},</p>
- * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, </p>
- * - {@link #forEach(Consumer)},</p>
- * - {@link #isEquivalent(Object)}, {@link #isRearrangement()},</p>
- * - {@link #listDifference(Iterable)}, {@link #listIntersection(Iterable)}, {@link #listUnion(Iterable)},</p>
- * - {@link #pairUp(Iterable)},</p>
- * - {@link #parameterizedTypeDesc()},</p>
- * - {@link #retainAll(Collection)}, {@link #toCollection()},</p>
- * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},</p>
- * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},</p>
- * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},</p>
- * - {@link #toEnumeration()},</p>
- * - {@link #without(T)}, {@link #withoutAll(Iterable)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}</p>
- * - {@link #getRandom()}, {@link #removeRandom()},</p>
- * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)},</p>
- * - {@link #sample(int, boolean)},</p>
- * - {@link #shuffleSelf()}, {@link #shuffleCopy()},</p>
+ * - {@link #allIndicesOf(Object)},
+ * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},
+ * - {@link #applyAll(UnaryOperator)}, {@link #oneToOneMapCopy(Function)},
+ * - {@link #chunk(int)}, {@link #fragment(int)},
+ * - {@link #containsAny(Iterable)}, {@link #containsAny(T...) containsAny(T...)}
+ * - {@link #countsOfElements()}, {@link #countOf(Object)},
+ * - {@link #distinctSelf()}, {@link #distinctCopy()},
+ * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, 
+ * - {@link #forEach(Consumer)},
+ * - {@link #isEquivalent(Object)}, {@link #isRearrangement()},
+ * - {@link #listDifference(Iterable)}, {@link #listIntersection(Iterable)}, {@link #listUnion(Iterable)},
+ * - {@link #overwriteRandom(T)}, {@link #massOverwriteRandom(Iterable)}, {@link #massOverwriteRandom(T...) massOverwriteRandom(T...)}
+ * - {@link #pairUp(Iterable)},
+ * - {@link #parameterizedTypeDesc()},
+ * - {@link #retainAll(Collection)}, {@link #toCollection()},
+ * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},
+ * - {@link #setMany(Iterable, Iterable)},
+ * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},
+ * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},
+ * - {@link #toEnumeration()},
+ * - {@link #without(T)}, {@link #withoutAll(Iterable)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}
+ * - {@link #getRandom()}, {@link #removeRandom()},
+ * - {@link #insertAtRandom(T)}, {@link #insertAllAtRandom(Iterable)}, {@link #insertAllAtRandom(T...) insertAllAtRandom(T...)},
+ * - {@link #sample(int, boolean)},
+ * - {@link #shuffleSelf()}, {@link #shuffleCopy()},
  *
  * <h3>Encapsulations</h3> 
  *
@@ -103,7 +105,7 @@ import java.util.stream.Stream;
  * - {@link #parallelStream()}, {@link #stream()},
  * - {@link #remove(Object)}, {@link #removeAt(int)}, {@link #removeIf(Predicate)}, {@link #removeLast()},
  * - {@link #reversed()},
- * - {@link #toArray(T[])}
+ * - {@link #toArray(T[]) toArray(T[])}
  *
  * <h3>Deprecated</h3>
  *
@@ -118,7 +120,7 @@ import java.util.stream.Stream;
  * - {@link ArrayList#ensureCapacity()}, {@link ArrayList#trimToSize()}</p>
  * @see     tests.AugListTest
  * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
- * @version 2
+ * @version AugList Version 2
  */
 public class AugList<T> implements Cloneable, Iterable<T> {
 
@@ -287,6 +289,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              Whether the supplied ints should be treated as Counts (Unbounded positive value) or as Indices (Bounded by AugList size)
      * @return      A Tuple ({@link SimpleEntry}) with equally {@link #size() sized} {@link AugList AugLists}, with the ints filtered as requested.
      * @see         #equaliseLengths(Iterable, Iterable)
+     * @see         #setMany(Iterable, Iterable)
      * @since       AugList V2
      * @tags        Converter
      */
@@ -1537,6 +1540,55 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         return ret;
     }
 
+    /**
+     * Writes the given elements to random positions in this {@link AugList}. Cannot self-overwrite.
+     * @param       elements
+     *              The element in question.
+     * @return      This {@link AugList}.
+     * @throws      IllegalArgumentException
+     *              The number of elements is larger than this {@link AugList}.
+     * @since       AugList V2
+     * @see         #setMany(Iterable, Iterable)
+     * @see         #overwriteRandom(T)
+     * @see         tests.AugListTest#testMassOverwriteRandom()
+     * @overloads   {@link #massOverwriteRandom(Iterable)}, {@link #massOverwriteRandom(T...) massOverwriteRandom(T...)}
+     * @tags        Mutator
+     */
+    public AugList<T> massOverwriteRandom(Iterable<T> elements) {
+        AugList<T> ALelements = new AugList<T>(elements);
+        if (ALelements.size() > size()) {
+            throw new IllegalArgumentException("Number of elements to write cannot be longer than the size of this AugList.");
+        }
+        AugList<Integer> validIndices = new AugList<Integer>();
+        for (int i = 0; i < ALelements.size(); i++) {
+            validIndices.add(i);
+        }
+        for (int i = 0; i < ALelements.size(); i++) {
+            int idx = validIndices.removeRandom(); // Get a random index and remove it as a valid option
+            set(idx, ALelements.get(i));
+        }
+        return this;
+    }
+
+    /**
+     * Writes the given elements to random positions in this {@link AugList}. Cannot self-overwrite.
+     * @param       elements
+     *              The element in question.
+     * @return      This {@link AugList}.
+     * @throws      IllegalArgumentException
+     *              The number of elements is larger than this {@link AugList}.
+     * @since       AugList V2
+     * @see         #setMany(Iterable, Iterable)
+     * @see         #overwriteRandom(T)
+     * @see         tests.AugListTest#testMassOverwriteRandomVarargs()
+     * @overloads   {@link #massOverwriteRandom(Iterable)}, {@link #massOverwriteRandom(T...) massOverwriteRandom(T...)}
+     * @tags        Mutator
+     */
+    @SafeVarargs
+    public final AugList<T> massOverwriteRandom(T... elements) {
+        return massOverwriteRandom(new AugList<T>(elements));
+    }
+
     // Object.notify() and Object.notifyAll() cannot be overridden and so are not implemented
 
     /**
@@ -1880,6 +1932,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
      * @since   AugList V1
+     * @see     #setMany(Iterable, Iterable)
+     * @see     #overwriteRandom(Object)
      * @see     tests.AugListTest#testSet()
      * @note    Encapsulates {@link List#set()}.
      * @tags    Mutator
@@ -1922,6 +1976,32 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             }
         }
         return ret;
+    }
+
+    /**
+     * Sets each of the given indices to its corresponding value.
+     * @param   indices
+     *          The indices that should be changed.
+     * @param   values
+     *          The values that will be written to the given indices.
+     * @return  This {@link AugList}.
+     * @since   AugList V2
+     * @see     #set(int, Object)
+     * @see     #massOverwriteRandom(Iterable)
+     * @see     #massOverwriteRandom(T...) massOverwriteRandom(T...)
+     * @see     tests.AugListTest#testSetMany()
+     * @note    If the same index appears more than once, that index will be set to the value corresponding to the last occurrence of that index.
+     *          <p>Such a case would rarely occur on purpose though, as i.e. setMany([1, 2, 1], [1.0, 2.0, 3.0]) can be written more quickly and concisely as setMany([1, 2], [3.0, 2.0]).
+     * @tags    Mutator
+     */
+    public AugList<T> setMany(Iterable<Integer> indices, Iterable<? super T> values) {
+        SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseAndFilter(values, indices, true);
+        AugList<T> ALvals = res.getKey();
+        AugList<Integer> ALIdxs = res.getValue();
+        for (int i = 0; i < ALIdxs.size(); i++) {
+            set(ALIdxs.get(i), ALvals.get(i));
+        }
+        return this;
     }
 
     /**

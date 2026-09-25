@@ -5,10 +5,11 @@
 - `equals()` reverted to `Object.equals()` behaviour, with `isEquivalent(Object)` getting enhanced V1 `equals()` behaviour
 - New Constructor from `Iterable<T>`, replaces V1 Constructors from `ArrayList<T>` and `List<T>`
 - New Constructors from `Spliterator<T>`, `Stream<T>` and value-count pairs [`new AugList<T>(Iterable<T>, Iterable<Integer>)`].
-- New Random family of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`
+- New Random family of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`, `overwriteRandom(T)`, `massOverwriteRandom(Iterable<T>)`, `massOverwriteRandom(T...)`
 - New Random-adjacent methods: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
 - New method `countOf(T)` as an individual alternative to `countsOfElements()` that also supports `null`s.
+- New method `setMany(Iterable<Integer>, Iterable<? super T>)`
 - Methods that used to take `AugList<T>` parameters now take `Iterable<T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
 

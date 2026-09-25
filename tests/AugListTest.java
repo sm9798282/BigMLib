@@ -2,7 +2,6 @@ package tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import src.*;
 import java.lang.IndexOutOfBoundsException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -26,19 +25,21 @@ import java.util.Spliterator;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.stream.Stream;
+import src.*;
 
 /**
  * A JUnit 3.x powered automatic tester for {@link src.AugList}.
  * @see     src.AugList
  * @since   AugList V1
  */
-public class AugListTest implements MultiTest {
+public final class AugListTest implements MultiTest {
 
     private AugList<Double> testDataDouble;
     private AugList<String> testDataString;
     private AugList<Integer> testDataInt;
     AugList<Double> nullAL = null;
     Double[] nullArr = null;
+    Double[] emptyArr = new Double[0];
 
     final ArrayList<Double> ARRLISTDOUBLE = new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926));
     final ArrayList<String> ARRLISTSTR = new ArrayList<String>(Arrays.asList("The", "quick", "brown", "fox", "jumps", "over", "the", "lazy dog"));
@@ -119,7 +120,10 @@ public class AugListTest implements MultiTest {
         testListIterator();
         testListUnion();
         testListIteratorFromIndex();
+        testMassOverwriteRandom();
+        testMassOverwriteRandomVarargs();
         testOneToOneMap();
+        testOverwriteRandom();
         testPairUp();
         testParallelStream();
         testParameterizedTypeDesc();
@@ -135,6 +139,7 @@ public class AugListTest implements MultiTest {
         testSample();
         testSet();
         testSetDifference();
+        testSetMany();
         testSetIntersection();
         testSetUnion();
         testShuffleCopy();
@@ -1485,6 +1490,72 @@ public class AugListTest implements MultiTest {
     }
 
     /**
+     * JUnit tester for mass random overwriting
+     * @since   AugList V2
+     * @see     src.AugList#massOverwriteRandom(Iterable)
+     */
+    @Test
+    public void testMassOverwriteRandom() {
+        AugList<AugList<Double>> dat = new AugList<AugList<Double>>(
+            new AugList<Double>(),
+            new AugList<Double>(1.0),
+            new AugList<Double>(2.0, 2.0),
+            new AugList<Double>(3.0, 3.0, 3.0)
+        );
+        assertTrue(dat.get(0).clone().massOverwriteRandom(nullAL).isEquivalent(dat.get(0)));
+        assertTrue(dat.get(0).clone().massOverwriteRandom(new AugList<Double>()).isEquivalent(dat.get(0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(0).clone().massOverwriteRandom(new AugList<Double>(-7.0)); } );
+        assertTrue(dat.get(1).clone().massOverwriteRandom(nullAL).isEquivalent(dat.get(1)));
+        assertTrue(dat.get(1).clone().massOverwriteRandom(new AugList<Double>()).isEquivalent(dat.get(1)));
+        assertTrue(dat.get(1).clone().massOverwriteRandom(new AugList<Double>(-7.0)).isRearrangement(new AugList<Double>(-7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(1).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0)); } );
+        assertTrue(dat.get(2).clone().massOverwriteRandom(nullAL).isEquivalent(dat.get(2)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(new AugList<Double>()).isEquivalent(dat.get(2)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(new AugList<Double>(-7.0)).isRearrangement(new AugList<Double>(2.0, -7.0)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0)).isRearrangement(new AugList<Double>(-7.0, -7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(2).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0, -7.0)); } );
+        assertTrue(dat.get(3).clone().massOverwriteRandom(nullAL).isEquivalent(dat.get(3)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(new AugList<Double>()).isEquivalent(dat.get(3)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(new AugList<Double>(-7.0)).isRearrangement(new AugList<Double>(3.0, 3.0, -7.0)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0)).isRearrangement(new AugList<Double>(3.0, -7.0, -7.0)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0, -7.0)).isRearrangement(new AugList<Double>(-7.0, -7.0, -7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(3).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0, -7.0, -7.0)); } );
+    }
+
+    /**
+     * JUnit tester for mass random overwriting
+     * @since   AugList V2
+     * @see     src.AugList#massOverwriteRandom(Object...) massOverwriteRandom(T...)
+     */
+    @Test
+    public void testMassOverwriteRandomVarargs() {
+        AugList<AugList<Double>> dat = new AugList<AugList<Double>>(
+            new AugList<Double>(),
+            new AugList<Double>(1.0),
+            new AugList<Double>(2.0, 2.0),
+            new AugList<Double>(3.0, 3.0, 3.0)
+        );
+        assertTrue(dat.get(0).clone().massOverwriteRandom(nullArr).isEquivalent(dat.get(0)));
+        assertTrue(dat.get(0).clone().massOverwriteRandom(emptyArr).isEquivalent(dat.get(0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(0).clone().massOverwriteRandom(new AugList<Double>(-7.0)); } );
+        assertTrue(dat.get(1).clone().massOverwriteRandom(nullArr).isEquivalent(dat.get(1)));
+        assertTrue(dat.get(1).clone().massOverwriteRandom(emptyArr).isEquivalent(dat.get(1)));
+        assertTrue(dat.get(1).clone().massOverwriteRandom(-7.0).isRearrangement(new AugList<Double>(-7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(1).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0)); } );
+        assertTrue(dat.get(2).clone().massOverwriteRandom(nullArr).isEquivalent(dat.get(2)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(emptyArr).isEquivalent(dat.get(2)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(-7.0).isRearrangement(new AugList<Double>(2.0, -7.0)));
+        assertTrue(dat.get(2).clone().massOverwriteRandom(-7.0, -7.0).isRearrangement(new AugList<Double>(-7.0, -7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(2).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0, -7.0)); } );
+        assertTrue(dat.get(3).clone().massOverwriteRandom(nullArr).isEquivalent(dat.get(3)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(emptyArr).isEquivalent(dat.get(3)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(-7.0).isRearrangement(new AugList<Double>(3.0, 3.0, -7.0)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(-7.0, -7.0).isRearrangement(new AugList<Double>(3.0, -7.0, -7.0)));
+        assertTrue(dat.get(3).clone().massOverwriteRandom(-7.0, -7.0, -7.0).isRearrangement(new AugList<Double>(-7.0, -7.0, -7.0)));
+        assertThrows(IllegalArgumentException.class, () -> { dat.get(3).clone().massOverwriteRandom(new AugList<Double>(-7.0, -7.0, -7.0, -7.0)); } );
+    }
+
+    /**
      * JUnit tester for Mapping
      * @since   AugList V1
      * @see     src.AugList#oneToOneMapCopy(java.util.function.UnaryOperator)
@@ -1922,6 +1993,34 @@ public class AugListTest implements MultiTest {
         assertTrue(testDataString.setDifference(new AugList<String>("the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
         assertTrue(testDataString.setDifference(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[quick, brown, jumps, over, lazy dog]"));
         assertTrue(testDataDouble.setDifference(nullAL).isEquivalent(testDataDouble));
+    }
+
+    /**
+     * JUnit tester for Bulk Setting
+     * @since   AugList V2
+     * @see     src.AugList#setMany()
+     */
+    @Test
+    public void testSetMany() {
+        setupTestData();
+        assertTrue(testDataDouble.clone().setMany(null, null).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(null, new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(null, new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(), new AugList<Double>()).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(null, new AugList<Double>(7.0, 5.0, 11.0, -2.5)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 2, 5, 4), null).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(), new AugList<Double>(7.0, 5.0, 11.0, -2.5)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 2, 5, 4), new AugList<Double>()).isEquivalent(testDataDouble));
+        AugList<Double> alt = testDataDouble.clone();
+        alt.set(1, 2.0);
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1), new AugList<Double>(2.0)).isEquivalent(alt));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 1), new AugList<Double>(3.0, 2.0)).isEquivalent(alt));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 4), new AugList<Double>(3.0, 2.0)).isEquivalent("[1.0, 3.0, 7.11, -2.5, 2.0]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(4, 1), new AugList<Double>(2.0, 3.0)).isEquivalent("[1.0, 3.0, 7.11, -2.5, 2.0]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 4, 5), new AugList<Double>(3.0, 2.0)).isEquivalent("[1.0, 3.0, 7.11, -2.5, 2.0]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 4), new AugList<Double>(3.0, 2.0, 5.0)).isEquivalent("[1.0, 3.0, 7.11, -2.5, 2.0]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(-1), new AugList<Double>(-1.5)).isEquivalent("[-1.5, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(99), new AugList<Double>(-1.5)).isEquivalent("[1.0, 2.0, 7.11, -2.5, -1.5]"));
     }
 
     /**

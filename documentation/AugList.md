@@ -29,28 +29,28 @@ Provided with AugList V2 are the following:
 
 - `new AugList<T>()`
 - `new AugList<T>(T...)`
-- `new AugList<T>(Enumeration<T>)`
-- `new AugList<T>(Iterator<T>)`
-- `new AugList<T>(Iterable<T>)`
-- `new AugList<T>(ListIterator<T>)`
-- `new AugList<T>(Iterable<T>, Iterable<Integer>)`
-- `new AugList<T>(Spliterator<T>)`
-- `new AugList<T>(Stream<T>)`
+- `new AugList<T>(Enumeration<? super T>)`
+- `new AugList<T>(Iterator<? super T>)`
+- `new AugList<T>(Iterable<? super T>)`
+- `new AugList<T>(ListIterator<? super T>)`
+- `new AugList<T>(Iterable<? super T>, Iterable<Integer>)`
+- `new AugList<T>(Spliterator<? super T>)`
+- `new AugList<T>(Stream<? super T>)`
 - `AugList<T>___________add(T)`
-- `AugList<T>___________addAll(AugList<T>)`
+- `AugList<T>___________addAll(AugList<? super T>)`
 - `AugList<T>___________addAll(T...)`
 - `AugList<T>___________addFirst(T)`
 - `AugList<T>___________allIndicesOf(T)`
 - `boolean______________allSatisfy(Predicate<? super T>)`
 - `boolean______________anySatisfy(Predicate<? super T>)`
-- `AugList<T>___________applyAll(UnaryOperator<T>)`
+- `AugList<T>___________applyAll(UnaryOperator<? super T>)`
 - `AugList<AugList<T>>__chunk(int)`
 - `AugList<T>___________clear()`
 - `AugList<T>___________clone()`
 - `boolean______________contains(T)`
-- `boolean______________containsAll(Iterable<T>)`
+- `boolean______________containsAll(Iterable<? super T>)`
 - `boolean______________containsAll(T...)`
-- `boolean______________containsAny(Iterable<T>)`
+- `boolean______________containsAny(Iterable<? super T>)`
 - `boolean______________containsAny(T...)`
 - `int__________________countOf()`
 - `AugList<Integer>_____countsOfElements()`
@@ -68,33 +68,34 @@ Provided with AugList V2 are the following:
 - `int__________________hashCode()`
 - `int__________________indexOf(Object)`
 - `AugList<T>___________insert(int, T)`
-- `AugList<T>___________insertAll(int, Iterable<T>)`
+- `AugList<T>___________insertAll(int, Iterable<? super T>)`
 - `AugList<T>___________insertAll(int, T...)`
-- `AugList<T>___________insertAllAtRandom(Iterable<T>)`
+- `AugList<T>___________insertAllAtRandom(Iterable<? super T>)`
 - `AugList<T>___________insertAllAtRandom(T...)`
 - `AugList<T>___________insertAtRandom(T)`
 - `boolean______________isEmpty()`
 - `boolean______________isEquivalent()`
 - PLANNED `isPalindrome()`
-- `boolean______________isRearrangement(Iterable<T>)`
+- `boolean______________isRearrangement(Iterable<? super T>)`
 - PLANNED `isSet()`
 - `Iterator<T>__________iterator()`
 - `boolean______________lastIndexOf(Object)`
-- `AugList<T>___________listDifference(Iterable<T>)`
-- `AugList<T>___________listIntersection(Iterable<T>)`
+- `AugList<T>___________listDifference(Iterable<? super T>)`
+- `AugList<T>___________listIntersection(Iterable<? super T>)`
 - `ListIterator<T>______listIterator()`
 - `ListIterator<T>______listIterator(int)`
-- `AugList<T>___________listUnion(Iterable<T>)`
-- PLANNED `massOverwriteRandom(Iterable<T>)`
-- `AugList<U>___________oneToOneMap(Function<? super T, U>)`
+- `AugList<T>___________listUnion(Iterable<? super T>)`
+- `AugList<T>___________massOverwriteRandom(Iterable<? super T>)`
+- `AugList<T>___________massOverwriteRandom(T[])`
+- `AugList<U>___________oneToOneMapCopy(Function<? super T, U>)`
+- `AugList<T>___________overwriteRandom(T)`
 - `void_________________notify()`
 - `void_________________notifyAll()`
-- PLANNED `overwriteRandom(T)`
-- `Hashtable<T,U>_______pairUp(Iterable<U>)`
+- `Hashtable<T, U>______pairUp(Iterable<U>)`
 - `Stream<T>____________parallelStream()`
 - `String_______________parameterizedTypeDesc()`
 - `boolean______________remove(Object)`
-- `boolean______________removeAll(Iterable<T>)`
+- `boolean______________removeAll(Iterable<? super T>)`
 - `boolean______________removeAll(T...)`
 - `boolean______________removeAt(int)`
 - `boolean______________removeIf(Predicate<? super T>)`
@@ -104,11 +105,11 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________reversed()`
 - `AugList<T>___________sample(int, boolean)`
 - `T____________________set(int, T)`,
-- `AugList<T>___________setDifference(Iterable<T>)`
-- `AugList<T>___________setIntersection(Iterable<T>)`
-- PLANNED `setMany(Iterable<Integer> indices, Iterable<T> values)`
-- PLANNED `setRange(int, Iterable<T>)`
-- `AugList<T>___________setUnion(Iterable<T>)`
+- `AugList<T>___________setDifference(Iterable<? super T>)`
+- PLANNED `setFromFunc(int, Function<? super T>)`
+- `AugList<T>___________setIntersection(Iterable<? super T>)`
+- `AugList<T>___________setMany(Iterable<Integer> indices, Iterable<? super T> values)`
+- `AugList<T>___________setUnion(Iterable<? super T>)`
 - `AugList<T>___________shuffleCopy()`
 - `AugList<T>___________shuffleSelf()`
 - `int__________________size()`
@@ -131,7 +132,7 @@ Provided with AugList V2 are the following:
 - `void_________________wait(long)`
 - `void_________________wait(long, int)`
 - `AugList<T>___________without(T)`
-- `AugList<T>___________withoutAll(Iterable<T>)`
+- `AugList<T>___________withoutAll(Iterable<? super T>)`
 - `AugList<T>___________withoutAll(T...)`
 - `AugList<T>___________withoutIndex(int)`
 - `AugList<T>___________withoutLast()`
@@ -145,7 +146,7 @@ By unifying their code, the Single Source of Truth principle can be followed, an
 
 - `boolean containsBulk(AugList<T>, boolean)`
 - `SimpleEntry<AugList<T>, AugList<Integer>> equaliseAndFilter(Iterable<? super T>, Iterable<Integer>, boolean)`
-- `SimpleEntry<AugList<T>, AugList<U>> equaliseLengths(Iterable<? super T>, Iterable<? super U>)`
+- `static SimpleEntry<AugList<T>, AugList<U>> equaliseLengths(Iterable<? super T>, Iterable<? super U>)`
 
 ## See Also
 
