@@ -64,16 +64,12 @@ Parameters have (except where additional context is helpful) been renamed to fol
 
 ## Documentation changes
 
-Methods are categorised by their `@tags`:
-
-- `Constructor` (Constructs the object.)
-- `Mutator` (Mutates the object. Previously dubbed "Stream-oriented approach", enables code to be written in the functional-programming paradigm. If no other tags are present, also returns the mutated AugList.)
-- `Creator` (Creates a new AugList. Does not alter state of this AugList or any of its parameters.)
-- `Converter` (Creates a non-AugList with _useful_ methods.)
-- `Terminator` (Returns a non-AugList **without** _useful_ methods, or returns either `T` or `void`.)
-
-Separately:
-
+- Methods are categorised by their `@tags`:
+  - `Constructor` (Constructs the object.)
+  - `Mutator` (Mutates the object. Previously dubbed "Stream-oriented approach", enables code to be written in the functional-programming paradigm. If no other tags are present, also returns the mutated AugList.)
+  - `Creator` (Creates a new AugList. Does not alter state of this AugList or any of its parameters.)
+  - `Converter` (Creates a non-AugList with _useful_ methods.)
+  - `Terminator` (Returns a non-AugList **without** _useful_ methods, or returns either `T` or `void`.)
 - References to other Java methods and classes generally are now annotated `@link` (as opposed to `@code`)
 - `@apiNote` and `@implNote` annotations replaced with `@note`
 - New section annotated with `@overloads` links to all overloads of a method

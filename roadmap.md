@@ -11,15 +11,15 @@
 
 ### AugList V2 Planned
 
-- Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-write
-- `setMany(AugList<Integer> indices, AugList<T> values)`  on d-write
-- Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-write
+- Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-AL2-07-write
+- `setMany(AugList<Integer> indices, AugList<T> values)`  on d-AL2-07-write
+- Introduce `setRange(int, AugList<T>)`, a bulk mutator that sets a range of values to the provided values, starting from the provided index. Should lengthen the AugList if necessary.  on d-AL2-07-write
 - `isPalindrome()` sees if AugList is palindrome on d-csma
-- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-csma
-- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-csma
-- `crossProduct(Iterable<U>)` d-csma (Source from previous projects)
-- `crossProduct(Iterable<Iterable<U>>)` d-csma (Source from previous projects)
-- `swapRange(int, int, int)` d-csma
+- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-AL2-08-csma
+- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma
+- `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
+- `crossProduct(Iterable<Iterable<U>>)` d-AL2-08-csma (Source from previous projects)
+- `swapRange(int, int, int)` d-AL2-08-csma
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
   - `AugList<Byte> ALFactory.fromByteBuff(ByteBuffer)`
   - `AugList<Character> ALFactory.fromCharBuff(CharBuffer)`
@@ -187,7 +187,7 @@
 - `interface HexTile`
   - Hex grid handler
 
-- Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess
+- Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess, Public Transport model
 
 ## Completed
 

@@ -249,6 +249,64 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * Internal method that takes 2 {@link Iterable Iterables}, most likely of different lengths, and trim the longer one down to the length of the shorter.
+     * @param       keys
+     *              The {@link Iterable} containing the keys to use.
+     *              <p>Removes keys without corresponding values.
+     * @param       values
+     *              Their {@link Iterable} containing the values.
+     *              <p>Removes values without corresponding keys.
+     * @return      A Tuple ({@link SimpleEntry}) with equally {@link #size() sized} {@link AugList AugLists}.
+     * @since       AugList V2
+     * @see         #equaliseAndFilter(Iterable, Iterable, boolean)
+     * @note        Could easily be transferred to a helper class, as no instance data is required.
+     * @tags        Converter
+     */
+    private static <T, U> SimpleEntry<AugList<T>, AugList<U>> equaliseLengths(Iterable<? super T> keys, Iterable<? super U> values) {
+        AugList<T> ALvalues = new AugList<T>(keys);
+        AugList<U> ALkeys = new AugList<U>(values);
+        // Shorten values until matches keys
+        while (ALvalues.size() > ALkeys.size()) {
+            ALvalues.removeLast();
+        }
+        // Shorten keys until matches values
+        while (ALkeys.size() > ALvalues.size()) {
+            ALkeys.removeLast();
+        }
+        return new SimpleEntry<AugList<T>, AugList<U>>(ALvalues, ALkeys);
+    }
+
+    /**
+     * Internal method that takes 2 {@link Iterable Iterables}, most likely of different lengths, and trim the longer one down to the length of the shorter.
+     * @param       keys
+     *              The keys which will be used.
+     *              <p>Removes keys without corresponding integers.
+     * @param       ints
+     *              Their corresponding integer values.
+     *              <p>Removes ints without corresponding keys.
+     *              <p>Negative ints are treated as 0.
+     *              <p>If {@code intsAreIndices == true}, clamps ints higher than {@link #size()} to 1 less than the size.
+     * @param       intsAreIndices
+     *              Whether the supplied ints should be treated as Counts (Unbounded positive value) or as Indices (Bounded by AugList size)
+     * @return      A Tuple ({@link SimpleEntry}) with equally {@link #size() sized} {@link AugList AugLists}, with the ints filtered as requested.
+     * @see         #equaliseLengths(Iterable, Iterable)
+     * @since       AugList V2
+     * @tags        Converter
+     */
+    private SimpleEntry<AugList<T>, AugList<Integer>> equaliseAndFilter(Iterable<? super T> keys, Iterable<Integer> ints, boolean intsAreIndices) {
+        SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseLengths(keys, ints);
+        AugList<T> ALvalues = res.getKey();
+        AugList<Integer> ALints = res.getValue();
+        ALints.oneToOneMap(count -> count > 0 ? count : 0); // Set negatives to 0
+        if (intsAreIndices) {
+            // Set indices over the maximum index to within bounds
+            ALints.oneToOneMap(count -> count >= size() ? size() - 1 : count);
+        }
+        // Repackage result
+        return new SimpleEntry<AugList<T>, AugList<Integer>>(ALvalues, ALints);
+    }
+
+    /**
      * Creates a new {@link AugList} from the given {@link Spliterator}.
      * @param       spliterator
      *              The {@link Spliterator} object to source the elements for this {@link AugList} from.

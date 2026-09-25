@@ -144,6 +144,8 @@ Some methods share large amounts of their logic.
 By unifying their code, the Single Source of Truth principle can be followed, and thus debugging time reduced.
 
 - `boolean containsBulk(AugList<T>, boolean)`
+- `SimpleEntry<AugList<T>, AugList<Integer>> equaliseAndFilter(Iterable<? super T>, Iterable<Integer>, boolean)`
+- `SimpleEntry<AugList<T>, AugList<U>> equaliseLengths(Iterable<? super T>, Iterable<? super U>)`
 
 ## See Also
 
