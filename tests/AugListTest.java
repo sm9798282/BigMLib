@@ -7,6 +7,7 @@ import java.lang.IndexOutOfBoundsException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 //import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -28,7 +29,8 @@ import java.util.stream.Stream;
 
 /**
  * A JUnit 3.x powered automatic tester for {@link src.AugList}.
- * @see src.AugList
+ * @see     src.AugList
+ * @since   AugList V1
  */
 public class AugListTest implements MultiTest {
 
@@ -43,7 +45,7 @@ public class AugListTest implements MultiTest {
     final ArrayList<Integer> ARRLISTINT = new ArrayList<Integer>(Arrays.asList(7, 11, 19, -24, 117, 145, -56, 43));
 
     /**
-     * @see src.AugList#AugList(Object...)
+     * @since   AugList V1
      */
     @Override
     public void setupTestData() {
@@ -56,6 +58,9 @@ public class AugListTest implements MultiTest {
         // [7, 11, 19, -24, 117, 145, -56, 43]
     }
 
+    /**
+     * @since   AugList V1
+     */
     @Test
     @Override
     public void allTests() {
@@ -163,7 +168,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Append
-     * @see src.AugList#add(Object)
+     * @since   AugList V1
+     * @see     src.AugList#add(Object)
      */
     @Test
     public void testAdd() { 
@@ -183,7 +189,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Append
-     * @see src.AugList#addAll(AugList)
+     * @since   AugList V1
+     * @see     src.AugList#addAll(AugList)
      */
     @Test
     public void testAddAll() {
@@ -204,7 +211,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Varargs Append
-     * @see src.AugList#addAll(Object...)
+     * @since   AugList V1
+     * @see     src.AugList#addAll(Object...)
      */
     @Test
     public void testAddAllVarargs() {
@@ -225,7 +233,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Prepend
-     * @see src.AugList#addFirst()
+     * @since   AugList V1
+     * @see     src.AugList#addFirst()
      */
     @Test
     public void testAddFirst() {
@@ -243,7 +252,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for finding all indices of a given object
-     * @see src.AugList#allIndicesOf(Object)
+     * @since   AugList V1
+     * @see     src.AugList#allIndicesOf(Object)
      */
     @Test
     public void testAllIndicesOf() {
@@ -260,7 +270,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Mass Satisfaction (∀, All) 
-     * @see src.AugList#allSatisfy(java.util.function.Predicate)
+     * @since   AugList V1
+     * @see     src.AugList#allSatisfy(java.util.function.Predicate)
      */
     @Test
     public void testAllSatisfy() {
@@ -277,7 +288,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Existence (∃, Exists)
-     * @see src.AugList#anySatisfy(java.util.function.Predicate)
+     * @since   AugList V1
+     * @see     src.AugList#anySatisfy(java.util.function.Predicate)
      */
     @Test
     public void testAnySatisfy() {
@@ -294,7 +306,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Function application
-     * @see src.AugList#applyAll(java.util.function.UnaryOperator)
+     * @since   AugList V1
+     * @see     src.AugList#applyAll(java.util.function.UnaryOperator)
      */
     @Test
     public void testApplyAll() {
@@ -310,7 +323,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for List Subdivision
-     * @see src.AugList#chunk(int)
+     * @since   AugList V1
+     * @see     src.AugList#chunk(int)
      */
     @Test
     public void testChunk() {
@@ -330,7 +344,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Emptying
-     * @see src.AugList#clear()
+     * @since   AugList V1
+     * @see     src.AugList#clear()
      */
     @Test
     public void testClear() {
@@ -345,7 +360,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Cloning
-     * @see src.AugList#clone()
+     * @since   AugList V1
+     * @see     src.AugList#clone()
      */
     @Test
     public void testClone() {
@@ -365,7 +381,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Containment (a ∈ A)
-     * @see src.AugList#contains(Object)
+     * @since   AugList V1
+     * @see     src.AugList#contains(Object)
      */
     @Test
     public void testContains() {
@@ -383,7 +400,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Mass Containment (A ⊆ B)
-     * @see src.AugList#containsAll(AugList)
+     * @since   AugList V1
+     * @see     src.AugList#containsAll(AugList)
      */
     @Test
     public void testContainsAll() {
@@ -407,7 +425,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Varargs Mass Containment (A ⊆ B)
-     * @see src.AugList#containsAll(Object...)
+     * @since   AugList V1
+     * @see     src.AugList#containsAll(Object...)
      */
     @Test
     public void testContainsAllVarargs() {
@@ -429,7 +448,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Any Contains (∃a ∈ A: a ∈ B)
-     * @see src.AugList#containsAny(AugList)
+     * @since   AugList V1
+     * @see     src.AugList#containsAny(AugList)
      */
     @Test
     public void testContainsAny() {
@@ -444,7 +464,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Varargs Any Contains (∃a ∈ A: a ∈ B)
-     * @see src.AugList#containsAny(Object...)
+     * @since   AugList V1
+     * @see     src.AugList#containsAny(Object...)
      */
     @Test
     public void testContainsAnyVarargs() {
@@ -458,7 +479,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Individual Frequency
-     * @see src.AugList#countOf()
+     * @since   AugList V2
+     * @see     src.AugList#countOf()
      */
     @Test
     public void testCountOf() {
@@ -472,7 +494,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Frequency
-     * @see src.AugList#countsOfElements()
+     * @since   AugList V1
+     * @see     src.AugList#countsOfElements()
      */
     @Test
     public void testCountsOfElements() {
@@ -506,7 +529,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Duplicate Discarding
-     * @see src.AugList#distinctCopy()
+     * @since   AugList V1
+     * @see     src.AugList#distinctCopy()
      */
     @Test
     public void testDistinctCopy() {
@@ -524,7 +548,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Duplicate Discarding
-     * @see src.AugList#distinctSelf()
+     * @since   AugList V1
+     * @see     src.AugList#distinctSelf()
      */
     @Test
     public void testDistinctSelf() {
@@ -542,7 +567,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for filtering
-     * @see src.AugList#filterCopy(java.util.function.Predicate)
+     * @since   AugList V1
+     * @see     src.AugList#filterCopy(java.util.function.Predicate)
      */
     @Test
     public void testFilterCopy() {
@@ -563,7 +589,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for filtering
-     * @see src.AugList#filterSelf(java.util.function.Predicate)
+     * @since   AugList V1
+     * @see     src.AugList#filterSelf(java.util.function.Predicate)
      */
     @Test
     public void testFilterSelf() {
@@ -584,7 +611,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for function application
-     * @see src.AugList#forEach(java.util.function.Consumer)
+     * @since   AugList V1
+     * @see     src.AugList#forEach(java.util.function.Consumer)
      */
     @Test
     public void testForEach() {
@@ -623,7 +651,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random List Subdivision
-     * @see src.AugList#fragment()
+     * @since   AugList V2
+     * @see     src.AugList#fragment()
      */
     @Test
     public void testFragment() {
@@ -655,7 +684,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Reading/Loading
-     * @see src.AugList#get(int)
+     * @since   AugList V1
+     * @see     src.AugList#get(int)
      */
     @Test
     public void testGet() {
@@ -683,7 +713,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Reading/Loading the Tail
-     * @see src.AugList#getLast(int)
+     * @since   AugList V1
+     * @see     src.AugList#getLast(int)
      */
     @Test
     public void testGetLast() {
@@ -699,7 +730,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Reading/Loading at Random
-     * @see src.AugList#getRandom()
+     * @since   AugList V2
+     * @see     src.AugList#getRandom()
      */
     @Test
     public void testGetRandom() {
@@ -715,7 +747,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Hashcodes.
-     * @see src.AugList#hashCode()
+     * @since   AugList V1
+     * @see     src.AugList#hashCode()
      */
     @Test
     public void testHashCode() {
@@ -728,7 +761,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Index finding
-     * @see src.AugList#indexOf(Object)
+     * @since   AugList V1
+     * @see     src.AugList#indexOf(Object)
      */
     @Test
     public void testIndexOf() {
@@ -750,7 +784,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Insertion
-     * @see src.AugList#insert(int, Object)
+     * @since   AugList V1
+     * @see     src.AugList#insert(int, Object)
      */
     @Test
     public void testInsert() {
@@ -771,7 +806,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Insertion
-     * @see src.AugList#insertAll(int, AugList)
+     * @since   AugList V1
+     * @see     src.AugList#insertAll(int, AugList)
      */
     @Test
     public void testInsertAll() {
@@ -793,7 +829,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Varargs Bulk Insertion
-     * @see src.AugList#insertAll(int, Object...)
+     * @since   AugList V1
+     * @see     src.AugList#insertAll(int, Object...)
      */
     @Test
     public void testInsertAllVarargs() {
@@ -816,7 +853,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random Bulk Insertion
-     * @see src.AugList#insertAllAtRandom()
+     * @since   AugList V2
+     * @see     src.AugList#insertAllAtRandom()
      */
     @Test
     public void testInsertAllAtRandom() {
@@ -837,7 +875,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random Varargs Bulk Insertion
-     * @see src.AugList#insertAllAtRandom()
+     * @since   AugList V2
+     * @see     src.AugList#insertAllAtRandom()
      */
     @Test
     public void testInsertAllAtRandomVarargs() {
@@ -858,7 +897,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random Single Insertion
-     * @see src.AugList#insertAtRandom()
+     * @since   AugList V2
+     * @see     src.AugList#insertAtRandom()
      */
     @Test
     public void testInsertAtRandom() {
@@ -879,7 +919,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating an empty {@link AugList}.
-     * @see src.AugList#AugList()
+     * @since   Method since V2, tested since AugList V1
+     * @see     src.AugList#AugList()
      */
     @Test
     public void testInstantiateBlank() {
@@ -891,7 +932,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link Enumeration}.
-     * @see src.AugList#AugList(Enumeration)
+     * @since   Method since V2, tested since AugList V1
+     * @see     src.AugList#AugList(Enumeration)
      */
     @Test
     public void testInstantiateEnumeration() {
@@ -905,7 +947,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link Iterable}.
-     * @see src.AugList#AugList(Iterable)
+     * @since   AugList V2
+     * @see     src.AugList#AugList(Iterable)
      */
     @Test
     public void testInstantiateIterable() {
@@ -959,6 +1002,7 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link Iterator}.
+     * @since   Method since V2, tested since AugList V1
      * @see src.AugList#AugList(Iterator)
      */
     @Test
@@ -973,6 +1017,7 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link ListIterator}.
+     * @since   AugList V2
      * @see src.AugList#AugList(ListIterator)
      */
     @Test
@@ -988,7 +1033,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from Pairs.
-     * @see src.AugList#AugList(AugList, AugList)
+     * @since   AugList V2
+     * @see     src.AugList#AugList(AugList, AugList)
      */
     @Test
     public void testInstantiatePairs() {
@@ -1010,7 +1056,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link Spliterator}.
-     * @see src.AugList#AugList(Spliterator)
+     * @since   AugList V2
+     * @see     src.AugList#AugList(Spliterator)
      */
     @Test
     public void testInstantiateSpliterator() {
@@ -1025,7 +1072,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from an {@link Stream}.
-     * @see src.AugList#AugList(Stream)
+     * @since   AugList V2
+     * @see     src.AugList#AugList(Stream)
      */
     @Test
     public void testInstantiateStream() {
@@ -1042,7 +1090,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for instantiating from a varargs {@link Arrays array}.
-     * @see src.AugList#AugList(Object...)
+     * @since   Method since V2, tested since AugList V1
+     * @see     src.AugList#AugList(Object...)
      */
     @Test
     public void testInstantiateVarargs() {
@@ -1057,7 +1106,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Emptiness check (A = ∅)
-     * @see src.AugList#isEmpty()
+     * @since   AugList V1
+     * @see     src.AugList#isEmpty()
      */
     @Test
     public void testIsEmpty() {
@@ -1072,7 +1122,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Equivalence
-     * @see src.AugList#isEquivalent(Object)
+     * @since   Method since AugList V2, tested since V1
+     * @see     src.AugList#isEquivalent(Object)
      */
     @Test
     public void testIsEquivalent() {
@@ -1152,9 +1203,10 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Rearrangement test
-     * @see src.AugList#isRearrangement()
-     * @see #testShuffleCopy()
-     * @see #testShuffleSelf()
+     * @since   AugList V1
+     * @see     src.AugList#isRearrangement()
+     * @see     #testShuffleCopy()
+     * @see     #testShuffleSelf()
      */
     @Test
     public void testIsRearrangement() {
@@ -1175,7 +1227,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link Iterator} "cast"
-     * @see src.AugList#iterator()
+     * @since   AugList V1
+     * @see     src.AugList#iterator()
      */
     @Test
     public void testIterator() {
@@ -1208,7 +1261,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Last Index finding
-     * @see src.AugList#lastIndexOf()
+     * @since   AugList V1
+     * @see     src.AugList#lastIndexOf()
      */
     @Test
     public void testLastIndexOf() {
@@ -1231,7 +1285,8 @@ public class AugListTest implements MultiTest {
     
     /**
      * JUnit tester for "List Difference"
-     * @see src.AugList#listDifference()
+     * @since   AugList V1
+     * @see     src.AugList#listDifference()
      */
     @Test
     public void testListDifference() {
@@ -1255,7 +1310,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for "List Intersection"
-     * @see src.AugList#listIntersection()
+     * @since   AugList V1
+     * @see     src.AugList#listIntersection()
      */
     @Test
     public void testListIntersection() {
@@ -1280,7 +1336,8 @@ public class AugListTest implements MultiTest {
     
     /**
      * JUnit tester for {@link ListIterator} "Cast"
-     * @see src.AugList#listIterator()
+     * @since   AugList V1
+     * @see     src.AugList#listIterator()
      */
     @Test
     public void testListIterator() {
@@ -1341,7 +1398,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link ListIterator} "Cast"
-     * @see src.AugList#listIterator(int)
+     * @since   AugList V1
+     * @see     src.AugList#listIterator(int)
      */
     @Test
     public void testListIteratorFromIndex() {
@@ -1403,7 +1461,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for "List Union"
-     * @see src.AugList#listUnion()
+     * @since   AugList V1
+     * @see     src.AugList#listUnion()
      */
     @Test
     public void testListUnion() {
@@ -1427,7 +1486,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Mapping
-     * @see src.AugList#oneToOneMap(java.util.function.Function)
+     * @since   AugList V1
+     * @see     src.AugList#oneToOneMap(java.util.function.UnaryOperator)
      */
     @Test
     public void testOneToOneMap() {
@@ -1451,7 +1511,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for pairing
-     * @see src.AugList#pairUp()
+     * @since   AugList V1
+     * @see     src.AugList#pairUp()
      */
     @Test
     public void testPairUp() {
@@ -1475,7 +1536,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link Stream ParallelStream} "Cast"
-     * @see src.AugList#parallelStream()
+     * @since   AugList V1
+     * @see     src.AugList#parallelStream()
      */
     @Test
     public void testParallelStream() {
@@ -1501,7 +1563,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for getting the parameterized type.
-     * @see src.AugList#parameterizedTypeDesc()
+     * @since   AugList V2
+     * @see     src.AugList#parameterizedTypeDesc()
      */
     @Test
     public void testParameterizedTypeDesc() {
@@ -1515,7 +1578,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Removal
-     * @see src.AugList#remove()
+     * @since   AugList V1
+     * @see     src.AugList#remove()
      */
     @Test
     public void testRemove() {
@@ -1541,7 +1605,8 @@ public class AugListTest implements MultiTest {
     
     /**
      * JUnit tester for Bulk Removal
-     * @see src.AugList#removeAll(src.AugList)
+     * @since   AugList V1
+     * @see     src.AugList#removeAll(src.AugList)
      */
     @Test
     public void testRemoveAll() {
@@ -1566,7 +1631,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Varargs Bulk Removal
-     * @see src.AugList#removeAll(Object...)
+     * @since   AugList V1
+     * @see     src.AugList#removeAll(Object...)
      */
     @Test
     public void testRemoveAllVarargs() {
@@ -1589,7 +1655,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Targeted Removal
-     * @see src.AugList#removeAt()
+     * @since   AugList V1
+     * @see     src.AugList#removeAt()
      */
     @Test
     public void testRemoveAtIndex() {
@@ -1608,7 +1675,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Selective Removal
-     * @see src.AugList#removeIf()
+     * @since   AugList V1
+     * @see     src.AugList#removeIf()
      */
     @Test
     public void testRemoveIf() {
@@ -1633,7 +1701,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Stack Popping
-     * @see src.AugList#removeLast()
+     * @since   AugList V1
+     * @see     src.AugList#removeLast()
      */
     @Test
     public void testRemoveLast() {
@@ -1652,7 +1721,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random Removal
-     * @see src.AugList#removeRandom()
+     * @since   AugList V2
+     * @see     src.AugList#removeRandom()
      */
     @Test
     public void testRemoveRandom() {
@@ -1704,6 +1774,11 @@ public class AugListTest implements MultiTest {
         assertThrows(NoSuchElementException.class, () -> { new AugList<Double>().removeRandom(); });
     }
 
+    /**
+     * Junit tester for retainment.
+     * @since   AugList V2
+     * @see     src.AugList#retainAll(java.util.Collection)
+     */
     @Test
     public void testRetainAll() {
         setupTestData();
@@ -1724,7 +1799,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Reversal
-     * @see src.AugList#reversed()
+     * @since   AugList V1
+     * @see     src.AugList#reversed()
      */
     @Test
     public void testReversed() {
@@ -1738,7 +1814,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Sampling
-     * @see src.AugList#sample()
+     * @since   AugList V2
+     * @see     src.AugList#sample()
      */
     @Test
     public void testSample() {
@@ -1757,7 +1834,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Setting/Writing
-     * @see src.AugList#set()
+     * @since   AugList V1
+     * @see     src.AugList#set()
      */
     @Test
     public void testSet() {
@@ -1773,7 +1851,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Set Difference
-     * @see src.AugList#setDifference()
+     * @since   AugList V1
+     * @see     src.AugList#setDifference()
      */
     @Test
     public void testSetDifference() {
@@ -1798,7 +1877,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Set Intersection
-     * @see src.AugList#setIntersection()
+     * @since   AugList V1
+     * @see     src.AugList#setIntersection()
      */
     @Test
     public void testSetIntersection() {
@@ -1823,7 +1903,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Set Union
-     * @see src.AugList#setUnion()
+     * @since   AugList V1
+     * @see     src.AugList#setUnion()
      */
     @Test
     public void testSetUnion() {
@@ -1849,7 +1930,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Shuffling
-     * @see src.AugList#shuffleCopy()
+     * @since   AugList V1
+     * @see     src.AugList#shuffleCopy()
      */
     @Test
     public void testShuffleCopy() {
@@ -1860,7 +1942,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Shuffling
-     * @see src.AugList#shuffleSelf()
+     * @since   AugList V2
+     * @see     src.AugList#shuffleSelf()
      */
     @Test
     public void testShuffleSelf() {
@@ -1871,7 +1954,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Length
-     * @see src.AugList#size()
+     * @since   AugList V1
+     * @see     src.AugList#size()
      */
     @Test
     public void testSize() {
@@ -1884,7 +1968,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Conditional Omittance (Forwards)
-     * @see src.AugList#skipWhile()
+     * @since   AugList V1
+     * @see     src.AugList#skipWhile()
      */
     @Test
     public void testSkipWhile() {
@@ -1899,7 +1984,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for sorting
-     * @see src.AugList#sort()
+     * @since   AugList V1
+     * @see     src.AugList#sort()
      */
     @Test
     public void testSort() {
@@ -1942,7 +2028,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link Spliterator} "Cast"
-     * @see src.AugList#spliterator()
+     * @since   AugList V1
+     * @see     src.AugList#spliterator()
      */
     @Test
     public void testSpliterator() {
@@ -1974,7 +2061,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link Stream} "cast"
-     * @see src.AugList#stream()
+     * @since   AugList V1
+     * @see     src.AugList#stream()
      */
     @Test
     public void testStream() {
@@ -1997,7 +2085,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Sublist
-     * @see src.AugList#subList()
+     * @since   AugList V1
+     * @see     src.AugList#subList()
      */
     @Test
     public void testSubList() {
@@ -2015,7 +2104,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Swapping
-     * @see src.AugList#swap()
+     * @since   AugList method since V1, tested since V2
+     * @see     src.AugList#swap()
      */
     @Test
     public void testSwap() {
@@ -2033,7 +2123,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Partial Random Swapping
-     * @see src.AugList#swapRandom(int)
+     * @since   AugList V2
+     * @see     src.AugList#swapRandom(int)
      */
     @Test
     public void testSwapRandom() {
@@ -2057,7 +2148,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Full Random Swapping
-     * @see src.AugList#swapRandom()
+     * @since   AugList V2
+     * @see     src.AugList#swapRandom()
      */
     @Test
     public void testSwapRandomNoParam() {
@@ -2081,7 +2173,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Conditional Collection
-     * @see src.AugList#takeWhile()
+     * @since   AugList V1
+     * @see     src.AugList#takeWhile()
      */
     @Test
     public void testTakeWhile() {
@@ -2097,7 +2190,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Array Casting
-     * @see src.AugList#toArray()
+     * @since   AugList V1
+     * @see     src.AugList#toArray()
      */
     @Test
     public void testToArrayGivenType() {
@@ -2111,6 +2205,11 @@ public class AugListTest implements MultiTest {
         assertThrows(NullPointerException.class, () -> { testDataDouble.toArray(nullArr); });
     }
 
+    /**
+     * JUnit tester for {@link Collection} casting
+     * @since   AugList V2
+     * @see     src.AugList#toCollection()
+     */
     @Test
     public void testToCollection() {
         setupTestData();
@@ -2142,6 +2241,11 @@ public class AugListTest implements MultiTest {
         assertTrue(new AugList<Double>(testDataDouble.toCollection()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
+    /**
+     * JUnit tester for {@link Enumeration} casting
+     * @since   AugList V2
+     * @see     src.AugList#toEnumeration()
+     */
     @Test
     public void testToEnumeration() {
         setupTestData();
@@ -2154,7 +2258,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for {@link String} representation (Or String casting)
-     * @see src.AugList#toString()
+     * @since   AugList V1
+     * @see     src.AugList#toString()
      */
     @Test
     public void testToString() {
@@ -2173,7 +2278,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Single Removal
-     * @see src.AugList#without()
+     * @since   AugList V1
+     * @see     src.AugList#without()
      */
     @Test
 	public void testWithout() {
@@ -2192,7 +2298,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Bulk Removal
-     * @see src.AugList#withoutAll(src.AugList)
+     * @since   AugList V1
+     * @see     src.AugList#withoutAll(src.AugList)
      */
     @Test
 	public void testWithoutAll() {
@@ -2212,7 +2319,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Varargs Bulk Removal
-     * @see src.AugList#withoutAll(Object...)
+     * @since   AugList V1
+     * @see     src.AugList#withoutAll(Object...)
      */
     @Test
 	public void testWithoutAllVarargs() {
@@ -2232,7 +2340,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Targeted Removal
-     * @see src.AugList#withoutIndex()
+     * @since   AugList V1
+     * @see     src.AugList#withoutIndex()
      */
     @Test
 	public void testWithoutIndex() {
@@ -2248,7 +2357,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Tail Removal
-     * @see src.AugList#withoutLast()
+     * @since   AugList V1
+     * @see     src.AugList#withoutLast()
      */
     @Test
 	public void testWithoutLast() {
@@ -2263,7 +2373,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Conditional Removal
-     * @see src.AugList#withoutWhere()
+     * @since   AugList V1
+     * @see     src.AugList#withoutWhere()
      */
     @Test
 	public void testWithoutWhere() {
@@ -2283,7 +2394,8 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Random Removal
-     * @see src.AugList#withoutRandom()
+     * @since   AugList V2
+     * @see     src.AugList#withoutRandom()
      */
     @Test
 	public void testWithoutRandom() {
@@ -2338,7 +2450,9 @@ public class AugListTest implements MultiTest {
     
     /**
      * JUnit tester for Capacity Increase
-     * @see src.AugList#ensureCapacity()
+     * @deprecated  Since V2
+     * @since       AugList V1
+     * @see         src.AugList#ensureCapacity()
      */
     // @Test
     // public void testEnsureCapacity() {
@@ -2350,7 +2464,9 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Sublist
-     * @see src.AugList#subListToEnd()
+     * @deprecated  Since V2
+     * @since       AugList V1
+     * @see         src.AugList#subListToEnd()
      */
     // @SuppressWarnings("unlikely-arg-type")
     // @Test
@@ -2365,7 +2481,9 @@ public class AugListTest implements MultiTest {
 
     /**
      * JUnit tester for Capacity Decrease
-     * @see src.AugList#trimToSize()
+     * @deprecated  Since V2
+     * @since       AugList V1
+     * @see         src.AugList#trimToSize()
      */
     // @Test
     // public void testTrimToSize() {

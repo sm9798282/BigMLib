@@ -78,13 +78,14 @@ Separately:
 - `@apiNote` and `@implNote` annotations replaced with `@note`
 - New section annotated with `@overloads` links to all overloads of a method
 - `@see` section links to related methods and tests
+- `@since` section differentiates between V1 & V2 methods
 - Minor documentation errors fixed (e.g:
 
-  1) `containsAny(T...)` contained typo "id contained",
-  2) `hashCode()`'s `@apiNote` having `getLast()`'s description,
-  3) `insertAll(int, AugList<T>)` having `addAll(AugList<T>)`'s parameter description,
-  4) `set(int, T)` was reported to throw `OutOfRangeException` when it actually throws `IndexOutOfBoundsException`,
-  5) Many of the `without` family of functions talking about encapsulating methods they did not actually encapsulate)
+  - `containsAny(T...)` contained typo "id contained",
+  - `hashCode()`'s `@apiNote` having `getLast()`'s description,
+  - `insertAll(int, AugList<T>)` having `addAll(AugList<T>)`'s parameter description,
+  - `set(int, T)` was reported to throw `OutOfRangeException` when it actually throws `IndexOutOfBoundsException`,
+  - Many of the `without` family of functions talking about encapsulating methods they did not actually encapsulate)
 
 - Documentation wording has been standardised across methods
 

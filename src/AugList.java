@@ -118,13 +118,16 @@ import java.util.stream.Stream;
  * @version 2
  */
 public class AugList<T> implements Cloneable, Iterable<T> {
+
     /**
      * The {@link ArrayList} that this {@link AugList} decorates.
+     * @since AugList V1
      */
     private ArrayList<T> ls;
 
     /**
      * Creates a new, empty, non-null {@link AugList}.
+     * @since       AugList V1
      * @see         tests.AugListTest#testInstantiateBlank()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -138,6 +141,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       enumeration
      *              The {@link Enumeration} object to source the elements for this {@link AugList} from.
      *              <p>If {@code enumeration.equals(null)}, the resulting {@link AugList} is empty.
+     * @since       AugList V1
      * @see         tests.AugListTest#testInstantiateEnumeration()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -158,6 +162,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       iterator
      *              The {@link Iterator} object to source the elements for this {@link AugList} from.
      *              If {@code iterator.equals(null)}, the resulting {@link AugList} is empty.
+     * @since       AugList V1
      * @see         tests.AugListTest#testInstantiateIterator()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)} 
      * @tags        Constructor
@@ -176,6 +181,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@code ? implements} {@link Iterable}.
      * @param       iterable
      *              The {@link Iterable} object to source the elements for this {@link AugList} from.
+     * @since       AugList V2
      * @see         tests.AugListTest#testInstantiateIterable()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -193,6 +199,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@link ListIterator}.
      * @param       listIterator
      *              The {@link ListIterator} object to source the elements this {@link AugList} from.
+     * @since       AugList V2
      * @see         tests.AugListTest#testInstantiateListIterator()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)} ,{@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -213,6 +220,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       counts
      *              How many times each value should be repeated.
      *              If there are more counts than values, ignores the counts without associated values. Negative counts are treated as 0.
+     * @since       AugList V2
      * @see         tests.AugListTest#testInstantiatePairs()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -244,6 +252,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new {@link AugList} from the given {@link Spliterator}.
      * @param       spliterator
      *              The {@link Spliterator} object to source the elements for this {@link AugList} from.
+     * @since       AugList V2
      * @see         tests.AugListTest#testInstantiateSpliterator()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -261,6 +270,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       stream
      *              The {@link Stream} object to source the elements for this {@link AugList} from.
      * @see         tests.AugListTest#testInstantiateStream()
+     * @since       AugList V2
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
      */
@@ -276,6 +286,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The varargs array of objects that will make up this {@link AugList}.
      *              <p>If {@code elements.equals(null)}, the resulting {@link AugList} is empty.
+     * @since       AugList V1
      * @see         tests.AugListTest#testInstantiateVarargs()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
      * @tags        Constructor
@@ -296,6 +307,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element in question.
      * @return  This {@link AugList}, with the given element appended to it.
+     * @since   AugList V1
      * @see     tests.AugListTest#testAdd()
      * @note    Replaces {@link List#add(T)}: Returns {@code this}, not {@code void}.
      * @tags    Mutator
@@ -310,6 +322,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code this}.
      * @return      This {@link AugList}, with the given elements appended to it.
+     * @since       AugList V1
      * @see         tests.AugListTest#testAddAll()
      * @note        Replaces {@link ArrayList#addAll()}: Returns {@code this}, not {@code void}.
      * @overloads   {@link #addAll(Iterable)}, {@link #addAll(T...) addAll(T...)}
@@ -329,6 +342,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code this}.
      * @return      This {@link AugList}, with the given elements appended to it.
+     * @since       AugList V1
      * @see         tests.AugListTest#testAddAllVarargs()
      * @note        Varargs variant for {@link ArrayList#addAll()}.
      * @overloads   {@link #addAll(Iterable)}, {@link #addAll(T...) addAll(T...)}
@@ -344,6 +358,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element in question.
      * @return  This {@link AugList}, with the given element prepended to it.
+     * @since   AugList V1
      * @see     tests.AugListTest#testAddFirst()
      * @note    Replaces {@link ArrayList#addFirst(T)}: Returns {@code this}, not {@code void}.
      * @tags    Mutator
@@ -360,6 +375,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element in question.
      * @return  A new {@link AugList} with the indices at which it can be found.
+     * @since   AugList V1
      * @see     #indexOf(Object)
      * @see     #lastIndexOf(Object)
      * @see     tests.AugListTest#testAllIndicesOf()
@@ -386,6 +402,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   condition
      *          The condition in question. If {@code null}, returns {@code false}.
      * @return  {@code true} if all elements satisfy the given condition, and {@code false} otherwise.
+     * @since   AugList V1
      * @see     #anySatisfy(Predicate)
      * @see     tests.AugListTest#testAllSatisfy()
      * @note    Based upon the C# methods {@code IEnumerable<T>.All()} and {@code List<T>.TrueForAll()}.
@@ -405,6 +422,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   condition
      *          The condition in question. If {@code null}, returns {@code false}.
      * @return  {@code true} if any element satisfies the given condition, and {@code false} otherwise.
+     * @since   AugList V1
      * @see     #allSatisfy(Predicate)
      * @see     tests.AugListTest#testAnySatisfy()
      * @note    Inspired by {@link #allSatisfy(Predicate)}.
@@ -429,6 +447,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   func
      *          The {@link UnaryOperator} in question. If {@code null}, does not alter this {@link AugList}.
      * @return  This {@link AugList}, with each element transformed as according to the function.
+     * @since   AugList V1
      * @see     #oneToOneMap(Function)
      * @see     #forEach(Consumer)
      * @see     List#replaceAll(UnaryOperator)
@@ -454,6 +473,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This {@link AugList} split into smaller AugLists with a maximum length of {@code size}.
      * @throws  IllegalArgumentException
      *          {@code size <= 0}
+     * @since   AugList V1
      * @see     #fragment()
      * @see     tests.AugListTest#testChunk()
      * @note    Based upon the C# method {@code List<T>.Chunk(int)}.
@@ -497,6 +517,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Clears this {@link AugList}.
      * @return  This {@link AugList}, emptied.
+     * @since   AugList V1
      * @see     tests.AugListTest#testClear()
      * @note    Replaces {@link List#clear()}: Returns {@code this}, not {@code void}.
      * @tags    Mutator
@@ -511,6 +532,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates and returns a new {@link AugList} with identical contents but a different reference.
      * @return  A new {@link AugList} with identical contents as this one.
      * @see     tests.AugListTest#testClone()
+     * @since   AugList V1
      * @note    Replaces {@link Object#clone()}: Return type {@link AugList}, as opposed to an {@link Object}.
      *          <p>Also note that:</p>
      *          <pre>this.clone() != this, this.clone().isEquivalent(this), this.clone().getClass() == this.getClass()</pre>
@@ -537,6 +559,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element to search for.
      * @return  {@code true} if found, and {@code false} otherwise
+     * @since   AugList V1
      * @see     #containsAll(AugList)
      * @see     #containsAny(AugList)
      * @see     tests.AugListTest#testContains()
@@ -556,6 +579,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          If {@code true}, returns {@code true} if ALL elements are present.
      *          If {@code false}, returns {@code true} if ANY element is present.
      * @return  The desired result. (see param {@code allOrAny})
+     * @since   AugList V2
      * @see     #containsAll(AugList)
      * @see     #containsAll(T...) containsAll(T...)
      * @see     #containsAny(AugList)
@@ -589,6 +613,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code true}.
      * @return      {@code true} if all elements are found, and {@code false} otherwise.
+     * @since       AugList V1
      * @see         #contains(Object)
      * @see         #containsAny(Iterable)
      * @see         #containsAny(T...) containsAny(T...)
@@ -607,6 +632,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code true}.
      * @return      {@code true} if all elements are found, and {@code false} otherwise.
+     * @since       AugList V1
      * @see         #contains(Object)
      * @see         #containsAny(Iterable)
      * @see         #containsAny(T...) containsAny(T...)
@@ -627,6 +653,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
+     * @since       AugList V1
      * @see         #contains(Object)
      * @see         #containsAll(Iterable)
      * @see         #containsAll(T...) containsAll(T...)
@@ -646,6 +673,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if any element is found, and {@code false} if not.
+     * @since       AugList V1
      * @see         #contains(Object)
      * @see         #containsAll(Iterable)
      * @see         #containsAll(T...) containsAll(T...)
@@ -666,6 +694,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element in question.
      * @return  The number of times that element occurs.
+     * @since   AugList V2
      * @see     #countsOfElements()
      * @see     tests.AugListTest#testCountOf()
      * @tags    Terminator
@@ -691,6 +720,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Counts the number of times each non-null element appears and returns a {@link Hashtable} with the results.
      * @return  A {@link Hashtable} that pairs each non-null element with its frequency.
+     * @since   AugList V1
      * @see     #countOf()
      * @see     tests.AugListTest#testCountsOfElements()
      * @note    Does NOT provide a count of the number of nulls.
@@ -718,6 +748,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * <p>For a Mutator method, use {@link #distinctSelf()}.</p>
      * @return  A new {@link AugList} with only the distinct elements in this AugList.
      *          Mathematically speaking, the result is also a set.
+     * @since   AugList V1
      * @see     #distinctSelf()
      * @see     tests.AugListTest#testDistinctCopy()
      * @note    Based off the C# function {@code IEnumerable<T>.Distinct()};
@@ -738,6 +769,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * <p>For a Creator method, use {@link #distinctCopy()}.</p>
      * @return  This AugList, with each element being distinct from each other.
      *          Mathematically speaking, the result is also a set.
+     * @since   AugList V1
      * @see     #distinctCopy()
      * @see     tests.AugListTest#testDistinctSelf()
      * @note    Inspired by {@link #distinctCopy()}.
@@ -760,6 +792,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   condition
      *          The condition in question. If {@code null}, returns an empty {@link AugList}.
      * @return  A new {@link AugList} with elements that satisfy the given filter.
+     * @since   AugList V1
      * @see     #filterSelf()
      * @see     tests.AugListTest#testFilterCopy()
      * @note    Based off the C# function {@code IEnumerable<T>.Where()}
@@ -783,6 +816,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   condition
      *          The condition in question. If {@code null}, returns an empty {@link AugList}.
      * @return  This {@link AugList} with elements that satisfy the given filter.
+     * @since   AugList V1
      * @see     #filterCopy()
      * @see     tests.AugListTest#testFilterSelf()
      * @note    Based off the C# function {@code IEnumerable<T>.Where()}
@@ -799,6 +833,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   action
      *          The action to perform.
+     * @since   AugList V1
      * @see     #applyAll(Function)
      * @see     #oneToOneMap(Function)
      * @see     tests.AugListTest#testForEach()
@@ -816,6 +851,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Preserves order.
      * Always partitions into at least 2 lists, and no list is empty.
      * @return  This AugList fragmented into randomly sized shards.
+     * @since   AugList V2
      * @see     #chunk(int)
      * @see     tests.AugListTest#testFragment()
      * @note    Randomized variant of {@link #chunk()}.
@@ -847,6 +883,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The element at {@code index}.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V1
      * @see     #getLast()
      * @see     #getRandom()
      * @see     #set(int, T)
@@ -868,6 +905,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The last item in this {@link AugList}.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
+     * @since   AugList V1
      * @see     #get(int)
      * @see     tests.AugListTest#testGetLast()
      * @note    Encapsulates {@link List#getLast()}.
@@ -881,6 +919,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  A random element of this {@link AugList}.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
+     * @since   AugList V2
      * @see     #get(int)
      * @see     tests.AugListTest#testGetRandom()
      * @note    Randomized variant of {@link #get()}.
@@ -895,6 +934,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * @return  The hashcode of the decorated {@link ArrayList}.
+     * @since   AugList V1
      * @see     tests.AugListTest#testHashCode()
      * @note    Encapsulates {@link List#hashCode()}.
      *          Note that objects that satisfy {@link #equals(Object)} may not have an equal hashcode, in violation of the general contract.
@@ -909,10 +949,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The object to search for.
      * @return  The index of the first occurrence of {@code o}, or -1 if it is not present.
-     * @note    Encapsulates {@link ArrayList#indexOf()}.
+     * @since   AugList V1
      * @see     #allIndicesOf(Object)
      * @see     #lastIndexOf(Object)
      * @see     tests.AugListTest#testIndexOf()
+     * @note    Encapsulates {@link ArrayList#indexOf()}.
      * @tags    Terminator
      */
     public int indexOf(Object o) {
@@ -928,6 +969,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
      * @return  This {@link AugList}, with the given element inserted at the given index.
+     * @since   AugList V1
      * @see     #insertAll(int, AugList)
      * @see     #insertAll(int, Object...)
      * @see     #insertAtRandom(Object)
@@ -950,6 +992,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws      IndexOutOfBoundsException
      *              {@code index < 0 || index >= this.size()}
      * @return      This {@link AugList}, with the given elements inserted at the given index.
+     * @since       AugList V1
      * @see         #insert(int, Object)
      * @see         #insertAllAtRandom(Iterable)
      * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...) 
@@ -974,6 +1017,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws      IndexOutOfBoundsException
      *              {@code index < 0 || index >= this.size()}
      * @return      This {@link AugList}, with the given elements inserted at the given index.
+     * @since       AugList V1
      * @see         #insert(int, Object)
      * @see         #insertAllAtRandom(AugList)
      * @see         #insertAllAtRandom(T...)  insertAllAtRandom(T...)
@@ -992,6 +1036,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, does not alter this {@link AugList}.
      * @return      This {@link AugList}, with the given elements inserted at random.
+     * @since       AugList V2
      * @see         #insertAll(int, AugList)
      * @see         #insertAll(T...) insertAll(T...)
      * @see         #insertAtRandom(Object)
@@ -1013,6 +1058,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, does not alter this {@link AugList}.
      * @return      This {@link AugList}, with the given elements inserted at random.
+     * @since       AugList V2
      * @see         #insertAll(int, AugList)
      * @see         #insertAll(T...) insertAll(T...)
      * @see         #insertAtRandom(Object)
@@ -1031,6 +1077,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   element
      *          The element in question.
      * @return  This list, with the given element inserted somewhere into this AugList.
+     * @since   AugList V2
      * @see     #insert(int, Object)
      * @see     #insertAllAtRandom(AugList)
      * @see     #insertAllAtRandom(T...)  insertAllAtRandom(T...)
@@ -1046,6 +1093,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Returns {@code true} if this {@link AugList} is empty.
      * @return  {@code this.size() == 0}.
+     * @since   AugList V1
      * @see     #size()
      * @see     tests.AugListTest#testIsEmpty()
      * @note    Encapsulates {@link List#isEmpty()}.
@@ -1071,6 +1119,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * <p>If the given {@link Object} is none of the above, it cannot be equivalent.
      * @param   o
      *          The object in question.
+     * @since   Method since AugList V2; Functionality since V1
      * @see     #isRearrangement(AugList)
      * @see     #equals(Object)
      * @see     tests.AugListTest#testIsEquivalent()
@@ -1232,6 +1281,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   itrB
      *          The {@link Iterable} B to use in the comparison.
      * @return  {@code true} if the lists are rearrangements; {@code false} otherwise.
+     * @since   AugList V1
      * @see     #equals(Object)
      * @see     #isEquivalent(Object)
      * @see     tests.AugListTest#testIsRearrangement()
@@ -1260,6 +1310,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * @return  Returns a <i>fail-fast</i> {@link Iterator} over this {@link AugList} in sequence.
+     * @since   AugList V1
      * @see     #listIterator()
      * @see     #spliterator()
      * @see     tests.AugListTest#testIterator()
@@ -1275,6 +1326,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The object to search for.
      * @return  The index of the final occurrence of {@code o}, or -1 if not present.
+     * @since   AugList V1
      * @see     #allIndicesOf(Object)
      * @see     #indexOf(Object)
      * @see     tests.AugListTest#testLastIndexOf()
@@ -1298,6 +1350,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  [1,1,2]\`[1,1,3] = [2],
      *                  [1,1]\`[] = [1,1]
      *          <p>Output is a list, which may be a mathematical set.
+     * @since   AugList V1
      * @see     #listIntersection(Iterable)
      * @see     #listUnion(Iterable)
      * @see     #setDifference(Iterable)
@@ -1331,6 +1384,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  [1,1,1,2]∩`[1,1,2,3] = [1,1,2],
      *                  []∩`[1,1,3,7] = [].
      *          <p>Output is a list, which may be a mathematical set.
+     * @since   AugList V1
      * @see     #listDifference(Iterable)
      * @see     #listUnion(Iterable)
      * @see     #setIntersection(Iterable)
@@ -1361,6 +1415,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Returns a <i>fail-fast</i> {@link ListIterator} over this {@link AugList} in proper sequence.
      * @return      A {@link ListIterator} over this {@link AugList}.
+     * @since       AugList V1
      * @see         #iterator()
      * @see         #spliterator()
      * @see         tests.AugListTest#testListIterator()
@@ -1376,6 +1431,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Returns a <i>fail-fast</i> {@link ListIterator} over this {@link AugList} in proper sequence, starting at the given index.
      * @param       index
      *              The index the {@link ListIterator} will start at.
+     * @since       AugList V1
      * @see         #iterator()
      * @see         #spliterator()
      * @see         tests.AugListTest#testListIteratorFromIndex()
@@ -1401,6 +1457,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  [1,3]U`[] = [1,3],
      *                  []U`[1,3] = [1,3].
      *          <p>Output is a list, which may be a set.
+     * @since   AugList V1
      * @see     #listDifference(Iterable)
      * @see     #listIntersection(Iterable)
      * @see     #setUnion(Iterable)
@@ -1438,6 +1495,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  NullPointerException
      *          If the given {@link Function} is {@code null}.
      * @return  A new {@link AugList}, with each element transformed as according to the function.
+     * @since   AugList V1
      * @see     #applyAll(Function)
      * @see     #forEach(Consumer)
      * @see     tests.AugListTest#testOneToOneMap()
@@ -1465,6 +1523,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          or an empty {@link Hashtable} if either:<p>
      *          - the lengths do not match, or
      *          - at least 1 entry in either list is {@code null}.
+     * @since   AugList V1
      * @see     tests.AugListTest#testPairUp()
      * @note    Based on the C# function {@code IEnumerable<T>.Zip()}.
      * @tags    Converter
@@ -1484,6 +1543,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Returns a Parallel {@link Stream} that contains this {@link AugList}'s elements.
      * @return  A {@link Stream} with this {@link AugList} as its source.
+     * @since   AugList V1
      * @see     #stream()
      * @see     tests.AugListTest#testParallelStream()
      * @note    Encapsulates {@link ArrayList#parallelStream()}.
@@ -1497,6 +1557,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Returns a {@link String} that describes the parameterized type of this {@link AugList}.
      * @see     tests.AugListTest#testParameterizedTypeDesc()
      * @return  A {@link String} describing the parameterized type, or "∅" if {@link #isEmpty()}.
+     * @since   AugList V2
      * @tags    Terminator
      */
     public String parameterizedTypeDesc() {
@@ -1514,6 +1575,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The {@link Object} to remove if present.
      * @return  {@code true} if removed, and {@code false} if it was not present.
+     * @since   AugList V1
      * @see     #removeAll(Iterable)
      * @see     #removeAll(T...) removeAll(T...)
      * @see     #removeAt(int)
@@ -1536,6 +1598,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       iterable
      *              The source of the elements to remove in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @since       AugList V1
      * @see         #withoutAll(Iterable)
      * @see         #remove(Object)
      * @see         #listDifference(AugList)
@@ -1564,6 +1627,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements to remove in question. If {@code null}, returns {@code false}.
      * @return      {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @since       AugList V1
      * @see         #withoutAll(T...) withoutAll(T...)
      * @see         #remove(Object)
      * @see         #listDifference(Iterable)
@@ -1587,6 +1651,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The element that was removed.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V1
      * @see     #remove(Object)
      * @see     #removeLast()
      * @see     #removeRandom()
@@ -1608,6 +1673,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   filter
      *          The condition in question. If {@code null}, returns {@code false}.
      * @return  {@code true} if at least 1 item was removed, and {@code false} otherwise.
+     * @since   AugList V1
      * @see     #remove(Object)
      * @see     #withoutWhere(Predicate)
      * @see     tests.AugListTest#testRemoveIf()
@@ -1627,6 +1693,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The final element, if it exists.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
+     * @since   AugList V1
      * @see     #remove(Object)
      * @see     #withoutLast()
      * @see     tests.AugListTest#testRemoveLast()
@@ -1642,6 +1709,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The item that was removed.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
+     * @since   AugList V2
      * @see     #remove(Object)
      * @see     #withoutRandom()
      * @see     tests.AugListTest#testRemoveRandom()
@@ -1674,6 +1742,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  {@code this}
      * @throws  NullPointerException
      *          {@code collection.equals(null)}
+     * @since   AugList V2
+     * @see     tests.AugListTest#testRetainAll()
      * @tags    Converter
      */
     public AugList<T> retainAll(Collection<? super T> collection) {
@@ -1684,6 +1754,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Returns a new reversed-order {@link AugList}.
      * @return  A new {@link AugList} with the same elements as this one, but in reverse order.
+     * @since   AugList V1
      * @see     tests.AugListTest#testReversed()
      * @note    Encapsulates {@link List#reversed()}.
      * @tags    Creator
@@ -1701,6 +1772,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  A random sample of the given size.
      * @throws  IllegalArgumentException
      *          {@code (!withReplacements && size > this.size()) || size < 0}
+     * @since   AugList V2
      * @see     #subList(int, int)
      * @see     tests.AugListTest#testSample()
      * @note    Randomized variant of {@link #subList(int, int)} when not using {@code withReplacements}.
@@ -1735,6 +1807,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  The replaced element.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V1
      * @see     tests.AugListTest#testSet()
      * @note    Encapsulates {@link List#set()}.
      * @tags    Mutator
@@ -1759,6 +1832,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  {1,2}\{1,3} = {2}, 
      *                  [1,1,2]\{2} = {1}
      *          <p>Output is a mathematical set.
+     * @since   AugList V1
      * @see     #setIntersection(Iterable)
      * @see     #setUnion(Iterable)
      * @see     #listDifference(Iterable)
@@ -1789,6 +1863,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *                  [1,1,1,2]∩[1,1,2,3] = {1,2},
      *                  {}∩[1,1,3,7] = {}.
      *          <p>Output is a mathematical set.
+     * @since   AugList V1
      * @see     #setDifference(Iterable)
      * @see     #setUnion(Iterable)
      * @see     #listIntersection(Iterable)
@@ -1824,6 +1899,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          <p>i.e. {0,1,2}U{1,2,3} = {0,1,2,3},
      *                  [1,1,1,2]U[1,1,2,3] = {1,2,3}.
      *          <p>Output is a mathematical set.
+     * @since   AugList V1
      * @see     #setDifference(Iterable)
      * @see     #setIntersection(Iterable)
      * @see     #listUnion(Iterable)
@@ -1843,6 +1919,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Creates a new shuffled {@link AugList}. Can shuffle to itself.
      * <p>For a Mutator method, see {@link #shuffleSelf()}.
      * @return  A new {@link AugList} which is a shuffled copy of this one.
+     * @since   AugList V1
      * @see     #shuffleSelf()
      * @see     tests.AugListTest#testShuffleCopy()
      * @tags    Creator
@@ -1866,6 +1943,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Shuffles this {@link AugList}. Can shuffle to itself.
      * <p>For a Creator method, see {@link #shuffleCopy()}.
      * @return  This {@link AugList}, shuffled into a random order.
+     * @since   AugList V2
      * @see     #shuffleCopy()
      * @see     tests.AugListTest#testShuffleSelf()
      * @tags    Mutator
@@ -1876,10 +1954,23 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * Returns the number of elements within this {@link AugList}
+     * @return  The size of this {@link AugList}.
+     * @since   AugList V1
+     * @see     tests.AugListTest#testSize()
+     * @note    Encapsulates {@link List#size()}.
+     * @tags    Terminator
+     */
+    public int size() {
+        return ls.size();
+    }
+
+    /**
      * Skips elements until the first element to fail the given condition, then returns the failing and all proceeding elements.
      * @param   condition
      *          The condition in question. If {@code null}, returns a {@link #clone()} of {@code this}.
      * @return  A new {@link AugList} with elements beyond and including the first to fail the given condition.
+     * @since   AugList V1
      * @see     #takeWhile(Predicate)
      * @see     tests.AugListTest#testSkipWhile()
      * @note    Based on the C# method {IEnumerable<T>.skipWhile()}.
@@ -1902,21 +1993,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * Returns the number of elements within this {@link AugList}
-     * @return  The size of this {@link AugList}.
-     * @see     tests.AugListTest#testSize()
-     * @note    Encapsulates {@link List#size()}.
-     * @tags    Terminator
-     */
-    public int size() {
-        return ls.size();
-    }
-
-    /**
      * Sorts this AugList according to the given {@link Comparator}.
      * @param   comparator
      *          The {@link Comparator} in question. If {@code null}, returns {@code this}.
      * @return  This {@link AugList}, sorted according to the given {@link Comparator}.
+     * @since   AugList V1
      * @see     tests.AugListTest#testSort()
      * @note    Replaces {@link List#sort()}, returns {@code this} rather than {@code void}.
      * @tags    Mutator
@@ -1930,6 +2011,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * @return  A <i>late-binding, fail-fast</i> {@link Spliterator} over this {@link AugList} in proper sequence.
+     * @since   AugList V1
      * @see     #iterator()
      * @see     #listIterator()
      * @see     tests.AugListTest#testSpliterator()
@@ -1943,6 +2025,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Returns a sequential {@link Stream} with this {@link AugList} as its source.
      * @return  A sequential {@link Stream} with the elements of this {@link AugList}.
+     * @since   AugList V1
      * @see     #parallelStream()
      * @see     tests.AugListTest#testStream()
      * @note    Encapsulates {@link java.util.Collection#stream()}.
@@ -1963,6 +2046,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          If {@code fromIndex > toIndex}.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V1
      * @see     #sample(int, boolean)
      * @see     tests.AugListTest#testSubList()
      * @note    Replaces {@code ArrayList<T>.subList()}, returning a {@link AugList} rather than a {@link List}.
@@ -1985,6 +2069,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #swapRandom(int)
      * @see     #swapRandom()
      * @see     tests.AugListTest#testSwap()
+     * @since   AugList V1
      * @note    Inspired by the (Binary) Insertion Sort algorithm, which requires the ability to swap 2 elements.
      * @tags    Mutator
      */
@@ -2010,6 +2095,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This {@link AugList} with the given element swapped into a random position.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V2
      * @see     #swap(int, int)
      * @see     #swapRandom()
      * @note    Semi-randomized variant of {@link #swap(int, int)}.
@@ -2033,6 +2119,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Swaps two elements at random. Always alters state.
      * @return  This {@link AugList} with 2 random elements swapped.
+     * @since   AugList V2
      * @see     #swap(int, int)
      * @see     #swapRandom(int)
      * @see     tests.AugListTest#testSwapRandomNoParam()
@@ -2056,6 +2143,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   condition
      *          The condition in question. If {@code null}, returns a new empty {@link AugList}.
      * @return  Elements up to and including the first to fail the given condition.
+     * @since   AugList V1
      * @see     #skipWhile(Predicate)
      * @see     tests.AugListTest#testTakeWhile()
      * @note    Based on the C# method {IEnumerable<T>.TakeWhile()}.
@@ -2088,6 +2176,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The type at runtime of the specified array is not a supertype of the type of every element
      * @throws  NullPointerException
      *          The specified array is {@code null}
+     * @since   AugList V1
      * @see     tests.AugListTest#testToArrayGivenType()
      * @note    Encapsulates {@link List#toArray(T[])}.
      * @tags    Converter
@@ -2099,6 +2188,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Casts this {@link AugList} to a {@link Collection}.
      * @return  This {@link AugList}, as a {@link Collection}.
+     * @since   AugList V2
+     * @see     tests.AugListTest#testToCollection()
      * @tags    Converter
      */
     public Collection<T> toCollection() {
@@ -2112,6 +2203,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Casts this {@link AugList} to an {@link Enumeration}. DOES NOT PRESERVE ORDER.
      * @return  This {@link AugList}, as a {@link Enumeration}.
+     * @since   AugList V2
+     * @see     tests.AugListTest#testToEnumeration()
      * @tags    Converter
      */
     public Enumeration<T> toEnumeration() {
@@ -2126,6 +2219,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * This {@link AugList}'s contents, as a human-legible {@link String}.
      * @return  This, as a {@link String}.
+     * @since   AugList V1
      * @see     tests.AugListTest#testToString()
      * @note    Example outputs: {@code "[1, 2, 3]"}, {@code "[d, c, a]"} and {@code "[2.0, 7.11, -3.2]"}.
      *          <p>Special cases:
@@ -2159,6 +2253,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The {@link Object} to remove if present.
      * @return  {@code this}.
+     * @since   AugList V1
      * @see     #withoutAll(Iterable)
      * @see     #withoutAll(T...) withoutAll(T...)
      * @see     #withoutIndex(int)
@@ -2181,6 +2276,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code this} unaltered.
      * @return      {@code this}.
+     * @since       AugList V1
      * @see         #without(Object)
      * @see         #removeAll(Iterable)
      * @see         tests.AugListTest#testRemoveAll()
@@ -2199,6 +2295,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       elements
      *              The elements in question. If {@code null}, returns {@code this} unaltered.
      * @return      {@code this}.
+     * @since       AugList V1
      * @see         #without(Object)
      * @see         #removeAll(Iterable)
      * @see         tests.AugListTest#testWithoutAllVarargs()
@@ -2220,6 +2317,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  {@code this}.
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
+     * @since   AugList V1
      * @see     #without()
      * @see     #withoutRandom()
      * @see     #withoutLast()
@@ -2242,6 +2340,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  {@code this}.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
+     * @since   AugList V1
      * @see     #without(Object)
      * @see     #withoutIndex(int)
      * @see     #removeAt(int)
@@ -2260,6 +2359,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
      * @return  {@code this}.
+     * @since   AugList V2
      * @see     #without(Object)
      * @see     #withoutIndex(int)
      * @see     #removeRandom()
@@ -2278,6 +2378,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   filter
      *          The condition that, if an element passes it, causes its deletion. If {@code null}, returns {@code this} unaltered.
      * @return  {@code this}.
+     * @since   AugList V1
      * @see     #without(Object)
      * @see     #removeIf(Predicate)
      * @see     tests.AugListTest#testWithoutWhere()
