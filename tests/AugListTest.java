@@ -85,6 +85,7 @@ public final class AugListTest implements MultiTest {
         testContainsAnyVarargs();
         testCountOf();
         testCountsOfElements();
+        testCrossProduct();
         testDistinctCopy();
         testDistinctSelf();
         testFilterCopy();
@@ -537,6 +538,21 @@ public final class AugListTest implements MultiTest {
             }
         });
         assertTrue(new AugList<Double>(1.0, null).countsOfElements().size() == 1);
+    }
+
+    /**
+     * JUnit tester for Cross Product
+     * @since   AugList V2
+     * @see     src.AugList#crossProduct(Iterable)
+     */
+    @Test
+    public void testCrossProduct() {
+        setupTestData();
+        assertTrue(new AugList<Double>().crossProduct(testDataDouble).size() == 0);
+        assertTrue(testDataDouble.crossProduct(new AugList<Double>()).size() == testDataDouble.size());
+        assertTrue(testDataDouble.crossProduct(nullAL).size() == testDataDouble.size());
+        assertTrue(testDataDouble.crossProduct(testDataInt).isEquivalent("[[1.0=7, 1.0=11, 1.0=19, 1.0=-24, 1.0=117, 1.0=145, 1.0=-56, 1.0=43], [2.0=7, 2.0=11, 2.0=19, 2.0=-24, 2.0=117, 2.0=145, 2.0=-56, 2.0=43], [7.11=7, 7.11=11, 7.11=19, 7.11=-24, 7.11=117, 7.11=145, 7.11=-56, 7.11=43], [-2.5=7, -2.5=11, -2.5=19, -2.5=-24, -2.5=117, -2.5=145, -2.5=-56, -2.5=43], [3.1415926=7, 3.1415926=11, 3.1415926=19, 3.1415926=-24, 3.1415926=117, 3.1415926=145, 3.1415926=-56, 3.1415926=43]]"));
+        assertTrue(new AugList<Integer>(1, 2, 3).crossProduct(new AugList<Integer>(4, 5, 6)).isEquivalent("[[1=4, 1=5, 1=6], [2=4, 2=5, 2=6], [3=4, 3=5, 3=6]]"));
     }
 
     /**

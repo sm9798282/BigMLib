@@ -86,7 +86,7 @@ import java.util.stream.Stream;
  * - {@link #pairUp(Iterable)},
  * - {@link #parameterizedTypeDesc()},
  * - {@link #retainAll(Collection)}, {@link #toCollection()},
- * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},
+ * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)}, {@link #crossProduct(Iterable)},
  * - {@link #setMany(Iterable, Iterable)}, {@link #setFromCallable(int, int, Callable)},
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},
  * - {@link #split3(int)}, {@link #splitDelim(Function)},
@@ -815,6 +815,31 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                 else {
                     ret.put(key, 1);
                 }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Takes the cross product of this {@link AugList}, A, with the elements sourced from the given {@link Iterable}, B.
+     * @param   itrB
+     *          The source of the second selection of elements, B.
+     * @return  The Mathematical cross product of the two lists, A x B.
+     * @since   AugList V2
+     * @see     #setDifference(AugList)
+     * @see     #setIntersection(Iterable)
+     * @see     #setUnion(Iterable)
+     * @see     tests.AugListTest#testCrossProduct()
+     * @tags    Terminator
+     */
+    public <U> AugList<AugList<SimpleEntry<T, U>>> crossProduct(Iterable<? super U> itrB)
+    {
+        AugList<U> ALb = new AugList<U>(itrB); // Implicit null correction
+        AugList<AugList<SimpleEntry<T, U>>> ret = new AugList<AugList<SimpleEntry<T, U>>>();
+        for (T itemA : this) {
+            ret.add(new AugList<SimpleEntry<T, U>>());
+            for (U itemB : ALb) {
+                ret.getLast().add(new SimpleEntry<T, U>(itemA, itemB));
             }
         }
         return ret;
@@ -2025,6 +2050,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @since   AugList V1
      * @see     #setIntersection(Iterable)
      * @see     #setUnion(Iterable)
+     * @see     #crossProduct(Iterable)
      * @see     #listDifference(Iterable)
      * @see     tests.AugListTest#testSetDifference()
      * @note    Inspired by the C# methods {@code IEnumerable<T>.Union()} and {@code IEnumerable<T>.Intersect()}.
@@ -2133,6 +2159,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @since   AugList V1
      * @see     #setDifference(Iterable)
      * @see     #setUnion(Iterable)
+     * @see     #crossProduct(Iterable)
      * @see     #listIntersection(Iterable)
      * @see     tests.AugListTest#testSetIntersection()
      * @note    Based on the C# method {@code IEnumerable<T>.Intersect()}.
@@ -2169,6 +2196,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @since   AugList V1
      * @see     #setDifference(Iterable)
      * @see     #setIntersection(Iterable)
+     * @see     #crossProduct(Iterable)
      * @see     #listUnion(Iterable)
      * @see     tests.AugListTest#testSetUnion()
      * @note    Based on the C# function {@code IEnumerable<T>.Union()}.

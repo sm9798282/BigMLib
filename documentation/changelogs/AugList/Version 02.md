@@ -12,6 +12,7 @@
 - New methods `setMany(Iterable<Integer>, Iterable<? super T>)`, `setFromCallable(int, int, Callable<Boolean>)` for bulk setting
 - New property querying methods `isPalindrome()`, `isSet()`, `isSorted(Comparator<? super T>)`
 - New splitting methods `split3(int)`, `splitDelim(Function<? super T, Boolean>)`
+- New set theory method `crossProduct(Iterable<? super T>)`, takes the cross product with the given elements.
 - Methods that used to take `AugList<T>` parameters now take `Iterable<? super T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
 
@@ -45,8 +46,8 @@ Parameters have (except where additional context is helpful) been renamed to fol
 - All of the following now work as expected when provided `null` (as opposed to throwing `NullPointerException`):
   - Constructors,
   - `allIndicesOf(T)`,
-  - Bulk Satisfaction family of methods
-  - Bulk Containment family of methods
+  - Bulk Satisfaction family of methods,
+  - Bulk Containment family of methods,
   - `countsOfElements()`,
   - Filter family of methods,
   - `forEach(Consumer<? super T>)`,

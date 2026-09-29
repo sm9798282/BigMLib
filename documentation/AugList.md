@@ -36,109 +36,110 @@ Provided with AugList V2 are the following:
 - `new AugList<T>(Iterable<? super T>, Iterable<Integer>)`
 - `new AugList<T>(Spliterator<? super T>)`
 - `new AugList<T>(Stream<? super T>)`
-- `AugList<T>___________add(T)`
-- `AugList<T>___________addAll(AugList<? super T>)`
-- `AugList<T>___________addAll(T...)`
-- `AugList<T>___________addFirst(T)`
-- `AugList<T>___________allIndicesOf(T)`
-- `boolean______________allSatisfy(Predicate<? super T>)`
-- `boolean______________anySatisfy(Predicate<? super T>)`
-- `AugList<T>___________applyAll(UnaryOperator<? super T>)`
-- `AugList<AugList<T>>__chunk(int)`
-- `AugList<T>___________clear()`
-- `AugList<T>___________clone()`
-- `boolean______________contains(T)`
-- `boolean______________containsAll(Iterable<? super T>)`
-- `boolean______________containsAll(T...)`
-- `boolean______________containsAny(Iterable<? super T>)`
-- `boolean______________containsAny(T...)`
-- `int__________________countOf()`
-- `AugList<Integer>_____countsOfElements()`
-- `AugList<T>___________distinctCopy()`
-- `AugList<T>___________distinctSelf()`
-- `boolean______________equals(Object)`
-- `AugList<T>___________filterCopy(Predicate<? super T>)`
-- `AugList<T>___________filterSelf(Predicate<? super T>)`
-- `void_________________forEach(Consumer<? super T>)`
-- `AugList<AugList<T>>__fragment(int)`
-- `T____________________get(int)`
-- `Class<?>_____________getClass()`
-- `T____________________getLast()`
-- `T____________________getRandom()`
-- `int__________________hashCode()`
-- `int__________________indexOf(Object)`
-- `AugList<T>___________insert(int, T)`
-- `AugList<T>___________insertAll(int, Iterable<? super T>)`
-- `AugList<T>___________insertAll(int, T...)`
-- `AugList<T>___________insertAllAtRandom(Iterable<? super T>)`
-- `AugList<T>___________insertAllAtRandom(T...)`
-- `AugList<T>___________insertAtRandom(T)`
-- `boolean______________isEmpty()`
-- `boolean______________isEquivalent()`
-- `boolean______________isPalindrome()`
-- `boolean______________isRearrangement(Iterable<? super T>)`
-- `boolean______________isSet()`
-- `boolean______________isSorted(Comparator<? super T>)`
-- `Iterator<T>__________iterator()`
-- `boolean______________lastIndexOf(Object)`
-- `AugList<T>___________listDifference(Iterable<? super T>)`
-- `AugList<T>___________listIntersection(Iterable<? super T>)`
-- `ListIterator<T>______listIterator()`
-- `ListIterator<T>______listIterator(int)`
-- `AugList<T>___________listUnion(Iterable<? super T>)`
-- `AugList<T>___________massOverwriteRandom(Iterable<? super T>)`
-- `AugList<T>___________massOverwriteRandom(T[])`
-- `AugList<U>___________oneToOneMapCopy(Function<? super T, U>)`
-- `AugList<T>___________overwriteRandom(T)`
-- `void_________________notify()`
-- `void_________________notifyAll()`
-- `Hashtable<T, U>______pairUp(Iterable<U>)`
-- `Stream<T>____________parallelStream()`
-- `String_______________parameterizedTypeDesc()`
-- `boolean______________remove(Object)`
-- `boolean______________removeAll(Iterable<? super T>)`
-- `boolean______________removeAll(T...)`
-- `boolean______________removeAt(int)`
-- `boolean______________removeIf(Predicate<? super T>)`
-- `boolean______________removeLast()`
-- `boolean______________removeRandom()`
-- `AugList<T>___________retainAll(Collection<? super T>)`
-- `AugList<T>___________reversed()`
-- `AugList<T>___________sample(int, boolean)`
-- `T____________________set(int, T)`
-- `AugList<T>___________setDifference(Iterable<? super T>)`
-- `AugList<T>___________setFromCallable(int, int, Callable<Boolean>)`
-- `AugList<T>___________setIntersection(Iterable<? super T>)`
-- `AugList<T>___________setMany(Iterable<Integer> indices, Iterable<? super T> values)`
-- `AugList<T>___________setUnion(Iterable<? super T>)`
-- `AugList<T>___________shuffleCopy()`
-- `AugList<T>___________shuffleSelf()`
-- `int__________________size()`
-- `AugList<T>___________skipWhile(Predicate<? super T>)`
-- `AugList<T>___________sort(Comparator<? super T>)`
-- `AugList<AugList<T>>__split3(int)`
-- `AugList<AugList<T>>__splitDelim(Function<? super T, Boolean>)`
-- `Spliterator<T>_______spliterator()`
-- `Stream<T>____________stream()`
-- `AugList<T>___________subList(int, int)`
-- `AugList<T>___________swap(int, int)`
-- `AugList<T>___________swapRandom(int)`
-- `AugList<T>___________swapRandom()`
-- `AugList<T>___________takeWhile(Predicate<? super T>)`
-- `T[]__________________toArray(T[])`
-- `Collection<T>________toCollection()`
-- `Enumeration<T>_______toEnumeration()`
-- `String_______________toString()`
-- `void_________________wait()`
-- `void_________________wait(long)`
-- `void_________________wait(long, int)`
-- `AugList<T>___________without(T)`
-- `AugList<T>___________withoutAll(Iterable<? super T>)`
-- `AugList<T>___________withoutAll(T...)`
-- `AugList<T>___________withoutIndex(int)`
-- `AugList<T>___________withoutLast()`
-- `AugList<T>___________withoutRandom()`
-- `AugList<T>___________withoutWhere(Predicate<? super T>)`
+- `AugList<T>          add(T)`
+- `AugList<T>          addAll(AugList<? super T>)`
+- `AugList<T>          addAll(T...)`
+- `AugList<T>          addFirst(T)`
+- `AugList<T>          allIndicesOf(T)`
+- `boolean             allSatisfy(Predicate<? super T>)`
+- `boolean             anySatisfy(Predicate<? super T>)`
+- `AugList<T>          applyAll(UnaryOperator<? super T>)`
+- `AugList<AugList<T>> chunk(int)`
+- `AugList<T>          clear()`
+- `AugList<T>          clone()`
+- `boolean             contains(T)`
+- `boolean             containsAll(Iterable<? super T>)`
+- `boolean             containsAll(T...)`
+- `boolean             containsAny(Iterable<? super T>)`
+- `boolean             containsAny(T...)`
+- `int                 countOf()`
+- `AugList<Integer>    countsOfElements()`
+- `AugList<AugList<SimpleEntry<T, U>>> crossProduct(Iterable<? super U>)`
+- `AugList<T>          distinctCopy()`
+- `AugList<T>          distinctSelf()`
+- `boolean             equals(Object)`
+- `AugList<T>          filterCopy(Predicate<? super T>)`
+- `AugList<T>          filterSelf(Predicate<? super T>)`
+- `void                forEach(Consumer<? super T>)`
+- `AugList<AugList<T>> fragment(int)`
+- `T                   get(int)`
+- `Class<?>            getClass()`
+- `T                   getLast()`
+- `T                   getRandom()`
+- `int                 hashCode()`
+- `int                 indexOf(Object)`
+- `AugList<T>          insert(int, T)`
+- `AugList<T>          insertAll(int, Iterable<? super T>)`
+- `AugList<T>          insertAll(int, T...)`
+- `AugList<T>          insertAllAtRandom(Iterable<? super T>)`
+- `AugList<T>          insertAllAtRandom(T...)`
+- `AugList<T>          insertAtRandom(T)`
+- `boolean             isEmpty()`
+- `boolean             isEquivalent()`
+- `boolean             isPalindrome()`
+- `boolean             isRearrangement(Iterable<? super T>)`
+- `boolean             isSet()`
+- `boolean             isSorted(Comparator<? super T>)`
+- `Iterator<T>         iterator()`
+- `boolean             lastIndexOf(Object)`
+- `AugList<T>          listDifference(Iterable<? super T>)`
+- `AugList<T>          listIntersection(Iterable<? super T>)`
+- `ListIterator<T>     listIterator()`
+- `ListIterator<T>     listIterator(int)`
+- `AugList<T>          listUnion(Iterable<? super T>)`
+- `AugList<T>          massOverwriteRandom(Iterable<? super T>)`
+- `AugList<T>          massOverwriteRandom(T[])`
+- `AugList<U>          oneToOneMapCopy(Function<? super T, U>)`
+- `AugList<T>          overwriteRandom(T)`
+- `void                notify()`
+- `void                notifyAll()`
+- `Hashtable<T, U>     pairUp(Iterable<U>)`
+- `Stream<T>           parallelStream()`
+- `String              parameterizedTypeDesc()`
+- `boolean             remove(Object)`
+- `boolean             removeAll(Iterable<? super T>)`
+- `boolean             removeAll(T...)`
+- `boolean             removeAt(int)`
+- `boolean             removeIf(Predicate<? super T>)`
+- `boolean             removeLast()`
+- `boolean             removeRandom()`
+- `AugList<T>          retainAll(Collection<? super T>)`
+- `AugList<T>          reversed()`
+- `AugList<T>          sample(int, boolean)`
+- `T                   set(int, T)`
+- `AugList<T>          setDifference(Iterable<? super T>)`
+- `AugList<T>          setFromCallable(int, int, Callable<Boolean>)`
+- `AugList<T>          setIntersection(Iterable<? super T>)`
+- `AugList<T>          setMany(Iterable<Integer> indices, Iterable<? super T> values)`
+- `AugList<T>          setUnion(Iterable<? super T>)`
+- `AugList<T>          shuffleCopy()`
+- `AugList<T>          shuffleSelf()`
+- `int                 size()`
+- `AugList<T>          skipWhile(Predicate<? super T>)`
+- `AugList<T>          sort(Comparator<? super T>)`
+- `AugList<AugList<T>> split3(int)`
+- `AugList<AugList<T>> splitDelim(Function<? super T, Boolean>)`
+- `Spliterator<T>      spliterator()`
+- `Stream<T>           stream()`
+- `AugList<T>          subList(int, int)`
+- `AugList<T>          swap(int, int)`
+- `AugList<T>          swapRandom(int)`
+- `AugList<T>          swapRandom()`
+- `AugList<T>          takeWhile(Predicate<? super T>)`
+- `T[]                 toArray(T[])`
+- `Collection<T>       toCollection()`
+- `Enumeration<T>      toEnumeration()`
+- `String              toString()`
+- `void                wait()`
+- `void                wait(long)`
+- `void                wait(long, int)`
+- `AugList<T>          without(T)`
+- `AugList<T>          withoutAll(Iterable<? super T>)`
+- `AugList<T>          withoutAll(T...)`
+- `AugList<T>          withoutIndex(int)`
+- `AugList<T>          withoutLast()`
+- `AugList<T>          withoutRandom()`
+- `AugList<T>          withoutWhere(Predicate<? super T>)`
 
 ## Internal methods
 

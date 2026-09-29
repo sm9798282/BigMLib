@@ -11,8 +11,6 @@
 
 ### AugList V2 Planned
 
-- `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
-- `crossProduct(Iterable<Iterable<U>>)` d-AL2-08-csma (Source from previous projects)
 - `swapRange(int, int, int)` d-AL2-08-csma
 - `class Ticker`
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
@@ -104,7 +102,7 @@
   - BVN
 - `class Combinatorics`
   - Factorial, nPk n!/k!, nCk n!/(n-k)!k!
-  - `countCombinations()`
+  - `getAllCombinationsLength(AugList<T>, int)` (source from previous projects)
 - `class MVectors`
   - VectorAngle, (Source from previous projects)
   - DotProduct, CrossProduct
@@ -196,6 +194,7 @@
 
 ## Completed
 
+- `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
 - `splitDelim(Function<? super T, Boolean>)`
 - `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma
 - `isSorted(Comparator<? super T>)`
