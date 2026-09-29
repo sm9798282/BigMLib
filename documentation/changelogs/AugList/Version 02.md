@@ -9,7 +9,7 @@
 - New Random-adjacent methods: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
 - New method `countOf(T)` as an individual alternative to `countsOfElements()` that also supports `null`s.
-- New method `setMany(Iterable<Integer>, Iterable<? super T>)`
+- New methods `setMany(Iterable<Integer>, Iterable<? super T>)`, `setFromCallable(int, int, Callable<Boolean>)` for bulk setting
 - Methods that used to take `AugList<T>` parameters now take `Iterable<T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
 

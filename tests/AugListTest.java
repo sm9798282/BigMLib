@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 //import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.Callable;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -22,10 +23,10 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 //import java.util.SortedSet;
 import java.util.Spliterator;
+import java.util.stream.Stream;
 import java.util.TreeSet;
 import java.util.Vector;
-import java.util.stream.Stream;
-import src.*;
+import src.AugList;
 
 /**
  * A JUnit 3.x powered automatic tester for {@link src.AugList}.
@@ -139,6 +140,7 @@ public final class AugListTest implements MultiTest {
         testSample();
         testSet();
         testSetDifference();
+        testSetFromCallable();
         testSetMany();
         testSetIntersection();
         testSetUnion();
@@ -1993,6 +1995,79 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataString.setDifference(new AugList<String>("the", "the")).isEquivalent("[quick, brown, fox, jumps, over, lazy dog]"));
         assertTrue(testDataString.setDifference(new AugList<String>("the", "fox", "lazy", "dog")).isEquivalent("[quick, brown, jumps, over, lazy dog]"));
         assertTrue(testDataDouble.setDifference(nullAL).isEquivalent(testDataDouble));
+    }
+
+    /**
+     * Ticks up on each call.
+     * @note    Could easily be made into its own file...
+     */
+    public class Ticker {
+        private Integer t = 0;
+
+        public Ticker() {
+            reset();
+        }
+
+        public Integer tick() {
+            t += 1;
+            return t - 1; 
+        }
+
+        public Ticker reset() {
+            t = 0;
+            return this;
+        }
+    }
+
+    /**
+     * JUnit tester for Callable setting
+     * @since   AugList V2
+     * @see     src.AugList#setFromCallable()
+     * @see     Ticker
+     * @note    {@link Ticker} is an example class that could be used alongside this method.
+     */
+    @Test
+    public void testSetFromCallable() {
+        setupTestData();
+        Callable<Integer> nullCallable = null;
+        assertTrue(testDataDouble.clone().setFromCallable(0, 4, () -> { return 0.0; }).isEquivalent("[0.0, 0.0, 0.0, 0.0, 0.0]"));
+        Ticker t = new Ticker();
+        assertTrue(testDataInt.clone().setFromCallable(0, 9, () -> { return t.tick(); }).isEquivalent("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(1, 2, () -> { return t.tick(); }).isEquivalent("[7, 0, 1, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(2, 1, () -> { return t.tick(); }).isEquivalent("[7, 0, 1, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(-1, 2, () -> { return t.tick(); }).isEquivalent("[0, 1, 2, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(0, 9, () -> { return t.tick(); }).isEquivalent("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(0, 0, () -> { return t.tick(); }).isEquivalent("[0, 11, 19, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(1, -1, () -> { return t.tick(); }).isEquivalent("[0, 1, 19, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(0, 2, () -> null).isEquivalent("[*null*, *null*, *null*, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataInt.clone().setFromCallable(0, 2, nullCallable).isEquivalent("[*null*, *null*, *null*, -24, 117, 145, -56, 43]"));
+        t.reset();
+        assertTrue(testDataDouble.clone().setFromCallable(
+            0, 
+            8, 
+            () -> { 
+                switch (t.tick() % 3) {
+                case 0:
+                    return 3.0;
+                case 1:
+                    return 4.5;
+                default:
+                    return 2.0;
+                }
+            }
+            ).isEquivalent("[3.0, 4.5, 2.0, 3.0, 4.5, 2.0, 3.0, 4.5, 2.0]"));
+        AugList<Boolean> ALB = new AugList<Boolean>();
+        t.reset();
+        assertTrue(ALB.clone().setFromCallable(0, 4, () -> { return t.tick() % 2 == 0; }).isEquivalent("[true, false, true, false, true]"));
+        assertTrue(testDataString.clone().setFromCallable(0, 0, () -> { throw new IllegalArgumentException(); }).isEquivalent(testDataString));
     }
 
     /**

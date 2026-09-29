@@ -104,9 +104,9 @@ Provided with AugList V2 are the following:
 - `AugList<T>___________retainAll(Collection<? super T>)`
 - `AugList<T>___________reversed()`
 - `AugList<T>___________sample(int, boolean)`
-- `T____________________set(int, T)`,
+- `T____________________set(int, T)`
 - `AugList<T>___________setDifference(Iterable<? super T>)`
-- PLANNED `setFromFunc(int, Function<? super T>)`
+- `AugList<T>___________setFromCallable(int, int, Callable<Boolean>)`
 - `AugList<T>___________setIntersection(Iterable<? super T>)`
 - `AugList<T>___________setMany(Iterable<Integer> indices, Iterable<? super T> values)`
 - `AugList<T>___________setUnion(Iterable<? super T>)`

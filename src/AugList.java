@@ -1,6 +1,6 @@
 package src;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 
 //import java.util.ArrayDeque;
 import java.util.AbstractMap.SimpleEntry;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.concurrent.Callable;
 //import java.util.Deque;
 import java.util.Enumeration;
 //import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 //import java.util.function.IntFunction;
 import java.util.function.Predicate;
+//import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 //import java.lang.reflect.Field;
 //import java.lang.reflect.ParameterizedType;
@@ -49,19 +51,25 @@ import java.util.stream.Stream;
  *
  * <h3>Overloads</h3>
  *
- * - Constructors will take any {@link Arrays Array, Varargs Array}, {@link Iterable}, {@link Iterator}, {@link ListIterator}, {@link Spliterator}, or {@link Stream}.</p>
- * - Constructor and paired value-count overloads i.e. {@code new AugList<String>(new AugList<Integer>(5, 2), new AugList<String>("a", "bc"))}.</p>
+ * - Constructors overloaded to take nearly any source of data - see Additions or "documentation/AugList.md" for the full list.
  * - Adds varargs overloads for select bulk-processing methods, such as {@link #addAll(T...) addAll(T...)}, {@link #containsAll(T...) containsAll(T...)} and {@link #removeAll(T...) removeAll(T...)}.
- *
+ * 
  * <h3>Replacements</h3>
  *
- * - Replaces {@link List#add(int, Object)} with {@link #insert(int, Object)}
- * - Replaces {@link List#addAll(int, Collection)} with {@link #insertAll(int, Iterable)} / {@link #insertAll(int, T...) insertAll(int, T...)}
- * - Replaces {@link List#replaceAll(UnaryOperator)} with {@link #applyAll(UnaryOperator)}
+ * <p>
+ * - Replaces {@link List#add(int, Object)} with {@link #insert(int, Object)}.
+ * - Replaces {@link List#addAll(int, Collection)} with {@link #insertAll(int, Iterable)} / {@link #insertAll(int, T...) insertAll(int, T...)}.
+ * - Replaces {@link List#replaceAll(UnaryOperator)} with {@link #applyAll(UnaryOperator)}.
  *
  * <h3>Additions</h3>
  *
- * Adds the following methods:<p>
+ * AugList adds the following:<p>
+ * - {@link #AugList()},
+ * - {@link #AugList(T...) AugList(T...)}, {@link #AugList(Iterable)},
+ * - {@link #AugList(Iterable, Iterable)},
+ * - {@link #AugList(Iterable, Function)},
+ * - {@link #AugList(Iterator)}, {@link #AugList(ListIterator)},  {@link #AugList(Spliterator)},
+ * - {@link #AugList(Enumeration)}, {@link #AugList(Stream)},
  * - {@link #allIndicesOf(Object)},
  * - {@link #allSatisfy(Predicate)}, {@link #anySatisfy(Predicate)},
  * - {@link #applyAll(UnaryOperator)}, {@link #oneToOneMapCopy(Function)},
@@ -78,7 +86,7 @@ import java.util.stream.Stream;
  * - {@link #parameterizedTypeDesc()},
  * - {@link #retainAll(Collection)}, {@link #toCollection()},
  * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},
- * - {@link #setMany(Iterable, Iterable)},
+ * - {@link #setMany(Iterable, Iterable)}, {@link #setFromCallable(int, int, Callable)},
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},
  * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},
  * - {@link #toEnumeration()},
@@ -118,6 +126,13 @@ import java.util.stream.Stream;
  * - {@link List#toArray()}, {@link List#toArray(java.util.function.IntFunction)},</p>
  * 4: have no meaningful impact on internal state:</p>
  * - {@link ArrayList#ensureCapacity()}, {@link ArrayList#trimToSize()}</p>
+ * 
+ * <h2>Other information</h2>
+ * 
+ * For a full alphabetical list of methods callable on an AugList, see "documentation/AugList.md".
+ * 
+ * @param   <T>
+ *          The data type of the elements within this AugList.
  * @see     tests.AugListTest
  * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
  * @version AugList Version 2
@@ -1932,6 +1947,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @throws  IndexOutOfBoundsException
      *          {@code index < 0 || index >= this.size()}
      * @since   AugList V1
+     * @see     #setFromCallable(int, int, Callable)
      * @see     #setMany(Iterable, Iterable)
      * @see     #overwriteRandom(Object)
      * @see     tests.AugListTest#testSet()
@@ -1979,6 +1995,56 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * Sets between the given indices with the values supplied by the given {@link Callable}.
+     * <p>If the given {@link Callable} throws, does not alter this {@link AugList}.
+     * @param   start
+     *          The starting index, inclusive. Swaps with end if larger than it.
+     * @param   end
+     *          The ending index, inclusive. Expands this {@link AugList} if larger than the current size.
+     * @param   callable
+     *          The {@link Callable} in question, which returns the desired value(s). If {@code null}, is set to {@code () -> { return null; }}.
+     * @return  This {@link AugList}.
+     * @since   AugList V2
+     * @see     #setMany(Iterable, Iterable)
+     * @see     tests.AugListTest#testSetFromCallable()
+     * @tags    Mutator
+     */
+    @SuppressWarnings("unchecked")
+    public AugList<T> setFromCallable(int start, int end, Callable<? super T> callable) {
+        if (size() != 0) {
+            start = Math.clamp(start, 0, size() - 1);
+        }
+        if (end < 0) {
+            end = 0;
+        }
+        if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+        }
+        end += 1; // Make end inclusive.
+        if (Objects.isNull(callable)) {
+            callable = () -> { return null; };
+        }
+        AugList<T> clone = clone();
+        for (int i = start; i < end; i++) {
+            try {
+                if (i >= size()) {
+                    clone.add((T)callable.call());
+                }
+                else {
+                    clone.set(i, (T)callable.call());
+                }
+            } catch (Exception e) {
+                // If the callable throws, return the unaltered list.
+                return this;
+            }
+        }
+        // If the callable does not throw, return the altered list.
+        return clone;
+    }
+
+    /**
      * Sets each of the given indices to its corresponding value.
      * @param   indices
      *          The indices that should be changed.
@@ -1987,6 +2053,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This {@link AugList}.
      * @since   AugList V2
      * @see     #set(int, Object)
+     * @see     #setFromCallable(int, int, Callable)
      * @see     #massOverwriteRandom(Iterable)
      * @see     #massOverwriteRandom(T...) massOverwriteRandom(T...)
      * @see     tests.AugListTest#testSetMany()
@@ -2741,6 +2808,30 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     // public T[] toArray(java.util.function.IntFunction<T[]> generator) {
     //     return ls.toArray(generator);
+    // }
+    
+    // /**
+    //  * Creates a new {@link AugList} by mapping the given source with the given function.
+    //  * @param       <U>
+    //  *              The type of elements from the source.
+    //  * @param       source
+    //  *              The source in question.
+    //  * @param       func
+    //  *              The {@link Function} in question. If {@code null}, maps the source's elements to {@code null}.
+    //  * @since       AugList V2
+    //  * @see         tests.AugListTest#testInstantiateFromFunc()
+    //  * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Iterable, Function)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+    //  * @tags        Constructor
+    //  */
+    // public <U> AugList(Iterable<U> source, Function<? super U, T> func) {
+    //     AugList<U> ALsource = new AugList<U>(source); // Implicit null correction
+    //     ls = new ArrayList<T>();
+    //     if (Objects.isNull(func)) {
+    //         func = e -> null;
+    //     }
+    //     for (int i = 0; i < ALsource.size(); i++) {
+    //         ls.add(func.apply(ALsource.get(i)));
+    //     }
     // }
 
     //#endregion
