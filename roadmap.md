@@ -11,7 +11,6 @@
 
 ### AugList V2 Planned
 
-- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma
 - `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
 - `crossProduct(Iterable<Iterable<U>>)` d-AL2-08-csma (Source from previous projects)
 - `swapRange(int, int, int)` d-AL2-08-csma
@@ -197,6 +196,8 @@
 
 ## Completed
 
+- `splitDelim(Function<? super T, Boolean>)`
+- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma
 - `isSorted(Comparator<? super T>)`
 - `isPalindrome()` sees if AugList is palindrome on d-AL2-08-csma
 - `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-AL2-08-csma

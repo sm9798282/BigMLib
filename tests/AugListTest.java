@@ -152,6 +152,8 @@ public final class AugListTest implements MultiTest {
         testSize();
         testSkipWhile();
         testSort();
+        testSplit3();
+        testSplitDelim();
         testSpliterator();
         testStream();
         testSubList();
@@ -2306,6 +2308,59 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataDouble.sort(allEqual).getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataDouble.sort(allEqual).parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.sort(null).isEquivalent(testDataDouble));
+    }
+
+    /**
+     * JUnit tester for Splitting
+     * @since   AugList V2
+     * @see     src.AugList#split3(int)
+     */
+    @Test
+    public void testSplit3() {
+        setupTestData();
+        assertTrue(testDataDouble.split3(1).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(1).get(0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(1).get(1).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(1).get(2).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(1).get(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.split3(1).get(1).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.split3(1).get(2).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.split3(0).get(0).size() == 0);
+        assertTrue(testDataDouble.split3(1).get(0).size() == 1);
+        assertTrue(testDataDouble.split3(4).get(2).size() == 0);
+        for (int i = 0; i < testDataDouble.size(); i++) {
+            assertTrue(testDataDouble.split3(i).get(1).size() == 1);
+            assertTrue(testDataDouble.split3(i).get(1).get(0).equals(testDataDouble.get(i)));
+        }
+        assertTrue(new AugList<Double>().split3(0).get(0).isEmpty());
+        assertTrue(new AugList<Double>().split3(0).get(1).isEmpty());
+        assertTrue(new AugList<Double>().split3(0).get(2).isEmpty());
+        assertTrue(new AugList<Double>().split3(-99).get(0).isEmpty());
+        assertTrue(new AugList<Double>().split3(99).get(1).isEmpty());
+        assertTrue(new AugList<Double>().split3(9).get(2).isEmpty());
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.split3(-1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.split3(99); });
+        assertTrue(testDataDouble.split3(0).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(0).parameterizedTypeDesc().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.split3(1).get(0).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+    }
+
+    /**
+     * JUnit tester for Splitting by delimiter
+     * @since   AugList V2
+     * @see     src.AugList#splitDelim()
+     */
+    @Test
+    public void testSplitDelim() {
+        AugList<String> TDS = new AugList<String>("The", " ", "fat", " ", "cat", " ", "sat", " ", "on", " ", "the", " ", "mat.");
+        assertTrue(TDS.splitDelim(s -> s.equals(" ")).isEquivalent("[[The], [fat], [cat], [sat], [on], [the], [mat.]]"));
+        // TDS without " ": "[The, fat, cat, sat, on, the, mat.]"
+        assertTrue(TDS.clone().withoutWhere(s -> s.equals(" ")).splitDelim(s -> s.length() == 2).isEquivalent("[[The, fat, cat, sat], [the, mat.]]"));
+        assertTrue(TDS.clone().withoutWhere(s -> s.equals(" ")).splitDelim(s -> s.contains("at")).isEquivalent("[[The], /, /, [on, the], /]"));
+        assertTrue(TDS.splitDelim(null).get(0).isEquivalent(TDS));
+        assertTrue(TDS.splitDelim(null).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(TDS.splitDelim(null).parameterizedTypeDesc().equals("public class src.AugList<T>"));
+        assertTrue(TDS.splitDelim(null).get(0).parameterizedTypeDesc().equals("public final class java.lang.String"));
     }
 
     /**

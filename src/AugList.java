@@ -89,6 +89,7 @@ import java.util.stream.Stream;
  * - {@link #setDifference(Iterable)}, {@link #setIntersection(Iterable)}, {@link #setUnion(Iterable)},
  * - {@link #setMany(Iterable, Iterable)}, {@link #setFromCallable(int, int, Callable)},
  * - {@link #skipWhile(Predicate)}, {@link #takeWhile(Predicate)},
+ * - {@link #split3(int)}, {@link #splitDelim(Function)},
  * - {@link #swap(int, int)}, {@link #swapRandom(int)}, {@link #swapRandom()},
  * - {@link #toEnumeration()},
  * - {@link #without(T)}, {@link #withoutAll(Iterable)}, {@link #withoutIndex(int)}, {@link #withoutLast()}, {@link #withoutWhere(Predicate)}, {@link #withoutRandom()}
@@ -549,6 +550,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          {@code size <= 0}
      * @since   AugList V1
      * @see     #fragment()
+     * @see     #split3(int)
+     * @see     #splitDelim(Function)
      * @see     tests.AugListTest#testChunk()
      * @note    Based upon the C# method {@code List<T>.Chunk(int)}.
      * @tags    Creator
@@ -929,6 +932,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This AugList fragmented into randomly sized shards.
      * @since   AugList V2
      * @see     #chunk(int)
+     * @see     #split3(int)
+     * @see     #splitDelim(Function)
      * @see     tests.AugListTest#testFragment()
      * @note    Randomized variant of {@link #chunk()}.
      * @tags    Creator
@@ -2270,6 +2275,74 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             ls.sort(comparator);
         }
         return this;
+    }
+
+    /**
+     * Creates a new {@link AugList} of AugLists, that partitions this AugList in the following manner:
+     * <p>Index 0 contains all elements to the left of the pivot
+     * <p>Index 1 contains the pivot only
+     * <p>Index 2 contains all elements to the right of the pivot 
+     * @param   pivot
+     *          The pivot in question
+     * @throws  IndexOutOfBoundsException
+     *          {@code size() != 0 && (pivot < 0 || pivot >= size())}
+     * @return  A partitioned AugList - see body text.
+     * @since   AugList V2
+     * @see     #chunk(int)
+     * @see     #fragment()
+     * @see     #splitDelim(Function)
+     * @see     tests.AugListTest#testSplit3()
+     * @note    Creator
+     */
+    public AugList<AugList<T>> split3(int pivot) {
+        if (size() == 0) {
+            return new AugList<AugList<T>>(new AugList<T>(), new AugList<T>(), new AugList<T>());
+        }
+        if (pivot < 0 || pivot >= size()) {
+            throw new IndexOutOfBoundsException("AugList<T>.split3(pivot) Exception: pivot must be within bounds.");
+        }
+        AugList<AugList<T>> ret = new AugList<AugList<T>>(new AugList<T>(), new AugList<T>(), new AugList<T>());
+        for (int i = 0; i < size(); i++) {
+            if (i < pivot) {
+                ret.get(0).add(get(i));
+            }
+            else if (i == pivot) {
+                ret.get(1).add(get(i));
+            }
+            else {
+                ret.get(2).add(get(i));
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Splits this {@link AugList} into an AugList of AugLists, delimiting by elements that pass the given condition.
+     * @param   condition
+     *          The condition in question. Elements that pass this will be used to delimit the resultant AugList, and are not included in it.
+     *          If {@code null}, returns an AugList of AugLists with 1 entry - that entry is {@code this}.
+     * @return  A delimited AugList of AugLists
+     * @since   AugList V2
+     * @see     #chunk(int)
+     * @see     #fragment()
+     * @see     #split3(int)
+     * @see     tests.AugListTest#testSplitDelim()
+     * @note    Creator
+     */
+    public AugList<AugList<T>> splitDelim(Function<? super T, Boolean> condition) {
+        if (Objects.isNull(condition)) {
+            return new AugList<AugList<T>>(this);
+        }
+        AugList<AugList<T>> ret = new AugList<AugList<T>>(new AugList<T>());
+        for (int i = 0; i < size(); i++) {
+            if (condition.apply(get(i))) {
+                ret.add(new AugList<T>());
+            }
+            else {
+                ret.getLast().add(get(i));
+            }
+        }
+        return ret;
     }
 
     /**

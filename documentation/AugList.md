@@ -116,8 +116,8 @@ Provided with AugList V2 are the following:
 - `int__________________size()`
 - `AugList<T>___________skipWhile(Predicate<? super T>)`
 - `AugList<T>___________sort(Comparator<? super T>)`
-- PLANNED `split3(int)`
-- PLANNED `splitDelim(T)`
+- `AugList<AugList<T>>__split3(int)`
+- `AugList<AugList<T>>__splitDelim(Function<? super T, Boolean>)`
 - `Spliterator<T>_______spliterator()`
 - `Stream<T>____________stream()`
 - `AugList<T>___________subList(int, int)`

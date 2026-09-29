@@ -11,7 +11,8 @@
 - New method `countOf(T)` as an individual alternative to `countsOfElements()` that also supports `null`s.
 - New methods `setMany(Iterable<Integer>, Iterable<? super T>)`, `setFromCallable(int, int, Callable<Boolean>)` for bulk setting
 - New property querying methods `isPalindrome()`, `isSet()`, `isSorted(Comparator<? super T>)`
-- Methods that used to take `AugList<T>` parameters now take `Iterable<T>` instead, increasing flexibility.
+- New splitting methods `split3(int)`, `splitDelim(Function<? super T, Boolean>)`
+- Methods that used to take `AugList<T>` parameters now take `Iterable<? super T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
 
 ## Behavioural changes
