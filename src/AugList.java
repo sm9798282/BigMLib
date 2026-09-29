@@ -80,6 +80,7 @@ import java.util.stream.Stream;
  * - {@link #filterSelf(Predicate)}, {@link #filterCopy(Predicate)}, 
  * - {@link #forEach(Consumer)},
  * - {@link #isEquivalent(Object)}, {@link #isRearrangement()},
+ * - {@link #isPalindrome()}, {@link #isSet()}, {@link #isSorted(Comparator)},
  * - {@link #listDifference(Iterable)}, {@link #listIntersection(Iterable)}, {@link #listUnion(Iterable)},
  * - {@link #overwriteRandom(T)}, {@link #massOverwriteRandom(Iterable)}, {@link #massOverwriteRandom(T...) massOverwriteRandom(T...)}
  * - {@link #pairUp(Iterable)},
@@ -823,6 +824,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          Mathematically speaking, the result is also a set.
      * @since   AugList V1
      * @see     #distinctSelf()
+     * @see     #isSet()
      * @see     tests.AugListTest#testDistinctCopy()
      * @note    Based off the C# function {@code IEnumerable<T>.Distinct()};
      * @tags    Creator
@@ -844,6 +846,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          Mathematically speaking, the result is also a set.
      * @since   AugList V1
      * @see     #distinctCopy()
+     * @see     #isSet()
      * @see     tests.AugListTest#testDistinctSelf()
      * @note    Inspired by {@link #distinctCopy()}.
      * @tags    Mutator
@@ -1349,6 +1352,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * Returns whether this {@link AugList} is a Palindrome.
+     * @return  {@code isEquivalent(reversed()) == true}
+     * @since   AugList V2
+     * @see     #reversed()
+     * @see     tests.AugListTest#testIsPalindrome()
+     * @tags    Terminator
+     */
+    public boolean isPalindrome() {
+        return isEquivalent(reversed());
+    }
+
+    /**
      * Compares whether or not this {@link AugList} has the same elements as the given {@link Iterable}. (Order does not matter)
      * <p>For a stricter equality function, use {@link #equals()}.</p>
      * @param   itrB
@@ -1379,6 +1394,33 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             CloneA.remove(CloneA.get(i));
         }
         return true;
+    }
+
+    /**
+     * Returns whether this {@link AugList} is a mathematical Set.
+     * @return  {@code isEquivalent(distinctCopy()) == true}
+     * @since   AugList V2
+     * @see     #distinctCopy()
+     * @see     #distinctSelf()
+     * @see     tests.AugListTest#testIsSet()
+     * @tags    Terminator
+     */
+    public boolean isSet() {
+        return isEquivalent(distinctCopy());
+    }
+
+    /**
+     * Returns whether this {@link AugList} is sorted.
+     * @param   comparator
+     *          The way in which this {@link AugList} should be sorted
+     * @return  {@code isEquivalent(clone().sort(comparator))) == true}
+     * @since   AugList V2
+     * @see     #sort(Comparator)
+     * @see     tests.AugListTest#testIsSorted()
+     * @tags    Terminator
+     */
+    public boolean isSorted(Comparator<? super T> comparator) {
+        return isEquivalent(clone().sort(comparator));
     }
 
     /**
@@ -1894,6 +1936,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * Returns a new reversed-order {@link AugList}.
      * @return  A new {@link AugList} with the same elements as this one, but in reverse order.
      * @since   AugList V1
+     * @see     #isPalindrome()
      * @see     tests.AugListTest#testReversed()
      * @note    Encapsulates {@link List#reversed()}.
      * @tags    Creator
@@ -2217,6 +2260,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *          The {@link Comparator} in question. If {@code null}, returns {@code this}.
      * @return  This {@link AugList}, sorted according to the given {@link Comparator}.
      * @since   AugList V1
+     * @see     #isSorted(Comparator)
      * @see     tests.AugListTest#testSort()
      * @note    Replaces {@link List#sort()}, returns {@code this} rather than {@code void}.
      * @tags    Mutator

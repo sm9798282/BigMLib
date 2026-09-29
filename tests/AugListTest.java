@@ -113,7 +113,10 @@ public final class AugListTest implements MultiTest {
         testInstantiateVarargs();
         testIsEmpty();
         testIsEquivalent();
+        testIsPalindrome();
         testIsRearrangement();
+        testIsSet();
+        testIsSorted();
         testIterator();
         testLastIndexOf();
         testListDifference();
@@ -1204,6 +1207,20 @@ public final class AugListTest implements MultiTest {
         assertFalse(testDataDouble.isEquivalent(shuffled));
     }
 
+    /**
+     * JUnit tester for Palindrome property
+     * @since   AugList V1
+     * @see     src.AugList#isPalindrome()
+     */
+    @Test
+    public void testIsPalindrome() {
+        setupTestData();
+        assertFalse(testDataDouble.isPalindrome());
+        assertTrue(new AugList<Character>().isPalindrome());
+        assertTrue(new AugList<String>("A", "BC", "A", "BC", "A").isPalindrome());
+        assertFalse(new AugList<String>("A", "BC", "A", "CB", "A").isPalindrome());
+    }
+
     // As all 3 of isRearrangement(), shuffleSelf() and shuffleCopy() are tested here,
     // making testShuffleSelf() and testShuffleCopy() call testIsRearrangement()
     // preserves the integrity of the tests whilst saving file size.
@@ -1230,6 +1247,44 @@ public final class AugListTest implements MultiTest {
         assertFalse(new AugList<Double>().isRearrangement(testDataDouble));
         assertTrue(new AugList<Double>().isRearrangement(new AugList<Double>()));
         assertFalse(new AugList<Double>(1.0).isRearrangement(new AugList<Double>(2.0)));
+    }
+
+    /**
+     * JUnit tester for Set property
+     * @since   AugList V1
+     * @see     src.AugList#isSet()
+     */
+    @Test
+    public void testIsSet() {
+        setupTestData();
+        assertTrue(testDataDouble.isSet());
+        assertFalse(testDataDouble.add(1.0).isSet());
+    }
+
+    /**
+     * JUnit tester for Sorted property
+     * @since   AugList V1
+     * @see     src.AugList#isSorted()
+     */
+    @Test
+    public void testIsSorted() {
+        setupTestData();
+        // Sort ascending
+        Comparator<Double> compAsc = new Comparator<Double>() {
+            public int compare(Double o1, Double o2) {
+                return (int)(o1 - o2);
+            }
+        };
+        testDataDouble.sort(compAsc);
+        assertTrue(testDataDouble.isSorted(compAsc));
+        // Sort descending
+        Comparator<Double> compDesc = new Comparator<Double>() {
+            public int compare(Double o1, Double o2) {
+                return (int)(o2 - o1);
+            }
+        };
+        testDataDouble.sort(compDesc);
+        assertFalse(testDataDouble.isSorted(compAsc));
     }
 
     /**
@@ -2068,6 +2123,8 @@ public final class AugListTest implements MultiTest {
         t.reset();
         assertTrue(ALB.clone().setFromCallable(0, 4, () -> { return t.tick() % 2 == 0; }).isEquivalent("[true, false, true, false, true]"));
         assertTrue(testDataString.clone().setFromCallable(0, 0, () -> { throw new IllegalArgumentException(); }).isEquivalent(testDataString));
+        assertTrue(testDataString.setFromCallable(0, 0, null).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.setFromCallable(0, 0, null).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
@@ -2096,6 +2153,8 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(1, 4), new AugList<Double>(3.0, 2.0, 5.0)).isEquivalent("[1.0, 3.0, 7.11, -2.5, 2.0]"));
         assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(-1), new AugList<Double>(-1.5)).isEquivalent("[-1.5, 2.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(99), new AugList<Double>(-1.5)).isEquivalent("[1.0, 2.0, 7.11, -2.5, -1.5]"));
+        assertTrue(testDataString.clone().setMany(null, null).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.clone().setMany(null, null).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**
