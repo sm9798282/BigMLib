@@ -7,6 +7,7 @@ A library of classes and methods created by (<https://github.com/sm9798282>)/(<h
 Refer to the documentation folder for further details on each class / interface listed below.
 
 - `AugList<T>`, built to be a better list class for Java, with methods drawing inspiration from C#, statistics, set theory and more.
+- `Ticker`, a class that produces increasing values on each call of its main method `tick()`.
 
 ## Licensing
 

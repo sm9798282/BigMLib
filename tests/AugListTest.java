@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 import java.util.TreeSet;
 import java.util.Vector;
 import src.AugList;
+import src.Ticker;
 
 /**
  * A JUnit 3.x powered automatic tester for {@link src.AugList}.
@@ -2078,32 +2079,10 @@ public final class AugListTest implements MultiTest {
     }
 
     /**
-     * Ticks up on each call.
-     * @note    Could easily be made into its own file...
-     */
-    public class Ticker {
-        private Integer t = 0;
-
-        public Ticker() {
-            reset();
-        }
-
-        public Integer tick() {
-            t += 1;
-            return t - 1; 
-        }
-
-        public Ticker reset() {
-            t = 0;
-            return this;
-        }
-    }
-
-    /**
      * JUnit tester for Callable setting
      * @since   AugList V2
      * @see     src.AugList#setFromCallable()
-     * @see     Ticker
+     * @see     src.Ticker
      * @note    {@link Ticker} is an example class that could be used alongside this method.
      */
     @Test

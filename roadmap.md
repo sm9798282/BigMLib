@@ -15,7 +15,6 @@ Please see the provided LICENSE file for more information.
 
 ### AugList V2 Planned
 
-- `class Ticker`
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
   - Casts to AugLists
   - `AugList<Byte>______fromByteBuff(ByteBuffer)`
@@ -197,6 +196,7 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- `class Ticker`
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - `swapRanges(int, int, int, int)` d-AL2-08-csma
