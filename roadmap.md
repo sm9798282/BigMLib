@@ -2,10 +2,7 @@
 
 ## TODO
 
-- Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
-- Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - Test pulling from dev to a d- branch
-- Test with AugList<?>
 
 ## Possible features
 
@@ -193,6 +190,8 @@
 
 ## Completed
 
+- Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
+- Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
 - `swapRanges(int, int, int, int)` d-AL2-08-csma
 - `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
 - `splitDelim(Function<? super T, Boolean>)`

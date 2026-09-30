@@ -1508,7 +1508,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> listDifference(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
-        AugList<T> ret = this.clone();
+        AugList<T> ret = clone();
         for (int i = 0; i < augListB.size(); i++) {
             if (ret.contains(augListB.get(i))) {
                 ret.remove(augListB.get(i));
@@ -1539,13 +1539,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> listIntersection(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
-        // if (this.equals(augListB)) {
-        //     return augListB;
-        // }
-        augListB = augListB.clone();
-        // As listIntersection needs to alter the state of B,
-        // the state of B could change outside of scope.
-        // This behaviour is not intended, hence replace B with a clone of itself.
         AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (augListB.contains(e)) {
@@ -1612,11 +1605,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> listUnion(Iterable<? super T> itrB) {
         AugList<T> augListB = new AugList<T>(itrB); // Implicit null correction
-        AugList<T> ret = this.clone();
-        augListB = augListB.clone();
-        // As listUnion needs to alter the state of B,
-        // the state of B could change outside of scope.
-        // This behaviour is not intended, hence replace B with a clone of itself.
+        AugList<T> ret = clone();
         for (int i = 0; i < ret.size(); i++) {
             augListB.remove(ret.get(i));
         }
@@ -2056,9 +2045,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> setDifference(AugList<? super T> itrB) {
-        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
-        AugList<T> ret = this.distinctCopy();
-        setB = setB.distinctCopy();
+        AugList<T> setB = new AugList<T>(itrB).distinctSelf(); // Implicit null check
+        AugList<T> ret = distinctCopy();
         for (int i = 0; i < setB.size(); i++) {
             if (ret.contains(setB.get(i))) {
                 ret.remove(setB.get(i));
@@ -2165,14 +2153,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> setIntersection(Iterable<? super T> itrB) {
-        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
-        if (this.isEquivalent(setB)) {
+        AugList<T> setB = new AugList<T>(itrB).distinctSelf(); // Implicit null check
+        if (isEquivalent(setB)) {
             return setB;
         }
-        setB = setB.distinctCopy();
-        // As setIntersection needs to alter the state of B,
-        // the state of B could change outside of scope.
-        // This behaviour is not intended, hence replace B with a clone of itself.
         AugList<T> ret = new AugList<T>();
         for (T e : ls) {
             if (setB.contains(e)) {
@@ -2202,10 +2186,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Creator
      */
     public AugList<T> setUnion(Iterable<? super T> itrB) {
-        AugList<T> setB = new AugList<T>(itrB); // Implicit null check
+        AugList<T> setB = new AugList<T>(itrB).distinctSelf(); // Implicit null check
         AugList<T> ret = new AugList<T>();
-        ret.addAll(this.distinctCopy());
-        ret.addAll(setB.distinctCopy().filterSelf(e -> !ret.contains(e)));
+        ret.addAll(distinctCopy());
+        ret.addAll(setB.filterSelf(e -> !ret.contains(e)));
         return ret;
     }
 
