@@ -1,6 +1,12 @@
 # AugListTest
 
-A JUnit powered tester for `src/AugList.java`.
+A JUnit powered tester containing tests for the various methods of `src/AugList.java`.
+(Note that the unchanged `Object` methods are not tested.)
+
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
 
 ## Dependencies
 

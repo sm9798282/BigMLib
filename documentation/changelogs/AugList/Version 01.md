@@ -9,6 +9,11 @@ Using the Decorator design pattern, I could expand on Java's `ArrayList<T>` to m
 
 `AugList<T>` went through many changes during its inception on a separate project, with the oldest version on this git tree being V1, the subject of this changelog.
 
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
+
 ## Features at a glance
 
 Features included with AugList V1 include:

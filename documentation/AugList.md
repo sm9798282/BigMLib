@@ -1,5 +1,12 @@
 # AugList V2
 
+A class providing enhanced List functionality (compared to the offerings of 1st party Java classes)
+
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
+
 ## Preface
 
 Java needs a better way of handling lists.

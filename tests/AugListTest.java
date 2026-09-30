@@ -1,3 +1,9 @@
+/**
+ * Copyright and Licensing notice:
+ * 
+ * This file is supplied under a modified GNU LGPL V2.1 License.
+ * Please see the provided LICENSE file for more information.
+ */
 package tests;
 
 import static org.junit.Assert.*;

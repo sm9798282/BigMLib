@@ -1,5 +1,10 @@
 # AugList V2
 
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
+
 ## Major changes
 
 - `equals()` reverted to `Object.equals()` behaviour, with `isEquivalent(Object)` getting enhanced V1 `equals()` behaviour

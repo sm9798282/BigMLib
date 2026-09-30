@@ -1,5 +1,12 @@
 # Roadmap
 
+A list of possible features in future versions of BigMLib.
+
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
+
 ## TODO
 
 - Test pulling from dev to a d- branch
