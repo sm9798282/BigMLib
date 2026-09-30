@@ -11,6 +11,8 @@ Please see the provided LICENSE file for more information.
 ## Dependencies
 
 - Java JVM
+- `java.lang.*`
+- `java.util.*`
 - `lib/hamcrest-core-1.3.jar`
 - `lib/junit-4.13.2.jar`
 - `tests/MultiTest.java`

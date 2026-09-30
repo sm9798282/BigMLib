@@ -17,6 +17,8 @@ Further revisions were made with the aim to expand on the initial vision - such 
 ## Dependencies
 
 - Java JVM
+- `java.lang.*`
+- `java.util.*`
 
 ## Features
 
@@ -53,7 +55,7 @@ Provided with AugList V2 are the following:
 - `AugList<T>          applyAll(UnaryOperator<? super T>)`
 - `AugList<AugList<T>> chunk(int)`
 - `AugList<T>          clear()`
-- `AugList<T>          clone()`
+- `| AugList<T> |      clone()`
 - `boolean             contains(T)`
 - `boolean             containsAll(Iterable<? super T>)`
 - `boolean             containsAll(T...)`
@@ -64,16 +66,16 @@ Provided with AugList V2 are the following:
 - `AugList<AugList<SimpleEntry<T, U>>> crossProduct(Iterable<? super U>)`
 - `AugList<T>          distinctCopy()`
 - `AugList<T>          distinctSelf()`
-- `boolean             equals(Object)`
+- `_ boolean _         equals(Object)`
 - `AugList<T>          filterCopy(Predicate<? super T>)`
 - `AugList<T>          filterSelf(Predicate<? super T>)`
 - `void                forEach(Consumer<? super T>)`
 - `AugList<AugList<T>> fragment(int)`
 - `T                   get(int)`
-- `Class<?>            getClass()`
+- `_ Class<?> _        getClass()`
 - `T                   getLast()`
 - `T                   getRandom()`
-- `int                 hashCode()`
+- `| int |             hashCode()`
 - `int                 indexOf(Object)`
 - `AugList<T>          insert(int, T)`
 - `AugList<T>          insertAll(int, Iterable<? super T>)`
@@ -98,8 +100,8 @@ Provided with AugList V2 are the following:
 - `AugList<T>          massOverwriteRandom(T[])`
 - `AugList<U>          oneToOneMapCopy(Function<? super T, U>)`
 - `AugList<T>          overwriteRandom(T)`
-- `void                notify()`
-- `void                notifyAll()`
+- `_ void _            notify()`
+- `_ void _            notifyAll()`
 - `Hashtable<T, U>     pairUp(Iterable<U>)`
 - `Stream<T>           parallelStream()`
 - `String              parameterizedTypeDesc()`
@@ -138,9 +140,9 @@ Provided with AugList V2 are the following:
 - `Collection<T>       toCollection()`
 - `Enumeration<T>      toEnumeration()`
 - `String              toString()`
-- `void                wait()`
-- `void                wait(long)`
-- `void                wait(long, int)`
+- `_ void _            wait()`
+- `_ void _            wait(long)`
+- `_ void _            wait(long, int)`
 - `AugList<T>          without(T)`
 - `AugList<T>          withoutAll(Iterable<? super T>)`
 - `AugList<T>          withoutAll(T...)`
@@ -148,6 +150,9 @@ Provided with AugList V2 are the following:
 - `AugList<T>          withoutLast()`
 - `AugList<T>          withoutRandom()`
 - `AugList<T>          withoutWhere(Predicate<? super T>)`
+
+(Methods marked with _ are inherited from `Object` and are both unchanged and untested;
+Methods marked with | override their `Object` counterparts, and so are tested.)
 
 ## Internal methods
 
@@ -157,6 +162,11 @@ By unifying their code, the Single Source of Truth principle can be followed, an
 - `boolean containsBulk(AugList<T>, boolean)`
 - `SimpleEntry<AugList<T>, AugList<Integer>> equaliseAndFilter(Iterable<? super T>, Iterable<Integer>, boolean)`
 - `static SimpleEntry<AugList<T>, AugList<U>> equaliseLengths(Iterable<? super T>, Iterable<? super U>)`
+
+## Interfaces Implemented
+
+- `Cloneable`
+- `Iterable<T>`
 
 ## See Also
 
