@@ -10,6 +10,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import src.Ticker;
 
+/**
+ * A JUnit powered automatic tester for {@link src.Ticker}.
+ * @since   AugList V2
+ * @version TickerTest V1
+ * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
+ * @see     src.Ticker
+ */
 public final class TickerTest implements MultiTest {
     
     Ticker t = new Ticker();

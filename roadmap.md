@@ -9,18 +9,14 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- Test pulling from dev to a d- branch
-
-## Possible features
-
-### AugList V2 Planned
-
-- AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
+- Test ALL of `ALFactory`
   - Casts to AugLists
   - `AugList<Byte>______fromByteBuff(ByteBuffer)`
   - `AugList<Character>_fromCharBuff(CharBuffer)`
-  - `AugList<Character>_fromStr(String)`
   - `AugList<Character>_fromCharIter(CharacterIterator)`
+  - `AugList<Character>____fromCharSq(CharSequence)`
+  - `AugList<Character>_fromStr(String)`
+  - `AugList<Character>____fromStrBuff(StringBuffer)`
   - `AugList<Double>____fromDblBuff(DoubleBuffer)`
   - `AugList<Double>____fromDblStream(DoubleStream)`
   - `AugList<Float>_____fromFloatBuff(FloatBuffer)`
@@ -32,11 +28,10 @@ Please see the provided LICENSE file for more information.
   - `AugList<Long>______fromLongBuff(LongBuffer)`
   - `AugList<Long>______fromLongStream(LongStream)`
   - `AugList<Short>_____fromShortBuff(ShortBuffer)`
-  - `AugList<String>____fromCharSq(CharSequence)`
+  - `AugList<String>____fromDelimitedString(String, String)`
   - `AugList<String>____fromFile(Path)`
   - `AugList<String>____fromFile(String)`
-  - `AugList<String>____fromRepString(String)`
-  - `AugList<String>____fromStrBuff(StringBuffer)`
+  - `AugList<String>____fromNewLinedString(String, String)`
   - Casts from AugLists
   - `ByteBuffer_________BBfromALByte(AugList<Byte>)`
   - `CharBuffer_________CBfromALChar(AugList<Character>)`
@@ -50,13 +45,17 @@ Please see the provided LICENSE file for more information.
   - `LongStream_________LSfromALLong(AugList<Long>)`
   - `String_____________STRfromALChar(AugList<Character>)`
   - `String_____________STRfromALStr(AugList<String>)`
-  - Other
-  - `int________________quickSelectKth(AugList<Integer>, int k)`
-  - `double_____________quickSelectKth(AugList<Double>, int k)`
+- Test pulling from dev to a d- branch
+
+## Possible features
+
+### AugList V2 Planned
+
 - Push AugList V2 to main without terminating dev
 
 ## Other planned
 
+- `Number________________quickSelectKth(AugList<? super Number>, int k)` (Moved from ALFactory as this does NOT cast)
 - `BoolAlg` class provides Boolean Algebra functions  
   - NOT, AND, OR, XOR
   - Implies

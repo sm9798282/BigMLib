@@ -1,4 +1,4 @@
-# TickerTest
+# ALFactoryTest
 
 A JUnit powered tester containing tests for the various methods of `src/AugList.java`.
 (Note that the unchanged `Object` methods are not tested.)
@@ -14,5 +14,6 @@ Please see the provided LICENSE file for more information.
 - `java.lang.*`
 - `lib/hamcrest-core-1.3.jar`
 - `lib/junit-4.13.2.jar`
-- `src/Ticker.java`
+- `src/ALFactory.java`
+- `src/AugList.java`
 - `tests/MultiTest.java`

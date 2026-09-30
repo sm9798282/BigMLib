@@ -21,6 +21,11 @@ Please see the provided LICENSE file for more information.
 - New bulk swapping method `swapRanges(int, int, int, int)`
 - Methods that used to take `AugList<T>` parameters now take `Iterable<? super T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
+- Complimentary classes added alongside V2:
+  - `ALFactory` V1
+  - `AlFactoryTest` V1
+  - `Ticker` V1
+  - `TickerTest` V1
 
 ## Behavioural changes
 

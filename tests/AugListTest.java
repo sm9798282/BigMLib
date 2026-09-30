@@ -36,9 +36,13 @@ import src.AugList;
 import src.Ticker;
 
 /**
- * A JUnit 3.x powered automatic tester for {@link src.AugList}.
- * @see     src.AugList
+ * A JUnit powered automatic tester for {@link src.AugList}.
  * @since   AugList V1
+ * @version AugListTest V2
+ * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
+ * @see     src.AugList
+ * @see     tests.ALFactoryTest
+ * @see     src.Ticker
  */
 public final class AugListTest implements MultiTest {
 

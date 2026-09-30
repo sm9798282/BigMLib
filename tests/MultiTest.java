@@ -10,6 +10,12 @@ import org.junit.Test;
 
 /**
  * Classes that implement this have multiple tests with shared testdata.
+ * @since   AugList V1
+ * @version MultiTest V1
+ * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
+ * @see     tests.ALFactoryTest
+ * @see     tests.AugListTest
+ * @see     tests.TickerTest
  */
 public interface MultiTest {
     /**

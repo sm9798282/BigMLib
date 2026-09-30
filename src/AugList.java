@@ -143,6 +143,7 @@ import java.util.stream.Stream;
  *          The data type of the elements within this AugList.
  * @version AugList Version 2
  * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
+ * @see     src.ALFactory
  * @see     tests.AugListTest
  */
 public class AugList<T> implements Cloneable, Iterable<T> {
