@@ -830,10 +830,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #setIntersection(Iterable)
      * @see     #setUnion(Iterable)
      * @see     tests.AugListTest#testCrossProduct()
-     * @tags    Terminator
+     * @tags    Creator
      */
-    public <U> AugList<AugList<SimpleEntry<T, U>>> crossProduct(Iterable<? super U> itrB)
-    {
+    public <U> AugList<AugList<SimpleEntry<T, U>>> crossProduct(Iterable<? super U> itrB) {
         AugList<U> ALb = new AugList<U>(itrB); // Implicit null correction
         AugList<AugList<SimpleEntry<T, U>>> ret = new AugList<AugList<SimpleEntry<T, U>>>();
         for (T itemA : this) {
@@ -2432,6 +2431,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return  This {@link AugList}, with the given elements swapped.
      * @see     #swapRandom(int)
      * @see     #swapRandom()
+     * @see     #swapRanges(int, int, int, int)
      * @see     tests.AugListTest#testSwap()
      * @since   AugList V1
      * @note    Inspired by the (Binary) Insertion Sort algorithm, which requires the ability to swap 2 elements.
@@ -2500,6 +2500,76 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         int index2 = availableIndices.removeRandom();
         swap(index1, index2);
         return this;
+    }
+
+    /**
+     * Swaps ranges A and B.
+     * @param   leftA
+     *          The left of range A, inclusive. Swaps with right if necessary.
+     * @param   rightA
+     *          The right of range A, exclusive. Swaps with left if necessary.
+     * @param   leftB
+     *          The left of range B, inclusive. Swaps with right if necessary.
+     * @param   rightB
+     *          The right of range A, inclusive. Swaps with left if necessary.
+     * @throws  IndexOutOfBoundsException
+     *          If either left parameter satisfies {@code left < 0 || left >= size()} or either right parameter satisfies {@code right < 0 || right >= size() + 1}
+     * @throws  IllegalArgumentException
+     *          Ranges A and B overlap (After swapping, {@code rightA > leftB})
+     * @return  this
+     * @since   AugList V2
+     * @see     #swap(int, int)
+     * @see     tests.AugListTest#testSwapRanges()
+     * @tags    Mutator
+     */
+    public AugList<T> swapRanges(int leftA, int rightA, int leftB, int rightB) {
+        if (leftA < 0 || leftA >= size() || rightA < 0 || rightA >= size() + 1 || leftB < 0 || leftB >= size() || rightB < 0 || rightB >= size() + 1) {
+            throw new IndexOutOfBoundsException("Cannot swap non-existent elements.");
+        }
+        if (leftA > rightA) {
+            //throw new IllegalArgumentException();
+            int temp = leftA;
+            leftA = rightA;
+            rightA = temp;
+        }
+        if (leftB > rightB) {
+            //throw new IllegalArgumentException();
+            int temp = leftB;
+            leftB = rightB;
+            rightB = temp;
+        }
+        // If the ranges are valid, but the range A starts after the range B, swap them
+        if (leftB < rightA) {
+            int temp = leftA;
+            leftA = leftB;
+            leftB = temp;
+            temp = rightA;
+            rightA = rightB;
+            rightB = temp;
+        }
+        /**
+         * At this point, the ranges can either look like this:
+         *   a   A  b   B
+         * --|===|--|===|--
+         * 
+         * Or these erroneous possibilities:
+         *   a   b  A   B
+         * --|===|++|===|--
+         * 
+         *   a   b  B   A
+         * --|===|++|===|--
+         * 
+         * Both erroneous possibilities have leftB (b) less than rightA (A)
+         */
+        if (leftB < rightA) {
+            throw new IllegalArgumentException("Cannot swap overlapping ranges");
+        }
+        AugList<T>  ALleft  = subList(0, leftA), 
+                    ALa     = subList(leftA , rightA), 
+                    ALmid   = subList(rightA, leftB), 
+                    ALb     = subList(leftB , rightB), 
+                    ALright = subList(rightB, size());
+        return ALleft.addAll(ALb).addAll(ALmid).addAll(ALa).addAll(ALright);
     }
 
     /**

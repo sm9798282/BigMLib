@@ -161,6 +161,7 @@ public final class AugListTest implements MultiTest {
         testSwap();
         testSwapRandom();
         testSwapRandomNoParam();
+        testSwapRanges();
         testTakeWhile();
         testToArrayGivenType();
         testToCollection();
@@ -2522,6 +2523,36 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataDouble.get(swappedIndices.get(1)) == tddClone.get(swappedIndices.get(0)));
         assertTrue(testDataDouble.swapRandom().parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(testDataDouble.swapRandom().getClass().toGenericString().equals("public class src.AugList<T>"));
+    }
+
+    /**
+     * JUnit tester for Bulk Swapping
+     * @since   AugList V2
+     * @see     src.AugList#swapRanges()
+     */
+    @Test
+    public void testSwapRanges() {
+        setupTestData();
+        assertTrue(testDataDouble.clone().swapRanges(0, 1, 1, 2).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 1, 1, 2).getClass().toGenericString().equals("public class src.AugList<T>"));
+        //                                                                                          Original: [1.0, 2.0, 7.11, -2.5, 3.1415926]
+        assertTrue(testDataDouble.clone().swapRanges(0, 1, 1, 2).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 1, 2, 3).isEquivalent("[7.11, 2.0, 1.0, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 2, 2, 3).isEquivalent("[7.11, 1.0, 2.0, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 2, 3, 4).isEquivalent("[-2.5, 7.11, 1.0, 2.0, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 2, 4, 5).isEquivalent("[3.1415926, 7.11, -2.5, 1.0, 2.0]"));
+        assertTrue(testDataDouble.clone().swapRanges(1, 0, 1, 2).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(0, 1, 2, 1).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().swapRanges(1, 2, 0, 1).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(-1, 0, 0, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(11, 0, 0, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, -1, 0, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, 11, 0, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, 0, -1, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, 0, 11, 0); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, 0, 0, -1); });
+        assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, 0, 0, 11); });
+        assertThrows(IllegalArgumentException.class, () -> { testDataDouble.swapRanges(0, 3, 1, 2); });
     }
 
     /**

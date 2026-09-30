@@ -13,6 +13,7 @@
 - New property querying methods `isPalindrome()`, `isSet()`, `isSorted(Comparator<? super T>)`
 - New splitting methods `split3(int)`, `splitDelim(Function<? super T, Boolean>)`
 - New set theory method `crossProduct(Iterable<? super T>)`, takes the cross product with the given elements.
+- New bulk swapping method `swapRanges(int, int, int, int)`
 - Methods that used to take `AugList<T>` parameters now take `Iterable<? super T>` instead, increasing flexibility.
 - `AugList<T> implements Cloneable`
 

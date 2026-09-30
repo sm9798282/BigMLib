@@ -11,7 +11,6 @@
 
 ### AugList V2 Planned
 
-- `swapRange(int, int, int)` d-AL2-08-csma
 - `class Ticker`
 - AugList Factory class `ALFactory` handles constructors and casts to and from specific AugList Parameterized Types
   - Casts to AugLists
@@ -194,6 +193,7 @@
 
 ## Completed
 
+- `swapRanges(int, int, int, int)` d-AL2-08-csma
 - `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
 - `splitDelim(Function<? super T, Boolean>)`
 - `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma

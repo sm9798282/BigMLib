@@ -125,6 +125,7 @@ Provided with AugList V2 are the following:
 - `AugList<T>          swap(int, int)`
 - `AugList<T>          swapRandom(int)`
 - `AugList<T>          swapRandom()`
+- `AugList<T>          swapRanges(int, int, int, int)`
 - `AugList<T>          takeWhile(Predicate<? super T>)`
 - `T[]                 toArray(T[])`
 - `Collection<T>       toCollection()`
