@@ -684,36 +684,14 @@ public final class AugListTest implements MultiTest {
     @Test
     public void testForEach() {
         setupTestData();
-        // Since the return type is void, there is no way to automatically check the test works.
-        // (Similarly, there is no way to confirm the return type)
-        // Check the Debug Console and confirm the output matches the following:
-        /**
-         * 1.0
-         * 2.0
-         * 7.11
-         * -2.5
-         * 3.1415926
-         * The
-         * quick
-         * brown
-         * fox
-         * jumps
-         * over
-         * the
-         * lazy dog
-         * 7
-         * 11
-         * 19
-         * -24
-         * 117
-         * 145
-         * -56
-         * 43
-         */
-        testDataDouble.forEach(System.out::println);
-        testDataString.forEach(System.out::println);
-        testDataInt.forEach(System.out::println);
-        testDataInt.forEach(null);
+        // Since the return type is void, checking the test works relies on function calls having side effects.
+        // Ticker is one such class that operates with side effects.
+        AugList<Ticker> ALt = new AugList<Ticker>(new Ticker());
+        ALt.forEach(t -> t.tick());
+        assertTrue(ALt.get(0).tick() == 1);
+        ALt.forEach(t -> t.reset());
+        ALt.forEach(null);
+        assertTrue(ALt.get(0).tick() == 0);
     }
 
     /**
@@ -2125,9 +2103,9 @@ public final class AugListTest implements MultiTest {
         t.reset();
         assertTrue(testDataInt.clone().setFromCallable(1, -1, () -> { return t.tick(); }).isEquivalent("[0, 1, 19, -24, 117, 145, -56, 43]"));
         t.reset();
-        assertTrue(testDataInt.clone().setFromCallable(0, 2, () -> null).isEquivalent("[*null*, *null*, *null*, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.clone().setFromCallable(0, 2, () -> null).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         t.reset();
-        assertTrue(testDataInt.clone().setFromCallable(0, 2, nullCallable).isEquivalent("[*null*, *null*, *null*, -24, 117, 145, -56, 43]"));
+        System.out.println(testDataInt.clone().setFromCallable(0, 2, nullCallable).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         t.reset();
         assertTrue(testDataDouble.clone().setFromCallable(
             0, 

@@ -150,18 +150,28 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * The {@link ArrayList} that this {@link AugList} decorates.
-     * @since AugList V1
+     * @since   AugList V1
      */
     private ArrayList<T> ls;
+
+    /**
+     * The {@link Comparator} over this {@link AugList}.
+     * Is null if the state changed since the most recent sort call.
+     * (This usually means a Mutator was called and made a change.)
+     * @since   AugList V2
+     */
+    private Comparator<? super T> cmp = null;
 
     /**
      * Creates a new, empty, non-null {@link AugList}.
      * @since       AugList V1
      * @see         tests.AugListTest#testInstantiateBlank()
      * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
+     * @note        Sets the underlying {@link ArrayList} to be empty and the underlying {@link Comparator} over this {@link AugList} to be null.
      * @tags        Constructor
      */
     public AugList() {
+        cmp = null;
         ls = new ArrayList<T>() {};
     }
 
@@ -177,7 +187,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SuppressWarnings("unchecked")
     public AugList(Enumeration<? super T> enumeration) {
-        ls = new ArrayList<T>() {};
+        this();
         if (!Objects.isNull(enumeration)) {
             while (enumeration.hasMoreElements()) {
                 ls.add((T)enumeration.nextElement());
@@ -198,7 +208,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SuppressWarnings("unchecked")
     public AugList(Iterator<? super T> iterator) {
-        ls = new ArrayList<T>() {};
+        this();
         if (!Objects.isNull(iterator)) {
             while (iterator.hasNext()) {
                 ls.add((T)iterator.next());
@@ -216,10 +226,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags        Constructor
      */
     public AugList(Iterable<? super T> iterable) {
-        if (Objects.isNull(iterable)) {
-            ls = new ArrayList<T>() {};
-        }
-        else {
+        this();
+        if (!Objects.isNull(iterable)) {
             ls = new AugList<T>(iterable.iterator()).ls;
         }
     }
@@ -235,7 +243,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SuppressWarnings("unchecked")
     public AugList(ListIterator<? super T> listIterator) {
-        ls = new ArrayList<T>() {};
+        this();
         if (!Objects.isNull(listIterator)) {
             listIterator.forEachRemaining(element -> ls.add((T)element));
         }
@@ -255,14 +263,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags        Constructor
      */
     public AugList(Iterable<? super T> values, Iterable<Integer> counts) {
-        if (Objects.isNull(values) || Objects.isNull(counts)) {
-            ls = new ArrayList<T>() {};
-        }
-        else {
+        this();
+        if (!(Objects.isNull(values) || Objects.isNull(counts))) {
             SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseAndFilter(values, counts, false);
             AugList<T> ALvalues = res.getKey();
             AugList<Integer> ALcounts = res.getValue();
-            ls = new ArrayList<T>() {};
             for (int i = 0; i < ALvalues.size(); i++) {
                 for (int j = 0; j < ALcounts.get(i); j++) {
                     ls.add(ALvalues.get(i));
@@ -341,7 +346,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SuppressWarnings("unchecked")
     public AugList(Spliterator<? super T> spliterator) {
-        ls = new ArrayList<T>() {};
+        this();
         if (!Objects.isNull(spliterator)) {
             spliterator.forEachRemaining(e -> ls.add((T)e));
         }
@@ -357,7 +362,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags        Constructor
      */
     public AugList(Stream<? super T> stream) {
-        ls = new ArrayList<T>() {};
+        this();
         if (!Objects.isNull(stream)) {
             ls = new AugList<T>(stream.iterator()).ls;
         }
@@ -375,10 +380,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SafeVarargs
     public AugList(T... elements) {
-        if (Objects.isNull(elements)) {
-            ls = new ArrayList<T>() {};
-        }
-        else {
+        this();
+        if (!Objects.isNull(elements)) {
             ls = new ArrayList<T>(Arrays.asList(elements));
         }
     }
@@ -395,6 +398,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> add(T element) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         ls.add(element);
         return this;
     }
@@ -415,7 +419,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
             return this;
         }
         AugList<T> ALelements = new AugList<T>(elements);
-        ls.addAll(ALelements.ls);
+        if (ls.addAll(ALelements.ls)) {
+            cmp = null; // Mutators destroy the value of cmp if a change occurs.
+        }
         return this;
     }
 
@@ -446,6 +452,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> addFirst(T element) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         ls.addFirst(element);
         return this;
     }
@@ -541,8 +548,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     @SuppressWarnings("unchecked")
     public AugList<T> applyAll(UnaryOperator<? super T> func) {
         if (!Objects.isNull(func)) {
+            AugList<T> clone = clone();
             for (int i = 0; i < ls.size(); i++) {   
                 ls.set(i, (T)func.apply(ls.get(i)));
+            }
+            if (!isEquivalent(clone)) {
+                cmp = null; // Destroy cmp if the function was not the identity function.
             }
         }
         return this;
@@ -607,6 +618,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> clear() {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         ls.clear();
         return this;
     }
@@ -892,7 +904,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                 ret.add(e);
             }
         }
-        this.ls = ret.ls;
+        if (!isEquivalent(ret)) {
+            cmp = null; // Destroy cmp if at least one element was removed
+        }
+        ls = ret.ls;
         return ret;
     }
 
@@ -950,13 +965,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> filterSelf(Predicate<? super T> condition) {
+        AugList<T> clone = clone();
         this.ls = filterCopy(condition).ls;
+        if (!isEquivalent(clone)) {
+            cmp = null; // At least 1 element was removed, so destroy cmp.
+        }
         return this;
     }
 
     /**
      * Supplies the given {@link Consumer} all elements of this {@link AugList}.
-     * <p>For a Mutator method, use {@link #applyAll()}.</p>
+     * <p>For a non-terminal method, use {@link #applyAll()}.</p>
      * <p>For a Creator method, use {@link #oneToOneMap()}.</p>
      * @param   action
      *          The action to perform.
@@ -964,12 +983,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #applyAll(Function)
      * @see     #oneToOneMapCopy(Function)
      * @see     tests.AugListTest#testForEach()
-     * @note    Encapsulates {@link List#forEach(Consumer<? super E>)}.
-     * @tags    Terminator
+     * @note    Encapsulates {@link List#forEach(Consumer)}.
+     *          <p> Is only a Mutator if the action is also a Mutator.
+     * @tags    Mutator, Terminator
      */
     public void forEach(Consumer<? super T> action) {
         if (!Objects.isNull(action)) {
+            AugList<T> clone = clone();
             ls.forEach(action);
+            if (isEquivalent(clone)) {
+                cmp = null; // At least 1 mutation occurred, so destroy cmp.
+            }
         }
     }
 
@@ -1114,6 +1138,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> insert(int index, T element) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         ls.add(index, element);
         return this;
         // It is not possible to pass index = null into this method without generating an exception or error prior to this method.
@@ -1140,7 +1165,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> insertAll(int index, Iterable<? super T> elements) {
         AugList<T> e = new AugList<T>(elements); // Implicit null handling
-        ls.addAll(index, e.ls);
+        if (ls.addAll(index, e.ls)) {
+            cmp = null; // At least 1 element was added, so destroy cmp.
+        }
         return this;
     }
 
@@ -1183,6 +1210,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> insertAllAtRandom(Iterable<? super T> elements) {
         AugList<T> e = new AugList<T>(elements); // Implicit null handling
+        if (!e.isEmpty()) {
+            cmp = null; // At least 1 element will be inserted, so destroy cmp.
+        }
         for (int i = 0; i < e.size(); i++) {
             insertAtRandom(e.get(i));
         }
@@ -1222,6 +1252,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> insertAtRandom(T element) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         ls.add((new Random()).nextInt(ls.size()), element);
         return this;
     }
@@ -1493,6 +1524,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @note    Encapsulates {@link List#iterator()}.
      * @tags    Converter
      */
+    @Override
     public Iterator<T> iterator() {
         return ls.iterator();
     }
@@ -1663,6 +1695,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public AugList<T> massOverwriteRandom(Iterable<T> elements) {
         AugList<T> ALelements = new AugList<T>(elements);
+        AugList<T> clone = clone();
         if (ALelements.size() > size()) {
             throw new IllegalArgumentException("Number of elements to write cannot be longer than the size of this AugList.");
         }
@@ -1673,6 +1706,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         for (int i = 0; i < ALelements.size(); i++) {
             int idx = validIndices.removeRandom(); // Get a random index and remove it as a valid option
             set(idx, ALelements.get(i));
+        }
+        if (!isEquivalent(clone)) {
+            cmp = null; // At least 1 element had its value changed, so destroy cmp.
         }
         return this;
     }
@@ -1718,9 +1754,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public <U> AugList<U> oneToOneMapCopy(Function<? super T, U> func) {
         AugList<U> ret = new AugList<U>();
+        AugList<T> clone = clone();
         for (T element : ls) {
             ret.add(func.apply(element));
         }
+        ls = clone.ls;
+        // Function application may have side effects?
+        // Thus, force no side effects by resetting to state prior to mapping.
         return ret;
         // As oneToOneMap holds the contract that this.size() == this.oneToOneMap(func).size(),
         // and as there is no way to instantiate a new T or a new U,
@@ -1740,6 +1780,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> overwriteRandom(T element) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         set(new Random().nextInt(size()), element);
         return this;
     }
@@ -1802,7 +1843,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Attempts to remove the first occurrence of the given {@link Object} from this {@link AugList}, if present.
-     * <p>For a Mutator method, see {@link #without(Object)}.
+     * <p>For a non-Terminal method, see {@link #without(Object)}.
      * @param   o
      *          The {@link Object} to remove if present.
      * @return  {@code true} if removed, and {@code false} if it was not present.
@@ -1816,15 +1857,19 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #without()
      * @see     tests.AugListTest#testRemove()
      * @note    Encapsulates {@link ArrayList#remove(Object)}.
-     * @tags    Terminator
+     * @tags    Mutator, Terminator
      */
     public boolean remove(Object o) {
-        return ls.remove(o);
+        if (ls.remove(o)) {
+            cmp = null; // Element removed, so destroy cmp.
+            return true;
+        }
+        return false;
     }
 
     /**
      * Attempts to remove the first instance of each of the supplied elements, if present, from this {@link AugList}.
-     * <p>For a Mutator method, see {@link #withoutAll(AugList)}.
+     * <p>For a non-terminal method, see {@link #withoutAll(AugList)}.
      * <p>For methods with similar functionality, use {@link #listDifference(AugList)} and {@code #retainAll(java.util.Collection)}.
      * @param       iterable
      *              The source of the elements to remove in question. If {@code null}, returns {@code false}.
@@ -1837,7 +1882,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         tests.AugListTest#testRemoveAll()
      * @note        Replaces {@link List#removeAll(java.util.Collection)}.
      * @overloads   {@link #removeAll(Iterable)}, {@link #removeAll(T...) removeAll(T...)}
-     * @tags        Terminator
+     * @tags        Mutator, Terminator
      */
     public boolean removeAll(Iterable<? super T> iterable) {
         AugList<T> elements = new AugList<T>(iterable); // Implicit null check
@@ -1848,12 +1893,15 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                 ls.remove(elements.get(i));
             }
         }
+        if (ret) {
+            cmp = null; // At least 1 element removed, so destroy cmp.
+        }
         return ret;
     }
 
     /**
      * Attempts to removes the first instance of each of the supplied elements, if present, from this {@link AugList}.
-     * <p>For a Mutator method, see {@link #withoutAll(T...)}.
+     * <p>For a non-terminal method, see {@link #withoutAll(T...)}.
      * <p>For methods with similar functionality, use {@link #listDifference(AugList)} and {@code #retainAll(java.util.Collection)}.
      * @param       elements
      *              The elements to remove in question. If {@code null}, returns {@code false}.
@@ -1866,7 +1914,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see         tests.AugListTest#testRemoveAllVarargs()
      * @note        Varargs variant of {@link #removeAll(Iterable)}.
      * @overloads   {@link #removeAll(Iterable)}, {@link #removeAll(T...) removeAll(T...)}
-     * @tags        Terminator
+     * @tags        Mutator, Terminator
      */
     @SafeVarargs
     public final boolean removeAll(T... elements) {
@@ -1876,7 +1924,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // Works the same as a pop operation from a stack, except can pop any element rather than the top element.
     /**
      * Removes the element at the given index.
-     * <p>For a Mutator method, see {@link #withoutIndex(int)}.
+     * <p>For a Non-terminal method, see {@link #withoutIndex(int)}.
      * @param   index
      *          The index in question.
      * @return  The element that was removed.
@@ -1889,9 +1937,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #withoutIndex(int)
      * @see     tests.AugListTest#testRemoveAtIndex()
      * @note    Encapsulates {@code ArrayList<T>.remove(int)}.
-     * @tags    Terminator
+     * @tags    Mutator, Terminator
      */
     public T removeAt(int index) {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         return ls.remove(index);
         // Cannot pass index = null without prior error/exception.
     }
@@ -1900,7 +1949,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     /**
      * Removes all elements in this list that satisfy the given {@code filter}.
-     * <p>For a Mutator method, see {@link #withoutWhere(Predicate)}.
+     * <p>For a Non-terminal method, see {@link #withoutWhere(Predicate)}.
      * @param   filter
      *          The condition in question. If {@code null}, returns {@code false}.
      * @return  {@code true} if at least 1 item was removed, and {@code false} otherwise.
@@ -1909,18 +1958,22 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #withoutWhere(Predicate)
      * @see     tests.AugListTest#testRemoveIf()
      * @note    Encapsulates {@link List#removeIf(Predicate)}.
-     * @tags    Terminator
+     * @tags    Mutator, Terminator
      */
     public boolean removeIf(Predicate<? super T> filter) {
         if (Objects.isNull(filter)) {
             return false;
         }
-        return ls.removeIf(filter);
+        if (ls.removeIf(filter)) {
+            cmp = null; // At least 1 element removed, so destroy cmp.
+            return true;
+        }
+        return false;
     }
 
     /**
      * Pops the final element in this {@link AugList}.
-     * <p>For a Mutator method, see {@link #withoutLast()}.
+     * <p>For a Non-terminal method, see {@link #withoutLast()}.
      * @return  The final element, if it exists.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
@@ -1929,14 +1982,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #withoutLast()
      * @see     tests.AugListTest#testRemoveLast()
      * @note    Encapsulates {@link List#removeLast()}.
-     * @tags    Terminator
+     * @tags    Mutator, Terminator
      */
     public T removeLast() {
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         return ls.removeLast();
     }
 
     /**
      * Removes a random element.
+     * <p>For a non-terminal method, see {@link #withoutRandom()}.
      * @return  The item that was removed.
      * @throws  NoSuchElementException
      *          {@code this.size() == 0}
@@ -1945,12 +2000,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #withoutRandom()
      * @see     tests.AugListTest#testRemoveRandom()
      * @note    Randomized variant of {@link #removeAt(int)}.
-     * @tags    Terminator
+     * @tags    Mutator, Terminator
      */
     public T removeRandom() {
         if (size() == 0) {
             throw new NoSuchElementException("Cannot remove an element from an empty list.");
         }
+        cmp = null; // Guaranteed mutation, so destroy cmp.
         return ls.remove((new Random()).nextInt(ls.size()));
     }
 
@@ -2048,7 +2104,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public T set(int index, T element) {
-        return ls.set(index, element);
+        AugList<T> clone = clone();
+        T ret = ls.set(index, element);
+        if (!isEquivalent(clone)) {
+            cmp = null; // The element was changed to a different value than before, so destroy cmp.
+        }
+        return ret;
         // index cannot be null without an earlier exception/error.
     }
 
@@ -2117,9 +2178,9 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         }
         end += 1; // Make end inclusive.
         if (Objects.isNull(callable)) {
-            callable = () -> { return null; };
+            return this; // State unaltered, so cmp survives.
         }
-        AugList<T> clone = clone();
+        AugList<T> clone = clone(), original = clone();
         for (int i = start; i < end; i++) {
             try {
                 if (i >= size()) {
@@ -2130,10 +2191,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                 }
             } catch (Exception e) {
                 // If the callable throws, return the unaltered list.
+                // (This means the state has not changed, so cmp survives.)
                 return this;
             }
         }
         // If the callable does not throw, return the altered list.
+        if (!original.isEquivalent(clone)) {
+            cmp = null; // At least 1 element changed values, so destroy tmp.
+        }
         return clone;
     }
 
@@ -2161,6 +2226,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         for (int i = 0; i < ALIdxs.size(); i++) {
             set(ALIdxs.get(i), ALvals.get(i));
         }
+        // Each individual set will destroy cmp if a state change occurs.
         return this;
     }
 
@@ -2259,7 +2325,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> shuffleSelf() {
+        AugList<T> clone = clone();
         this.ls = shuffleCopy().ls;
+        if (isEquivalent(clone)) {
+            cmp = null; // Order has changed, so destroy cmp.
+        }
         return this;
     }
 
@@ -2311,11 +2381,14 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #isSorted(Comparator)
      * @see     tests.AugListTest#testSort()
      * @note    Replaces {@link List#sort()}, returns {@code this} rather than {@code void}.
+     *          <p>The only mutator that does not destroy cmp.
+     *          <p>(Instead, sets cmp to the given comparator if non-null, and preserves if null.)
      * @tags    Mutator
      */
     public AugList<T> sort(Comparator<? super T> comparator) {
         if (!Objects.isNull(comparator)) {
             ls.sort(comparator);
+            cmp = comparator;
         }
         return this;
     }
@@ -2399,6 +2472,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     public Spliterator<T> spliterator() {
         return ls.spliterator();
+        //Spliterator<T> spl = ls.spliterator();
     }
 
     /**
@@ -2464,6 +2538,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         T temp = ls.get(index1);
         ls.set(index1, ls.get(index2));
         ls.set(index2, temp);
+        // The sets will destroy cmp if a state change occurs.
         return this;
         // Neither index can be passed in as null without a prior error/exception.
     }
@@ -2491,7 +2566,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         }
         availableIndices.remove(index);
         int index2 = availableIndices.removeRandom();
-        swap(index, index2);
+        swap(index, index2); // Swap will destroy cmp if a state change occurs.
         return this;
         // index can be passed in as null without a prior error/exception.
     }
@@ -2514,7 +2589,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
         int index1 = availableIndices.removeRandom();
         availableIndices.remove(index1);
         int index2 = availableIndices.removeRandom();
-        swap(index1, index2);
+        swap(index1, index2); // swap destroys cmp if a state change occurs.
         return this;
     }
 
@@ -2585,7 +2660,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                     ALmid   = subList(rightA, leftB), 
                     ALb     = subList(leftB , rightB), 
                     ALright = subList(rightB, size());
-        return ALleft.addAll(ALb).addAll(ALmid).addAll(ALa).addAll(ALright);
+        AugList<T> ret = ALleft.addAll(ALb).addAll(ALmid).addAll(ALa).addAll(ALright);
+        if (!isEquivalent(ret)) {
+            cmp = null; // Order changed, so destroy cmp.
+        }
+        return ret;
     }
 
     /**
@@ -2716,7 +2795,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> without(Object o) {
-        ls.remove(o);
+        ls.remove(o); // Destroys cmp if state changes
         return this;
     }
 
@@ -2735,7 +2814,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags        Mutator
      */
     public AugList<T> withoutAll(Iterable<? super T> elements) {
-        removeAll(elements);
+        removeAll(elements); // Destroys cmp if state changes
         return this;
     }
 
@@ -2755,7 +2834,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     @SafeVarargs
     public final AugList<T> withoutAll(T... elements) {
-        removeAll(elements);
+        removeAll(elements); // Destroys cmp if state changes
         return this;
     }
 
@@ -2777,7 +2856,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> withoutIndex(int index) {
-        ls.remove(index);
+        ls.remove(index); // Destroys cmp when state changes
         return this;
         // index cannot be null without a prior exception/error
     }
@@ -2799,7 +2878,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> withoutLast() {
-        ls.removeLast();
+        ls.removeLast(); // Destroys cmp when state changes
         return this;
     }
 
@@ -2818,7 +2897,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> withoutRandom() {
-        removeRandom();
+        removeRandom(); // Destroys cmp when state changes
         return this;
     }
 
@@ -2836,10 +2915,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @tags    Mutator
      */
     public AugList<T> withoutWhere(Predicate<? super T> filter) {
-        removeIf(filter);
+        removeIf(filter); // Destroys cmp if state changes
         return this;
     }
 
+
+    //#region Misc deprecated
     // /**
     //  * Create a new AugList that is the given length, filled with the given value.
     //  * @deprecated  Due to a lack of use cases.
@@ -2854,6 +2935,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //  */
     // @Deprecated(since = "2", forRemoval = true)
     // public AugList(T fill, int size) {
+    //     this();
     //     if (size < 0) {
     //         throw new IllegalArgumentException("size must be positive.");
     //     }
@@ -2879,33 +2961,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //         this.genericAugList = genericAugList;
     //         this.thisAugList = thisAugList;
     //     }
-    // }
-
-    // /**
-    //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
-    //  * @deprecated  Due to lack of use cases.
-    //  * @param       index
-    //  *              The index of the item to get.
-    //  * @return      The value at that index (which will be the default value if {@code index >= this.size()})
-    //  * @throws      IllegalArgumentException
-    //  *              If {@code index < 0}
-    //  * @since       AugList pre-alpha, Deprecated V1
-    //  * @tags        Terminator
-    //  */
-    // @Deprecated(since = "1", forRemoval = true)
-    // public T getAndAppendIfEmpty(int index) {
-    //     if (index < 0) {
-    //         throw new IllegalArgumentException("index was negative.");
-    //     }
-    //     // Add empty entries until the given index if necessary.
-    //     if (index >= ls.size()) {
-    //         ArrayList<T> newLs = new ArrayList<T>(index + 1);
-    //         for (int i = 0; i < ls.size(); i++) {
-    //             newLs.set(i, ls.get(i));
-    //         }
-    //         ls = newLs;
-    //     }
-    //     return get(index);
     // }
 
     // Method currently unnecessary, so has been commented.
@@ -3079,6 +3134,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * 
      * All methods within this section should work if uncommented.
      * All methods within this section do not have corresponding tests.
+     * These methods have no null protection and do not account for the state of cmp.
      */
 
     /**
@@ -3216,6 +3272,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     //@Deprecated(since = "1", forRemoval = true)
     // public AugList(T fill, int size) {
+    //     this();
     //     if (size < 0) {
     //         throw new IllegalArgumentException("size must be positive.");
     //     }
@@ -3239,6 +3296,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      */
     //@Deprecated(since = "1", forRemoval = true)
     // public T getAndAppendIfEmpty(int index) {
+    //     cmp = null; // Guaranteed mutation, so destroy cmp.
     //     if (index < 0) {
     //         throw new IllegalArgumentException("index was negative.");
     //     }
