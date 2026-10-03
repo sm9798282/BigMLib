@@ -6,6 +6,7 @@
  */
 package src;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -14,8 +15,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 // import java.util.NoSuchElementException;
 // import java.util.Comparator;
 // import java.util.DoubleSummaryStatistics;
@@ -52,7 +55,7 @@ import java.util.stream.Stream;
  * @see     src.AugList
  * @see     tests.ALFactoryTest
  */
-public abstract class ALFactory {
+public class ALFactory {
     //#region Casts to AugList
 
     /**
@@ -60,6 +63,8 @@ public abstract class ALFactory {
      * @param   bb
      *          The {@link ByteBuffer} in question.
      * @return  A new {@link AugList} of {@link Byte}.
+     * @see     #BBfromALB(AugList)
+     * @see     tests.ALFactoryTest#testFromByteBuff()
      * @tags    Constructor
      */
     public static AugList<Byte> fromByteBuff(ByteBuffer bb) {
@@ -78,6 +83,8 @@ public abstract class ALFactory {
      * @param   cb
      *          The {@link CharBuffer} in question.
      * @return  A new {@link AugList} of {@link Character}.
+     * @see     #CBfromALC(AugList)
+     * @see     tests.ALFactoryTest#testFromCharBuff()
      * @tags    Constructor
      */
     public static AugList<Character> fromCharBuff(CharBuffer cb) {
@@ -96,6 +103,7 @@ public abstract class ALFactory {
      * @param   ci
      *          The {@link CharacterIterator} in question.
      * @return  A new {@link AugList} of {@link Character}.
+     * @see     tests.ALFactoryTest#testFromCharItr()
      * @tags    Constructor
      */
     public static AugList<Character> fromCharItr(CharacterIterator ci) {
@@ -104,8 +112,10 @@ public abstract class ALFactory {
         }
         AugList<Character> ret = new AugList<Character>();
         ret.add(ci.first());
-        while (ci.current() != (CharacterIterator.DONE)) {
-            ret.add(ci.next());
+        Character nextChar = ci.next();
+        while (nextChar != (CharacterIterator.DONE)) {
+            ret.add(nextChar);
+            nextChar = ci.next();
         }
         return ret;
     }
@@ -115,6 +125,8 @@ public abstract class ALFactory {
      * @param   cs
      *          The {@link CharacterSequence} in question.
      * @return  A new {@link AugList} of {@link Character}.
+     * @see     #CSfromALC(AugList)
+     * @see     tests.ALFactoryTest#testFromCharSq()
      * @tags    Constructor
      */
     public static AugList<Character> fromCharSq(CharSequence cs) {
@@ -127,13 +139,13 @@ public abstract class ALFactory {
         }
         return ret;
     }
-
     
     /**
      * Create a new {@link AugList} of {@link Character} from the given {@link String}.
      * @param   s
      *          The {@link String} in question.
      * @return  A new {@link AugList} of {@link Character}.
+     * @see     tests.ALFactoryTest#testFromStr()
      * @tags    Constructor
      */
     public static AugList<Character> fromStr(String s) {
@@ -152,6 +164,7 @@ public abstract class ALFactory {
      * @param   sb
      *          The {@link StingBuffer} in question.
      * @return  A new {@link AugList} of {@link String}.
+     * @note    The code {@code ALFactory.fromStrBuff(ALFactory.StBfromAlSt(ALS))} for some {@link AugList} of {@link String} ALS splits the entries' strings into a list of constituent characters.
      * @tags    Constructor
      */
     public static AugList<Character> fromStrBuff(StringBuffer sb) {
@@ -159,7 +172,7 @@ public abstract class ALFactory {
             return new AugList<Character>();
         }
         AugList<Character> ret = new AugList<Character>();
-        for (int i = 0; i < sb.capacity(); i++) {
+        for (int i = 0; i < sb.length(); i++) {
             ret.add(sb.charAt(i));
         }
         return ret;
@@ -170,6 +183,8 @@ public abstract class ALFactory {
      * @param   db
      *          The {@link DoubleBuffer} in question.
      * @return  A new {@link AugList} of {@link Double}.
+     * @see     #DSfromALD(AugList)
+     * @see     tests.ALFactoryTest#testFromDblBuff()
      * @tags    Constructor
      */
     public static AugList<Double> fromDblBuff(DoubleBuffer db) {
@@ -188,6 +203,8 @@ public abstract class ALFactory {
      * @param   ds
      *          The {@link DoubleStream} in question.
      * @return  A new {@link AugList} of {@link Double}.
+     * @see     #DSfromALD(AugList)
+     * @see     tests.ALFactoryTest#testFromDblStream()
      * @tags    Constructor
      */
     public static AugList<Double> fromDblStream(DoubleStream ds) {
@@ -202,6 +219,8 @@ public abstract class ALFactory {
      * @param   fb
      *          The {@link FloatBuffer} in question.
      * @return  A new {@link AugList} of {@link Float}.
+     * @see     #FBfromALF(AugList)
+     * @see     tests.ALFactoryTest#testFromFloatBuff()
      * @tags    Constructor
      */
     public static AugList<Float> fromFloatBuff(FloatBuffer fb) {
@@ -216,10 +235,33 @@ public abstract class ALFactory {
     }
 
     /**
+     * Create a new {@link AugList} of {@link Integer} from the given int.
+     * Each digit will become its own entry.
+     * @param   i
+     *          The int in question. Is made positive if negative.
+     * @return  A new {@link AugList} of {@link Integer}.
+     * @see     tests.ALFactoryTest#testFromDigits()
+     * @tags    Constructor
+     */
+    public static AugList<Integer> fromDigits(int i) {
+        if (i < 0) {
+            i = -i;
+        }
+        String iString = String.valueOf(i);
+        AugList<Integer> ret = new AugList<Integer>();
+        for (int j = 0; j < iString.length(); j++) {
+            ret.add(Integer.valueOf(iString.toCharArray()[j] + ""));
+        }
+        return ret;
+    }
+
+    /**
      * Create a new {@link AugList} of {@link Integer} from the given {@link IntBuffer}.
      * @param   ib
      *          The {@link IntBuffer} in question.
      * @return  A new {@link AugList} of {@link Integer}.
+     * @see     #IBfromALI(AugList)
+     * @see     tests.ALFactoryTest#testFromIntBuff()
      * @tags    Constructor
      */
     public static AugList<Integer> fromIntBuff(IntBuffer ib) {
@@ -234,31 +276,28 @@ public abstract class ALFactory {
     }
 
     /**
-     * Create a new {@link AugList} of {@link Integer} from the given int.
-     * Each digit will become its own entry.
-     * @param   i
-     *          The int in question.
+     * Create a new {@link AugList} of {@link Integer} from the given {@link IntStream}.
+     * @param   is
+     *          The {@link IntStream} in question.
      * @return  A new {@link AugList} of {@link Integer}.
+     * @see     #ISfromALI(AugList)
+     * @see     tests.ALFactoryTest#testFromIntStream()
      * @tags    Constructor
      */
-    public static AugList<Integer> fromDigits(int i) {
-        if (i < 0) {
-            i = -i;
+    public static AugList<Integer> fromIntStream(IntStream is) {
+        if (Objects.isNull(is)) {
+            return new AugList<Integer>();
         }
-        String iString = String.valueOf(i);
-        AugList<Integer> ret = new AugList<Integer>();
-        for (int j = 0; j < iString.length(); j++) {
-            ret.add(Integer.valueOf(iString.toCharArray()[i] + ""));
-        }
-        return ret;
+        return new AugList<Integer>(is.boxed());
     }
 
     /**
      * Create a new {@link AugList} of {@link Integer} from the given {@link String}.
      * Each character is translated into its Unicode code point.
-     * @param   i
-     *          The int in question.
+     * @param   s
+     *          The {@link String} in question.
      * @return  A new {@link AugList} of {@link Integer}.
+     * @see     tests.ALFactoryTest#testFromUnicode()
      * @tags    Constructor
      */
     public static AugList<Integer> fromUnicode(String s) {
@@ -273,27 +312,19 @@ public abstract class ALFactory {
     }
 
     /**
-     * Create a new {@link AugList} of {@link Integer} from the given {@link IntStream}.
-     * @param   is
-     *          The {@link IntStream} in question.
-     * @return  A new {@link AugList} of {@link Integer}.
-     * @tags    Constructor
-     */
-    public static AugList<Integer> fromIntStream(IntStream is) {
-        if (Objects.isNull(is)) {
-            return new AugList<Integer>();
-        }
-        return new AugList<Integer>(is.boxed());
-    }
-
-    /**
      * Create a new identity {@link AugList} of {@link Integer} of the given size.
      * @param   size
      *          The size of the resultant {@link AugList}.
      * @return  A new Identity {@link AugList} of the given size.
+     * @throws  IllegalArgumentException
+     *          {@link size < 0}
+     * @see     tests.ALFactoryTest#testIdentityAL()
      * @tags    Constructor
      */
     public static AugList<Integer> identityAL(int size) {
+        if (size < 0) {
+            throw new IllegalArgumentException();
+        }
         AugList<Integer> ret = new AugList<Integer>();
         for (int i = 0; i < size; i++) {
             ret.add(i);
@@ -306,6 +337,8 @@ public abstract class ALFactory {
      * @param   lb
      *          The {@link LongBuffer} in question.
      * @return  A new {@link AugList} of {@link Long}.
+     * @see     #LBfromALL(AugList)
+     * @see     tests.ALFactoryTest#testFromLongBuff()
      * @tags    Constructor
      */
     public static AugList<Long> fromLongBuff(LongBuffer lb) {
@@ -324,6 +357,8 @@ public abstract class ALFactory {
      * @param   ls
      *          The {@link LongStream} in question.
      * @return  A new {@link AugList} of {@link Long}.
+     * @see     #LSfromALL(AugList)
+     * @see     tests.ALFactoryTest#testFromLongStream()
      * @tags    Constructor
      */
     public static AugList<Long> fromLongStream(LongStream ls) {
@@ -338,6 +373,8 @@ public abstract class ALFactory {
      * @param   sb
      *          The {@link ShortBuffer} in question.
      * @return  A new {@link AugList} of {@link Short}.
+     * @see     #ShBfromALSh(AugList)
+     * @see     tests.ALFactoryTest#testFromShortBuff()
      * @tags    Constructor
      */
     public static AugList<Short> fromShortBuff(ShortBuffer sb) {
@@ -360,6 +397,8 @@ public abstract class ALFactory {
      * @return  A new {@link AugList} of {@link String}.
      * @throws  PatternSyntaxException
      *          If the supplied regex string has invalid syntax.
+     * @see     #fromNewLinedString(String)
+     * @see     tests.ALFactoryTest#testFromDelimitedString()
      * @tags    Constructor
      */
     public static AugList<String> fromDelimitedString(String s, String regex) {
@@ -374,8 +413,12 @@ public abstract class ALFactory {
      * @param       p
      *              The {@link Path} in question.
      * @return      A new {@link AugList} of {@link String}.
-     *              Will be empty if an {@link IOException} is thrown.
+     *              Will be empty if an {@link NullPointerException} is thrown.
+     *              Will be a single entry with {@link CharacterIterator#DONE} if a {@link IOException} occurs.
      * @overloads   {@link #fromFile(Path)}, {@link #fromFile(String)}
+     * @note        Slightly confusingly named as neither overload takes a {@link File}.
+     *              However, its input is indeed a physical file on the OS's file system.
+     * @see         tests.ALFactoryTest#testFromFile()
      * @tags        Constructor
      */
     public static AugList<String> fromFile(Path p) {
@@ -390,8 +433,8 @@ public abstract class ALFactory {
             }
             reader.close();
             return ret;
-        } catch (Exception e) {
-            return new AugList<String>();
+        } catch (IOException e) {
+            return new AugList<String>(CharacterIterator.DONE + "");
         }
     }
 
@@ -402,6 +445,11 @@ public abstract class ALFactory {
      * @return      A new {@link AugList} of {@link String}.
      *              Will be empty if an {@link IOException} is thrown.
      * @overloads   {@link #fromFile(Path)}, {@link #fromFile(String)}
+     * @throws      NullPointerException
+     *              pathString is null.
+     * @throws      InvalidPathException
+     *              The given pathString cannot be parsed into a {@link Path}.
+     * @see         tests.ALFactoryTest#testFromFile()
      * @tags        Constructor
      */
     public static AugList<String> fromFile(String pathString) {
@@ -414,6 +462,8 @@ public abstract class ALFactory {
      * @param   s
      *          The {@link String} in question.
      * @return  A new {@link AugList} of {@link String}.
+     * @see     #fromDelimitedString(String, String)
+     * @see     tests.ALFactoryTest#testFromNewLinedString()
      * @tags    Constructor
      */
     public static AugList<String> fromNewLinedString(String s) {
@@ -445,6 +495,8 @@ public abstract class ALFactory {
      * @return  A new {@link ByteBuffer}.
      * @throws  NullPointerException
      *          ALB is null.
+     * @see     #fromByteBuff(ByteBuffer)
+     * @see     tests.ALFactoryTest#testBBfromALB()
      * @tags    Converter
      */
     public static ByteBuffer BBfromALB(AugList<Byte> ALB) {
@@ -462,6 +514,8 @@ public abstract class ALFactory {
      * @return  A new {@link CharBuffer}.
      * @throws  NullPointerException
      *          ALC is null.
+     * @see     #fromCharBuff(CharBuffer)
+     * @see     tests.ALFactoryTest#testCBfromALC()
      * @tags    Converter
      */
     public static CharBuffer CBfromALC(AugList<Character> ALC) {
@@ -471,6 +525,21 @@ public abstract class ALFactory {
         }
         return bb;
     }
+    
+    /**
+     * Creates a new {@link CharacterIterator} from the given {@link AugList} of {@link Character}.
+     * @param   ALC
+     *          The {@link AugList} in question.
+     * @return  A new {@link CharacterIterator}.
+     * @throws  NullPointerException
+     *          ALC is null.
+     * @see     #fromCharItr(CharacterIterator)
+     * @see     tests.ALFactoryTest#testCIfromALC()
+     * @tags    Converter
+     */
+    public static CharacterIterator CIfromALC(AugList<Character> ALC) {
+        return new StringCharacterIterator(ALFactory.StrFromALC(ALC));
+    }
 
     /**
      * Creates a new {@link CharSequence} from the given {@link AugList} of {@link Character}.
@@ -479,9 +548,11 @@ public abstract class ALFactory {
      * @return  A new {@link CharSequence}.
      * @throws  NullPointerException
      *          ALC is null.
+     * @see     #fromCharSq(CharSequence)
+     * @see     tests.ALFactoryTest#testCSfromALC()
      * @tags    Converter
      */
-    public static CharSequence CSFromALC(AugList<Character> ALC) {
+    public static CharSequence CSfromALC(AugList<Character> ALC) {
         if (Objects.isNull(ALC)) {
             throw new NullPointerException();
         }
@@ -501,10 +572,20 @@ public abstract class ALFactory {
             }
 
             /**
-             * @return  The specified subsequence
+             * @return      The specified subsequence
+             * @implNote    If {@link AugList#subList(int, int)} throws {@link IllegalArgumentException},
+             *              It is rethrown as an {@link IndexOutOfBoundsException} instead.
+             * @throws      IndexOutOfBoundsException
+             *              If {@code start} or {@code end} are negative,
+             *              If {@code end} is greater than {@link #length()},
+             *              or if {@code start} is greater than {@code end}
              */
             public CharSequence subSequence(int start, int end) {
-                return CSFromALC(ALC.subList(start, end));
+                try {
+                    return CSfromALC(ALC.subList(start, end));
+                } catch (IllegalArgumentException e) {
+                    throw new IndexOutOfBoundsException();
+                }
             }
 
             /**
@@ -512,7 +593,9 @@ public abstract class ALFactory {
              */
             public String toString() {
                 String ret = "";
-                ALC.forEach(c -> ret.concat(c + ""));
+                for (int i = 0; i < ALC.size(); i++) {
+                    ret += ALC.get(i);
+                }
                 return ret;
             }
         };
@@ -525,6 +608,8 @@ public abstract class ALFactory {
      * @return  A new {@link DoubleBuffer}.
      * @throws  NullPointerException
      *          ALD is null.
+     * @see     #fromDblBuff(CharSequence)
+     * @see     tests.ALFactoryTest#testDBfromALD()
      * @tags    Converter
      */
     public static DoubleBuffer DBfromALD(AugList<Double> ALD) {
@@ -544,9 +629,11 @@ public abstract class ALFactory {
      *          ALD is null.
      * @note    Within the comments is a half-finished implementation of {@link DoubleStream}.
      *          <p>This was made redundant by the discovery of {@link Stream#mapToDouble(ToDoubleFunction)}.
+     * @see     #fromDblStream(DoubleStream)
+     * @see     tests.ALFactoryTest#testDSfromALD()
      * @tags    Converter
      */
-    public static DoubleStream DSFromALD(AugList<Double> ALD) {
+    public static DoubleStream DSfromALD(AugList<Double> ALD) {
         if (Objects.isNull(ALD)) {
             throw new NullPointerException();
         }
@@ -921,6 +1008,8 @@ public abstract class ALFactory {
      * @return  A new {@link FloatBuffer}.
      * @throws  NullPointerException
      *          ALF is null.
+     * @see     #fromFloatBuffer(FloatBuffer)
+     * @see     tests.ALFactoryTest#testFBfromALF()
      * @tags    Converter
      */
     public static FloatBuffer FBfromALF(AugList<Float> ALF) {
@@ -938,6 +1027,8 @@ public abstract class ALFactory {
      * @return  A new {@link IntBuffer}.
      * @throws  NullPointerException
      *          ALB is null.
+     * @see     #fromIntBuff(IntBuffer)
+     * @see     tests.ALFactoryTest#testIBfromALI()
      * @tags    Converter
      */
     public static IntBuffer IBfromALI(AugList<Integer> ALI) {
@@ -955,9 +1046,11 @@ public abstract class ALFactory {
      * @return  A new {@link IntStream}.
      * @throws  NullPointerException
      *          ALI is null.
+     * @see     #fromIntStream(IntStream)
+     * @see     tests.ALFactoryTest#testISfromALI()
      * @tags    Converter
      */
-    public static IntStream ISFromALI(AugList<Integer> ALI) {
+    public static IntStream ISfromALI(AugList<Integer> ALI) {
         if (Objects.isNull(ALI)) {
             throw new NullPointerException();
         }
@@ -971,6 +1064,8 @@ public abstract class ALFactory {
      * @return  A new {@link LongBuffer}.
      * @throws  NullPointerException
      *          ALL is null.
+     * @see     #fromLongBuff(IntStream)
+     * @see     tests.ALFactoryTest#testLBfromALL()
      * @tags    Converter
      */
     public static LongBuffer LBfromALL(AugList<Long> ALL) {
@@ -988,9 +1083,11 @@ public abstract class ALFactory {
      * @return  A new {@link LongStream}.
      * @throws  NullPointerException
      *          ALL is null.
+     * @see     #fromLongStream(LongStream)
+     * @see     tests.ALFactoryTest#testLSfromALL()
      * @tags    Converter
      */
-    public static LongStream LSFromALL(AugList<Long> ALL) {
+    public static LongStream LSfromALL(AugList<Long> ALL) {
         if (Objects.isNull(ALL)) {
             throw new NullPointerException();
         }
@@ -998,15 +1095,38 @@ public abstract class ALFactory {
     }
 
     /**
+     * Creates a new {@link ShortBuffer} from the given {@link AugList} of {@link Short}.
+     * @param   ALS
+     *          The {@link AugList} in question.
+     * @return  A new {@link ShortBuffer}.
+     * @throws  NullPointerException
+     *          ALS is null.
+     * @see     #fromShortBuff(ShortBuffer)
+     * @see     tests.ALFactoryTest#testShBfromALSh()
+     * @tags    Converter
+     */
+    public static ShortBuffer ShBfromALSh(AugList<Short> ALS) {
+        ShortBuffer bb = ShortBuffer.allocate(ALS.size()); // Implicit null check (and throw)
+        for (int i = 0; i < ALS.size(); i++) {
+            bb.put(ALS.get(i));
+        }
+        return bb;
+    }
+
+    /**
      * Concatenates all the characters in the given {@link AugList} of {@link Character Characters}.
      * @param   ALC
      *          The {@link AugList} in question.
      * @return  The elements of ALC concatenated together.
+     * @see     #StrFromALSt(AugList)
+     * @see     tests.ALFactoryTest#testStrFromALC()
      * @tags    Terminator
      */
     public static String StrFromALC(AugList<Character> ALC) {
         String ret = "";
-        ALC.forEach(c -> ret.concat(c + ""));
+        for (int i = 0; i < ALC.size(); i++) {
+            ret += ALC.get(i);
+        }
         return ret;
     }
 
@@ -1015,12 +1135,35 @@ public abstract class ALFactory {
      * @param   ALS
      *          The {@link AugList} in question.
      * @return  The elements of ALC concatenated together. DOES NOT insert new lines or spaces.
+     * @see     #StrFromALC(AugList)
+     * @see     tests.ALFactoryTest#testStrFromALC()
      * @tags    Terminator
      */
-    public static String StrFromALS(AugList<String> ALS) {
+    public static String StrFromALSt(AugList<String> ALS) {
         String ret = "";
-        ALS.forEach(s -> ret.concat(s + ""));
+        for (int i = 0; i < ALS.size(); i++) {
+            ret += ALS.get(i);
+        }
         return ret;
+    }
+
+    /**
+     * Creates a new {@link StringBuffer} from the given {@link AugList} of {@link String}.
+     * @param   ALSt
+     *          The {@link AugList} in question.
+     * @return  A new {@link StringBuffer}.
+     * @throws  NullPointerException
+     *          ALS is null.
+     * @see     #fromStrBuff(StringBuffer)
+     * @see     tests.ALFactoryTest#testStBfromALSt()
+     * @tags    Converter
+     */
+    public static StringBuffer StBfromALSt(AugList<String> ALSt) {
+        StringBuffer stb = new StringBuffer(ALSt.size()); // Implicit null check (and throw)
+        for (int i = 0; i < ALSt.size(); i++) {
+            stb.append(ALSt.get(i));
+        }
+        return stb;
     }
 
     //#endregion

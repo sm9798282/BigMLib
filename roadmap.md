@@ -9,42 +9,12 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- Test ALL of `ALFactory`
-  - Casts to AugLists
-  - `AugList<Byte>______fromByteBuff(ByteBuffer)`
-  - `AugList<Character>_fromCharBuff(CharBuffer)`
-  - `AugList<Character>_fromCharIter(CharacterIterator)`
-  - `AugList<Character>____fromCharSq(CharSequence)`
-  - `AugList<Character>_fromStr(String)`
-  - `AugList<Character>____fromStrBuff(StringBuffer)`
-  - `AugList<Double>____fromDblBuff(DoubleBuffer)`
-  - `AugList<Double>____fromDblStream(DoubleStream)`
-  - `AugList<Float>_____fromFloatBuff(FloatBuffer)`
-  - `AugList<Integer>___fromIntBuff(IntBuffer)`
-  - `AugList<Integer>___fromDigits(int)`
-  - `AugList<Integer>___fromUnicode(String)`
-  - `AugList<Integer>___fromIntStream(IntStream)`
-  - `AugList<Integer>___identityAL(int)`
-  - `AugList<Long>______fromLongBuff(LongBuffer)`
-  - `AugList<Long>______fromLongStream(LongStream)`
-  - `AugList<Short>_____fromShortBuff(ShortBuffer)`
-  - `AugList<String>____fromDelimitedString(String, String)`
-  - `AugList<String>____fromFile(Path)`
-  - `AugList<String>____fromFile(String)`
-  - `AugList<String>____fromNewLinedString(String, String)`
-  - Casts from AugLists
-  - `ByteBuffer_________BBfromALByte(AugList<Byte>)`
-  - `CharBuffer_________CBfromALChar(AugList<Character>)`
-  - `CharSequence_______CSfromALChar(AugList<String>)`
-  - `DoubleBuffer_______DBfromALDbl(AugList<Double>)`
-  - `DoubleStream_______DSfromALDbl(AugList<Double>)`
-  - `FloatBuffer________FBfromALFloat(AugList<Float>)`
-  - `IntBuffer__________IBFromALInt(AugList<Integer>)`
-  - `IntStream__________ISfromALInt(AugList<Integer>)`
-  - `LongBuffer_________LBfromALLong(AugList<Long>)`
-  - `LongStream_________LSfromALLong(AugList<Long>)`
-  - `String_____________STRfromALChar(AugList<Character>)`
-  - `String_____________STRfromALStr(AugList<String>)`
+- Format relevant sections as a table, i.e:
+
+|Return type|Method name|
+|-----------|-----------|
+|a          |b          |
+
 - Test pulling from dev to a d- branch
 
 ## Possible features
@@ -195,6 +165,45 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- Test ALL of `ALFactory`
+  - Casts to AugLists
+  - `AugList<Byte>______fromByteBuff(ByteBuffer)`
+  - `AugList<Character>_fromCharBuff(CharBuffer)`
+  - `AugList<Character>_fromCharIter(CharacterIterator)`
+  - `AugList<Character>____fromCharSq(CharSequence)`
+  - `AugList<Character>_fromStr(String)`
+  - `AugList<Character>____fromStrBuff(StringBuffer)`
+  - `AugList<Double>____fromDblBuff(DoubleBuffer)`
+  - `AugList<Double>____fromDblStream(DoubleStream)`
+  - `AugList<Float>_____fromFloatBuff(FloatBuffer)`
+  - `AugList<Integer>___fromIntBuff(IntBuffer)`
+  - `AugList<Integer>___fromDigits(int)`
+  - `AugList<Integer>___fromUnicode(String)`
+  - `AugList<Integer>___fromIntStream(IntStream)`
+  - `AugList<Integer>___identityAL(int)`
+  - `AugList<Long>______fromLongBuff(LongBuffer)`
+  - `AugList<Long>______fromLongStream(LongStream)`
+  - `AugList<Short>_____fromShortBuff(ShortBuffer)`
+  - `AugList<String>____fromDelimitedString(String, String)`
+  - `AugList<String>____fromFile(Path)`
+  - `AugList<String>____fromFile(String)`
+  - `AugList<String>____fromNewLinedString(String, String)`
+  - Casts from AugLists
+  - `ByteBuffer_________BBfromALByte(AugList<Byte>)`
+  - `CharBuffer_________CBfromALChar(AugList<Character>)`
+  - `CharacterIterator  CIfromALC(AugList<Character>)`
+  - `CharSequence_______CSfromALChar(AugList<String>)`
+  - `DoubleBuffer_______DBfromALDbl(AugList<Double>)`
+  - `DoubleStream_______DSfromALDbl(AugList<Double>)`
+  - `FloatBuffer________FBfromALFloat(AugList<Float>)`
+  - `IntBuffer__________IBFromALInt(AugList<Integer>)`
+  - `IntStream__________ISfromALInt(AugList<Integer>)`
+  - `LongBuffer_________LBfromALLong(AugList<Long>)`
+  - `LongStream_________LSfromALLong(AugList<Long>)`
+  - `ShortBuffer        StBfromALSt(AugList<Short>)`
+  - `String_____________STRfromALChar(AugList<Character>)`
+  - `String_____________STRfromALStr(AugList<String>)`
+  - `StringBuffer_______StBfromALSt(AugList<String>)`
 - `class Ticker`
 - Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
 - Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested

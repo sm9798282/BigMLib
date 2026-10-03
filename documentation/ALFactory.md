@@ -31,10 +31,10 @@ Casts to AugList
 - `AugList<Double>      fromDblBuff(DoubleBuffer)`
 - `AugList<Double>      fromDblStream(DoubleStream)`
 - `AugList<Float>       fromFloatBuff(FloatBuffer)`
-- `AugList<Integer>     fromIntBuff(IntBuffer)`
 - `AugList<Integer>     fromDigits(int)`
-- `AugList<Integer>     fromUnicode(String)`
+- `AugList<Integer>     fromIntBuff(IntBuffer)`
 - `AugList<Integer>     fromIntStream(IntStream)`
+- `AugList<Integer>     fromUnicode(String)`
 - `AugList<Integer>     identityAL(int)`
 - `AugList<Long>        fromLongBuff(LongBuffer)`
 - `AugList<Long>        fromLongStream(LongStream)`
@@ -46,18 +46,21 @@ Casts to AugList
 
 Casts from AugList
 
-- `ByteBuffer       BBFromALB(AugList<Byte>)`
-- `CharBuffer       CBFromALC(AugList<Character>)`
-- `CharSequence     CSFromALC(AugList<Character>)`
-- `DoubleBuffer     DBFromALD(AugList<Double>)`
-- `DoubleStream     DSFromALD(AugList<Double>)`
-- `FloatBuffer      FBFromALF(AugList<Float>)`
-- `IntBuffer        IBFromALI(AugList<Integer>)`
-- `IntStream        ISFromALI(AugList<Integer>)`
-- `LongBuffer       LBFromALL(AugList<Long>)`
-- `LongStream       LSFromALL(AugList<Long>)`
-- `String           StrFromALC(AugList<Character>)`
-- `String           StrFtomALS(AugList<String>)`
+- `ByteBuffer           BBfromALB(AugList<Byte>)`
+- `CharBuffer           CBfromALC(AugList<Character>)`
+- `CharacterIterator    CIfromALC(AugList<Character>)`
+- `CharSequence         CSfromALC(AugList<Character>)`
+- `DoubleBuffer         DBfromALD(AugList<Double>)`
+- `DoubleStream         DSfromALD(AugList<Double>)`
+- `FloatBuffer          FBfromALF(AugList<Float>)`
+- `IntBuffer            IBfromALI(AugList<Integer>)`
+- `IntStream            ISfromALI(AugList<Integer>)`
+- `LongBuffer           LBfromALL(AugList<Long>)`
+- `LongStream           LSfromALL(AugList<Long>)`
+- `ShortBuffer          ShBfromALSh(AugList<Short>)`
+- `String               StrFromALC(AugList<Character>)`
+- `String               StrFromALSt(AugList<String>)`
+- `StringBuffer         StBfromALSt(AugList<String>)`
 
 Object inherited methods
 
@@ -73,4 +76,4 @@ Object inherited methods
 ## See Also
 
 - `src/AugList.java`
-- `tests/ALFactoryTest.java` (eventually)
+- `tests/ALFactoryTest.java`
