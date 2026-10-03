@@ -109,4 +109,5 @@ None
 ## Potential issues
 
 - As some areas of code perform unchecked casts, it is possible (though unlikely) that some exceptions could be thrown.
-If these do occur, please document them with a bug report.
+- Behaviour of certain methods may be unpredictable when 2 or more threads attempt to modify AugList at once.
+  That being said, as most of AugList is built off the concurrent modification protection that ArrayList provides, this may not be a particularly large problem.

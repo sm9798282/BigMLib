@@ -9,19 +9,14 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
-- `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
-
-- Test pulling from dev to a d- branch
+- Credits (In progress)
+- Figure out if `AugList.spliterator()` can be upgraded
+- AugList Implements RandomAccess
+- Figure out how to setup a dependency graph
 
 ## Possible features
 
-### AugList V2 Planned
-
-- Push AugList V2 to main without terminating dev
-
-## Other planned
-
+- Look into Serialisation for AugList?
 - `Number________________quickSelectKth(AugList<? super Number>, int k)` (Moved from ALFactory as this does NOT cast)
 - `BoolAlg` class provides Boolean Algebra functions  
   - NOT, AND, OR, XOR
@@ -162,6 +157,8 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
+- `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
 - Format relevant sections as a table, i.e:
 
 |Return type|Method name|
