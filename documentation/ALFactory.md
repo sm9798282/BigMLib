@@ -20,58 +20,67 @@ Please see the provided LICENSE file for more information.
 
 Provided with ALFactory V1 are the following:
 
-Casts to AugList
+### Casts to AugList
 
-- `AugList<Byte>        fromByteBuff(ByteBuffer)`
-- `AugList<Character>   fromCharBuff(CharBuffer)`
-- `AugList<Character>   fromCharItr(CharaterIterator)`
-- `AugList<Character>   fromCharSq(CharSequence)`
-- `AugList<Character>   fromStr(String)`
-- `AugList<Character>   fromStrBuff(StringBuffer)`
-- `AugList<Double>      fromDblBuff(DoubleBuffer)`
-- `AugList<Double>      fromDblStream(DoubleStream)`
-- `AugList<Float>       fromFloatBuff(FloatBuffer)`
-- `AugList<Integer>     fromDigits(int)`
-- `AugList<Integer>     fromIntBuff(IntBuffer)`
-- `AugList<Integer>     fromIntStream(IntStream)`
-- `AugList<Integer>     fromUnicode(String)`
-- `AugList<Integer>     identityAL(int)`
-- `AugList<Long>        fromLongBuff(LongBuffer)`
-- `AugList<Long>        fromLongStream(LongStream)`
-- `AugList<Short>       fromShortBuff(ShortBuffer)`
-- `AugList<String>      fromDelimitedString(String, String)`
-- `AugList<String>      fromFile(Path)`
-- `AugList<String>      fromFile(String)`
-- `AugList<String>      fromNewLinedString(String)`
+|Return Type         |Method Name                          |
+|--------------------|-------------------------------------|
+|`AugList<Byte>`     |`fromByteBuff(ByteBuffer)`           |
+|`AugList<Character>`|`fromCharBuff(CharBuffer)`           |
+|`AugList<Character>`|`fromCharItr(CharaterIterator)`      |
+|`AugList<Character>`|`fromCharSq(CharSequence)`           |
+|`AugList<Character>`|`fromStr(String)`                    |
+|`AugList<Character>`|`fromStrBuff(StringBuffer)`          |
+|`AugList<Double>`   |`fromDblBuff(DoubleBuffer)`          |
+|`AugList<Double>`   |`fromDblStream(DoubleStream)`        |
+|`AugList<Float>`    |`fromFloatBuff(FloatBuffer)`         |
+|`AugList<Integer>`  |`fromDigits(int)`                    |
+|`AugList<Integer>`  |`fromIntBuff(IntBuffer)`             |
+|`AugList<Integer>`  |`fromIntStream(IntStream)`           |
+|`AugList<Integer>`  |`fromUnicode(String)`                |
+|`AugList<Integer>`  |`identityAL(int)`                    |
+|`AugList<Long>`     |`fromLongBuff(LongBuffer)`           |
+|`AugList<Long>`     |`fromLongStream(LongStream)`         |
+|`AugList<Short>`    |`fromShortBuff(ShortBuffer)`         |
+|`AugList<String>`   |`fromDelimitedString(String, String)`|
+|`AugList<String>`   |`fromFile(Path)`                     |
+|`AugList<String>`   |`fromFile(String)`                   |
+|`AugList<String>`   |`fromNewLinedString(String)`         |
 
-Casts from AugList
+### Casts from AugList
 
-- `ByteBuffer           BBfromALB(AugList<Byte>)`
-- `CharBuffer           CBfromALC(AugList<Character>)`
-- `CharacterIterator    CIfromALC(AugList<Character>)`
-- `CharSequence         CSfromALC(AugList<Character>)`
-- `DoubleBuffer         DBfromALD(AugList<Double>)`
-- `DoubleStream         DSfromALD(AugList<Double>)`
-- `FloatBuffer          FBfromALF(AugList<Float>)`
-- `IntBuffer            IBfromALI(AugList<Integer>)`
-- `IntStream            ISfromALI(AugList<Integer>)`
-- `LongBuffer           LBfromALL(AugList<Long>)`
-- `LongStream           LSfromALL(AugList<Long>)`
-- `ShortBuffer          ShBfromALSh(AugList<Short>)`
-- `String               StrFromALC(AugList<Character>)`
-- `String               StrFromALSt(AugList<String>)`
-- `StringBuffer         StBfromALSt(AugList<String>)`
+|Return Type        |Method Name                     |
+|-------------------|--------------------------------|
+|`ByteBuffer`       |`BBfromALB(AugList<Byte>)`      |
+|`CharBuffer`       |`CBfromALC(AugList<Character>)` |
+|`CharacterIterator`|`CIfromALC(AugList<Character>)` |
+|`CharSequence`     |`CSfromALC(AugList<Character>)` |
+|`DoubleBuffer`     |`DBfromALD(AugList<Double>)`    |
+|`DoubleStream`     |`DSfromALD(AugList<Double>)`    |
+|`FloatBuffer`      |`FBfromALF(AugList<Float>)`     |
+|`IntBuffer`        |`IBfromALI(AugList<Integer>)`   |
+|`IntStream`        |`ISfromALI(AugList<Integer>)`   |
+|`LongBuffer`       |`LBfromALL(AugList<Long>)`      |
+|`LongStream`       |`LSfromALL(AugList<Long>)`      |
+|`ShortBuffer`      |`ShBfromALSh(AugList<Short>)`   |
+|`String`           |`StrFromALC(AugList<Character>)`|
+|`String`           |`StrFromALSt(AugList<String>)`  |
+|`StringBuffer`     |`StBfromALSt(AugList<String>)`  |
 
-Object inherited methods
+### Object inherited methods
 
-- `boolean          equals(Object)`
-- `Class<?>         getClass()`
-- `int              hashCode()`
-- `void             notify()`
-- `void             notifyAll()`
-- `void             wait()`
-- `void             wait(long)`
-- `void             wait(long, int)`
+These methods are not tested.
+
+|Return Type|Method Name      |
+|-----------|-----------------|
+|`boolean`  |`equals(Object)` |
+|`Class<?>` |`getClass()`     |
+|`int`      |`hashCode()`     |
+|`void`     |`notify()`       |
+|`void`     |`notifyAll()`    |
+|`void`     |`wait()`         |
+|`void`     |`wait(long)`     |
+|`void`     |`wait(long, int)`|
+|`String`   |`toString()`     |
 
 ## See Also
 

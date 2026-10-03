@@ -9,11 +9,8 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- Format relevant sections as a table, i.e:
-
-|Return type|Method name|
-|-----------|-----------|
-|a          |b          |
+- `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
+- `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
 
 - Test pulling from dev to a d- branch
 
@@ -164,6 +161,12 @@ Please see the provided LICENSE file for more information.
 - Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess, Public Transport model
 
 ## Completed
+
+- Format relevant sections as a table, i.e:
+
+|Return type|Method name|
+|-----------|-----------|
+|a          |b          |
 
 - Test ALL of `ALFactory`
   - Casts to AugLists

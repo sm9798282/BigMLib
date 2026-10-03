@@ -12,27 +12,33 @@ Please see the provided LICENSE file for more information.
 - Java JVM
 - `java.lang.*`
 
-## FeatureList
+## Feature List
 
-- `new Ticker()`
-- `new Ticker(int)`
-- `| Ticker |   clone()`
-- `_ boolean _  equals(Object)`
-- `_ Class<?> _ getClass()`
-- `_ int _      hashCode()`
-- `_ void _     notify()`
-- `_ void _     notifyAll()`
-- `int          tick()`
-- `int          tickN()`
-- `Ticker       reset()`
-- `Ticker       set()`
-- `| String |   toString()`
-- `_ void _     wait()`
-- `_ void _     wait(long)`
-- `_ void _     wait(long, int)`
+|Return type |Method Name                                 |
+|------------|--------------------------------------------|
+|`new Ticker`|`Ticker()`                                  |
+|`new Ticker`|`Ticker(int)`                               |
+|`Ticker`    |`clone()` (Overrides `Object.clone()`)      |
+|`int`       |`tick()`                                    |
+|`int`       |`tickN()`                                   |
+|`Ticker`    |`reset()`                                   |
+|`Ticker`    |`set()`                                     |
+|`String`    |`toString()` (Overrides `Object.toString()`)|
 
-(Methods marked with _ are inherited from `Object` and are both unchanged and untested;
-Methods marked with | override their `Object` counterparts, and so are tested.)
+### Object inherited methods
+
+These methods are not overriden, and so are not tested.
+
+|Return Type|Method Name      |
+|-----------|-----------------|
+|`boolean`  |`equals(Object)` |
+|`Class<?>` |`getClass()`     |
+|`int`      |`hashCode()`     |
+|`void`     |`notify()`       |
+|`void`     |`notifyAll()`    |
+|`void`     |`wait()`         |
+|`void`     |`wait(long)`     |
+|`void`     |`wait(long, int)`|
 
 ## Internal methods
 
