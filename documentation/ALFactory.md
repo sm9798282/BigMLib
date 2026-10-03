@@ -74,6 +74,7 @@ These methods are not tested.
 |-----------|-----------------|
 |`boolean`  |`equals(Object)` |
 |`Class<?>` |`getClass()`     |
+|`void`     |`finalize()`     |
 |`int`      |`hashCode()`     |
 |`void`     |`notify()`       |
 |`void`     |`notifyAll()`    |

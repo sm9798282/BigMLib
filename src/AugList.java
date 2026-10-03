@@ -897,6 +897,23 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
+     * @deprecated  Use {@link #isEquivalent(Object)} or {@link #isRearrangement(Iterable)} instead for more broadly useful equality functions.
+     * {@inheritDoc}
+     * 
+     * @return  {@code Object.equals(o)}
+     * @since   AugList V1, Deprecated V2
+     * @see     #hashCode()
+     * @see     #isEquivalent(Object)
+     * @see     #isRearrangement(Iterable)
+     * @tags    Terminator
+     */
+    @Override
+    @Deprecated(since = "2", forRemoval = false)
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    /**
      * Creates a new {@link AugList} with exactly the elements that satisfy the given filter.
      * <p>For a Mutator method, use {@link #filterSelf()}.
      * @param   condition
@@ -947,7 +964,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #applyAll(Function)
      * @see     #oneToOneMapCopy(Function)
      * @see     tests.AugListTest#testForEach()
-     * @note    Encapsulates {@code ArrayList<T>.forEach(Consumer<? super E>)}.
+     * @note    Encapsulates {@link List#forEach(Consumer<? super E>)}.
      * @tags    Terminator
      */
     public void forEach(Consumer<? super T> action) {
@@ -1045,15 +1062,22 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     }
 
     /**
-     * @return  The hashcode of the decorated {@link ArrayList}.
+     * {@inheritDoc}
+     * 
+     * @return  The hashcode of this {@link AugList}.
      * @since   AugList V1
+     * @see     #equals(Object)
      * @see     tests.AugListTest#testHashCode()
-     * @note    Encapsulates {@link List#hashCode()}.
-     *          Note that objects that satisfy {@link #equals(Object)} may not have an equal hashcode, in violation of the general contract.
+     * @note    Used to encapsulate {@link List#hashCode()}.
+     *          Behaviour reverted in V2 due to breaking the {@link #equals()} contract.
+     *          (Objects that satisfy {@link #equals(Object)} should by contract have an equal hashcode, and vice versa.
+     *           The V1 implementation broke the FORWARDS direction of that contract only.)
      * @tags    Terminator
      */
+    @Override
     public int hashCode() {
-        return ls.hashCode();
+        //return ls.hashCode();
+        return super.hashCode();
     }
 
     /**
@@ -1236,7 +1260,8 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @see     #equals(Object)
      * @see     tests.AugListTest#testIsEquivalent()
      * @return  {@code true} if equivalent, and {@code false} otherwise.
-     * @note    Breaks the contract that states that two equal objects have equal {@link #hashCode() hashcodes},
+     * @note    Has expanded V1 {@link #equals(Object)} behaviour.
+     *          That behaviour was moved to this method because it breaks the {@link #equals(Object)} contract that states that two equal objects have equal {@link #hashCode() hashcodes},
      *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
      * @tags    Terminator
      */
@@ -2817,15 +2842,17 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // /**
     //  * Create a new AugList that is the given length, filled with the given value.
-    //  * @deprecated
+    //  * @deprecated  Due to a lack of use cases.
     //  * @param       fill
     //  *              What to fill this AugList with.
     //  * @param       size
     //  *              How long the AugList should be.
     //  * @throws      IllegalArgumentException
     //  *              {@code size < 0}
+    //  * @since       AugList V1, Deprecated since V2
     //  * @tags        Constructor
     //  */
+    // @Deprecated(since = "2", forRemoval = true)
     // public AugList(T fill, int size) {
     //     if (size < 0) {
     //         throw new IllegalArgumentException("size must be positive.");
@@ -2835,25 +2862,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     //     }
     // }
 
-    // /**
-    //  * Increases the maximum number of elements this AugList can take to {@code minCapacity}.
-    //  * Does nothing if capacity is already sufficient.
-    //  * 
-    //  * @deprecated  (Other methods already perform the same task.)
-    //  * @param       minCapacity
-    //  *              The minimum capacity this AugList is desired to have.
-    //  * @note        Encapsulates {@code ArrayList<T>.ensureCapacity()}.
-    //  * @tags        Terminator
-    //  */
-    // public void ensureCapacity(int minCapacity) {
-    //     ls.ensureCapacity(minCapacity);
-    // }
-
     // Was a part of an attempted change to .isEquivalent() that went nowhere.
     // /**
     //  * Helper class that is used in isEquivalent(), consisting of 2 fields and a single constructor.
-    //  * @deprecated
+    //  * @deprecated   Due to not working as intended
+    //  * @since        AugList pre-alpha, deprecated V1
     //  */
+    // @Deprecated(since = "1", forRemoval = true)
     // private class TypeFinder {
     //     // This only works if we don't force a parameter on the AugList.
     //     @SuppressWarnings({ "rawtypes", "unused" })
@@ -2868,14 +2883,16 @@ public class AugList<T> implements Cloneable, Iterable<T> {
 
     // /**
     //  * Gets the value at the given index. If the given index is out of bounds, creates entries up to that index and returns the default value.
-    //  * @deprecated  
+    //  * @deprecated  Due to lack of use cases.
     //  * @param       index
     //  *              The index of the item to get.
     //  * @return      The value at that index (which will be the default value if {@code index >= this.size()})
     //  * @throws      IllegalArgumentException
     //  *              If {@code index < 0}
+    //  * @since       AugList pre-alpha, Deprecated V1
     //  * @tags        Terminator
     //  */
+    // @Deprecated(since = "1", forRemoval = true)
     // public T getAndAppendIfEmpty(int index) {
     //     if (index < 0) {
     //         throw new IllegalArgumentException("index was negative.");
@@ -2894,10 +2911,11 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     // Method currently unnecessary, so has been commented.
     /**
      * Finds if the two {@link AugList AugLists} are in an Equivalence Relationship.
-     * @deprecated  
+     * @deprecated  Due to lack of use cases.
      * @param       augListB
      *              The second {@link AugList}.
      * @return      {@code true} if the lists are in a EqRel, and {@code false} otherwise.
+     * @since       AugList pre-alpha, deprecated V1
      * @note        Custom Method that is a pseudo-reimplementation of {@code ArrayList<T>.isEquivalent()}.
      *              <p>If ~ is a relation (a mapping), then if it fulfils the following:
      *               <p>Reflexive (x ~ x)
@@ -2910,6 +2928,7 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *               <p>(Notably any such EqRel is a one to one mapping.)
      * @tags        Terminator
      */
+    // @Deprecated(since = "1", forRemoval = true)
     // public boolean isEqRel(AugList<T> augListB) {
         // if (ls.size() != augListB.size()) {
         //     // If the two lists are different lengths, there is no world in which an EqRel can exist.
@@ -2973,11 +2992,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       minCapacity
      *              The minimum capacity in question.
      * @see         tests.AugListTest#testEnsureCapacity()
+     * @since       AugList pre-alpha, deprecated V1.
      * @note        Encapsulates {@link ArrayList#ensureCapacity(int)}.
      *              Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Terminator
      */
+    //@Deprecated(since = "1", forRemoval = true)
     // public void ensureCapacity(int minCapacity) {
     //     ls.ensureCapacity(minCapacity);
     // }
@@ -2989,11 +3010,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              - Being impossible to write tests for
      *              - Enabling only miniscule storage space gains after large-scale deletions of data.
      * @see         tests.AugListTest#testTrimToSize()
+     * @since       AugList pre-alpha, deprecated V1.
      * @note        Encapsulates {@link ArrayList#trimToSize()}.
      *              Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Terminator
      */
+    //@Deprecated(since = "1", forRemoval = true)
     // public void trimToSize() {
     //     ls.trimToSize();
     // }
@@ -3007,28 +3030,35 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       generator
      *              The {@link java.util.function.IntFunction} generator in question.
      * @return      An array copy of this AugList.
+     * @since       AugList pre-alpha, deprecated V1.
      * @note        Encapsulates {@link ArrayList#toArray(java.util.function.IntFunction)}.
      *              Should be fully functional if uncommented, though even calling this method may prove difficult.
      *              Does not have a test in {@link tests.AugListTest}.
+     * 
+     *              <p> However, with the recent experience with IntFunctions (from creating ALFactory),
+     *              This method may be un-deprecated in the future.
      * @tags        Converter
      */
+    //@Deprecated(since = "1", forRemoval = true)
     // public T[] toArray(java.util.function.IntFunction<T[]> generator) {
     //     return ls.toArray(generator);
     // }
     
     // /**
     //  * Creates a new {@link AugList} by mapping the given source with the given function.
+    //  * @deprecated  Due to lack of use cases. 
     //  * @param       <U>
     //  *              The type of elements from the source.
     //  * @param       source
     //  *              The source in question.
     //  * @param       func
     //  *              The {@link Function} in question. If {@code null}, maps the source's elements to {@code null}.
-    //  * @since       AugList V2
+    //  * @since       AugList V2 dev, deprecated V2
     //  * @see         tests.AugListTest#testInstantiateFromFunc()
     //  * @overloads   {@link #AugList()}, {@link #AugList(Iterable, Iterable)}, {@link #AugList(Iterable, Function)}, {@link #AugList(Enumeration)}, {@link #AugList(Iterable)}, {@link #AugList(Iterator)}, {@link #AugList(ListIterator)}, {@link #AugList(T...)}, {@link #AugList(Spliterator)}, {@link #AugList(Stream)}
     //  * @tags        Constructor
     //  */
+    //@Deprecated(since = "2", forRemoval = true)
     // public <U> AugList(Iterable<U> source, Function<? super U, T> func) {
     //     AugList<U> ALsource = new AugList<U>(source); // Implicit null correction
     //     ls = new ArrayList<T>();
@@ -3057,10 +3087,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       arrayList
      *              The {@link ArrayList} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V1, deprecated V2
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(ArrayList<T> arrayList) {
     //     this.ls = arrayList;
     // }
@@ -3071,10 +3103,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       list
      *              The {@link List} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V1, deprecated V2
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(List<T> list) {
     //     this.ls = new ArrayList<T>(list);
     // }
@@ -3085,10 +3119,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       augList
      *              The {@link AugList} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V2 dev, deprecated V2
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(AugList<T> augList) {
     //     this.ls = new ArrayList<T>(augList.ls);
     // }
@@ -3099,10 +3135,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       deque
      *              The {@link java.util.Deque} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V2 dev, deprecated V2
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(java.util.Deque<T> deque) {
     //     this.ls = new AugList<T>(deque.iterator()).ls;
     // }
@@ -3113,10 +3151,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       prioQueue
      *              The {@link java.util.PriorityQueue} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V2 dev, deprecated V2.
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(java.util.PriorityQueue<T> prioQueue) {
     //     this.ls = new AugList<T>(prioQueue.iterator()).ls;
     // }
@@ -3127,10 +3167,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       hashSet
      *              The {@link HashSet} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V2 dev, deprecated V2.
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(java.util.HashSet<T> hashSet) {
     //     this.ls = new AugList<T>(hashSet.iterator()).ls;
     // }
@@ -3141,10 +3183,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param       treeSet
      *              The {@link java.util.TreeSet} in question.
      * @see         #AugList(Iterable)
+     * @since       AugList V2 dev, deprecated V2.
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "2", forRemoval = true)
     // public AugList(java.util.TreeSet<T> treeSet) {
     //     this.ls = new AugList<T>(treeSet.iterator()).ls;
     // }
@@ -3165,10 +3209,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      *              How long the {@link AugList} should be.
      * @throws      IllegalArgumentException
      *              {@code size < 0}
+     * @since       AugList pre-alpha, deprecated V1
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Constructor
      */
+    //@Deprecated(since = "1", forRemoval = true)
     // public AugList(T fill, int size) {
     //     if (size < 0) {
     //         throw new IllegalArgumentException("size must be positive.");
@@ -3186,10 +3232,12 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @return      The value at that index (which will be {@code null} if {@code index >= this.size()})
      * @throws      IllegalArgumentException
      *              If {@code index < 0}
+     * @since       AugList pre-alpha, deprecated V1
      * @note        Should be fully functional if uncommented.
      *              Does not have a test in {@link tests.AugListTest}.
      * @tags        Mutator, Terminator
      */
+    //@Deprecated(since = "1", forRemoval = true)
     // public T getAndAppendIfEmpty(int index) {
     //     if (index < 0) {
     //         throw new IllegalArgumentException("index was negative.");

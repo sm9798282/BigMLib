@@ -75,7 +75,6 @@ Provided with AugList V2 are the following:
 |`T`                                  |`get(int)`                                       |
 |`T`                                  |`getLast()`                                      |
 |`T`                                  |`getRandom()`                                    |
-|`int`                                |`hashCode()` (Overrides `Object.hashCode()`)     |
 |`int`                                |`indexOf(Object)`                                |
 |`AugList<T>`                         |`insert(int, T)`                                 |
 |`AugList<T>`                         |`insertAll(int, Iterable<? super T>)`            |
@@ -148,11 +147,15 @@ Provided with AugList V2 are the following:
 
 ### Object inherited methods
 
-These methods have not been overridden, and as such are not tested.
+These methods have not been overridden in a way that alters base functionality.
+Apart from `equals(Object)` and `hashCode()`, are untested.
 
 |Return Type|Method Name      |
 |-----------|-----------------|
 |`boolean`  |`equals(Object)` |
+|`void`     |`finalize()`     |
+|`Class<?>` |`getClass()`     |
+|`int`      |`hashCode()`     |
 |`Class<?>` |`getClass()`     |
 |`void`     |`notify()`       |
 |`void`     |`notifyAll()`    |
