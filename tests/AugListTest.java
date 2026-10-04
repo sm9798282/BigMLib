@@ -2141,9 +2141,9 @@ public final class AugListTest implements MultiTest {
         t.reset();
         assertTrue(testDataInt.clone().setFromCallable(1, -1, () -> { return t.tick(); }).isEquivalent("[0, 1, 19, -24, 117, 145, -56, 43]"));
         t.reset();
-        assertTrue(testDataInt.clone().setFromCallable(0, 2, () -> null).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.clone().setFromCallable(0, 2, () -> null).isEquivalent("[*null*, *null*, *null*, -24, 117, 145, -56, 43]"));
         t.reset();
-        System.out.println(testDataInt.clone().setFromCallable(0, 2, nullCallable).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
+        assertTrue(testDataInt.clone().setFromCallable(0, 2, nullCallable).isEquivalent("[7, 11, 19, -24, 117, 145, -56, 43]"));
         t.reset();
         assertTrue(testDataDouble.clone().setFromCallable(
             0, 
@@ -2163,8 +2163,9 @@ public final class AugListTest implements MultiTest {
         t.reset();
         assertTrue(ALB.clone().setFromCallable(0, 4, () -> { return t.tick() % 2 == 0; }).isEquivalent("[true, false, true, false, true]"));
         assertTrue(testDataString.clone().setFromCallable(0, 0, () -> { throw new IllegalArgumentException(); }).isEquivalent(testDataString));
-        assertTrue(testDataString.setFromCallable(0, 0, null).getClass().toGenericString().equals("public class src.AugList<T>"));
-        assertTrue(testDataDouble.setFromCallable(0, 0, null).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataString.clone().setFromCallable(0, 0, null).getClass().toGenericString().equals("public class src.AugList<T>"));
+        assertTrue(testDataDouble.clone().setFromCallable(0, 0, null).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(new AugList<Double>(1.0).setFromCallable(0, 0, () -> { return 1.0; }).isEquivalent("[1.0]"));
     }
 
     /**
@@ -2569,6 +2570,7 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataDouble.clone().swapRanges(1, 0, 1, 2).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.clone().swapRanges(0, 1, 2, 1).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
         assertTrue(testDataDouble.clone().swapRanges(1, 2, 0, 1).isEquivalent("[2.0, 1.0, 7.11, -2.5, 3.1415926]"));
+        assertTrue(new AugList<Double>(1.0, 1.0, 1.0).swapRanges(0, 1, 1, 2).isEquivalent("[1.0, 1.0, 1.0]"));
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(-1, 0, 0, 0); });
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(11, 0, 0, 0); });
         assertThrows(IndexOutOfBoundsException.class, () -> { testDataDouble.swapRanges(0, -1, 0, 0); });
