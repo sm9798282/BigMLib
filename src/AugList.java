@@ -31,7 +31,6 @@ import java.util.Spliterator;
 //import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
-//import java.util.function.IntFunction;
 import java.util.function.Predicate;
 //import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -1051,7 +1050,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
     }
 
     // Ideally I would add the ability to index with [].
-    // However, I don't believe the such is even possible in Java.
+    // However, I don't believe the such is possible in Java.
     /**
      * Returns the element at the given {@code index}.
      * @param   index
@@ -1075,7 +1074,8 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
     // Object.getClass() cannot be overridden and as such is not implemented
     // ArrayList<T>.getFirst() is not implemented as it is made redundant by get(0)
     
-    // ArrayList<T>.getLast() has just enough of a fringe usage that it is implemented; Typing ArrayList<T>.get(ArrayList<T>.size() - 1) is a little arduous.
+    // ArrayList<T>.getLast() has just enough of a fringe usage that it is implemented;
+    // Typing ArrayList<T>.get(ArrayList<T>.size() - 1) is a little arduous.
     /**
      * Gets the final element of this {@link AugList}.
      * @return  The last item in this {@link AugList}.

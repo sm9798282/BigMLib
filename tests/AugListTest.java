@@ -73,15 +73,6 @@ public final class AugListTest implements MultiTest {
 
     /**
      * @since   AugList V1
-     * @note    <p>On VSCode, running {@link AugListTest} with coverage SHOULD show that 13 statements are missed in testing.
-     *          - 6 of these missed statements come from {@link #testCountsOfElements()},
-     *          - 1 of these missed statements comes from {@link #testFragment()},
-     *          - 6 of these missed statements come from {@link #testToCollection()}.
-     *          <p>For 11 of those statements, showing up in the tracker means their respective test failed.
-     *          The other 2 statements are part of larger lambda functions and runnables, and thus aren't explicitly shown as tested (even though they are.)
-     *          <p>
-     *          If more than these 13 statements have been missed, then it is possible (though exceedingly unlikely) that one of the random family tests has missed a few statements.
-     *          If any other test has missed statements, then please submit a bug report that shows the missed statements.
      */
     @Test
     @Override
@@ -1480,7 +1471,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDD_lIterator.previous(), ALD_lIterator.previous());
                 assertEquals(TDD_lIterator.previousIndex(), ALD_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDD_lIterator.next(), ALD_lIterator.next());
             assertEquals(TDD_lIterator.nextIndex(), ALD_lIterator.nextIndex());
@@ -1494,7 +1485,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDS_lIterator.previous(), ALS_lIterator.previous());
                 assertEquals(TDS_lIterator.previousIndex(), ALS_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDS_lIterator.next(), ALS_lIterator.next());
             assertEquals(TDS_lIterator.nextIndex(), ALS_lIterator.nextIndex());
@@ -1506,7 +1497,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDI_lIterator.previous(), ALI_lIterator.previous());
                 assertEquals(TDI_lIterator.previousIndex(), ALI_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
@@ -1543,7 +1534,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDD_lIterator.previous(), ALD_lIterator.previous());
                 assertEquals(TDD_lIterator.previousIndex(), ALD_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDD_lIterator.next(), ALD_lIterator.next());
             assertEquals(TDD_lIterator.nextIndex(), ALD_lIterator.nextIndex());
@@ -1557,7 +1548,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDS_lIterator.previous(), ALS_lIterator.previous());
                 assertEquals(TDS_lIterator.previousIndex(), ALS_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDS_lIterator.next(), ALS_lIterator.next());
             assertEquals(TDS_lIterator.nextIndex(), ALS_lIterator.nextIndex());
@@ -1569,7 +1560,7 @@ public final class AugListTest implements MultiTest {
                 assertEquals(TDI_lIterator.previous(), ALI_lIterator.previous());
                 assertEquals(TDI_lIterator.previousIndex(), ALI_lIterator.previousIndex());
             } catch (NoSuchElementException e) {
-                // This is expected behaviour.
+                // We expect a NoSuchElementException to be thrown, so continue as normal.
             }
             assertEquals(TDI_lIterator.next(), ALI_lIterator.next());
             assertEquals(TDI_lIterator.nextIndex(), ALI_lIterator.nextIndex());
