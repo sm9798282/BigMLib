@@ -9,9 +9,8 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- Credits (In progress)
-- History file documenting AugList pre-alpha
 - Figure out how to setup a dependency graph
+- Collectors?
 
 ## Possible features
 
@@ -156,6 +155,8 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- Credits (In progress)
+- History file documenting AugList pre-alpha
 - Check tests with Iterables containing nulls
 - Figure out if `AugList.spliterator()` can be upgraded
 - AugList Implements RandomAccess

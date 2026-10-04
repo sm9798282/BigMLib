@@ -2,13 +2,20 @@
 
 A library of classes and methods created by (<https://github.com/sm9798282>)/(<https://csgitlab.reading.ac.uk/yn019034>) made to provide an easy way of repeatedly using commonly used methods in Mathematical and Computational fields.
 
-## Features
+## Major Features
 
-Refer to the documentation folder for further details on each class / interface listed below.
+Refer to the documentation folder for further details on all the classes / interfaces supplied with BigMLib.
+
+### Classes
 
 - `AugList<T>`, built to be a better list class for Java, with methods drawing inspiration from C#, statistics, set theory and more.
 - `ALFactory`, a collection of methods that cast to and from specific AugList types
 - `Ticker`, a class that produces increasing values on each call of its main method `tick()`.
+
+### Interfaces
+
+- `BMCloneable`, which enforces the visibility of `clone()`
+- `BMEQable`, which requires classes to provide a more lenient equivalence method `isEquivalent()`
 
 ## Licensing
 
