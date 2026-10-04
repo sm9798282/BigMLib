@@ -1,0 +1,247 @@
+# Roadmap
+
+A list of possible features in future versions of BigMLib.
+Note that no guarantees are made that these features are implemented.
+
+## Copyright and Licensing notice
+
+This file is supplied under a modified GNU LGPL V2.1 License.
+Please see the provided LICENSE file for more information.
+
+## TODO
+
+- Push AugList V2
+- Make BigMLib public
+
+## Possible features
+
+- Figure out how to setup a dependency graph
+- Look into Serialisation for AugList
+- `Number quickSelectKth(AugList<? super Number>, int k)` (Moved from ALFactory as this does NOT cast)
+- `BoolAlg` class provides Boolean Algebra functions  
+  - NOT, AND, OR, XOR
+  - Implies
+  - LSL, LSR
+  - ADD, Compliment, SUB
+  - MUX
+  - toLong, fromLong
+- `ALHamcrestCompat` class provides casts from `Hamcrest-core` classes to `AugList`
+- `class Statistics` with features from R and SAS  (Source from previous projects)
+  - Arithmetic/Geometric/Harmonic/Quadratic Sum, Product, Mean
+  - Median, Mode
+  - Standard Deviation, Variance
+  - Cov (E(XY)-E(X)E(Y)), Corr (Cov/sqrt(VarAVarB)), y=b0+b1x+epsilon, Sum squares, Sum products (b1hat = Sxy/Sxx, b0 = ybar-b1hat\*xbar), RSS (Syy-Sxy^2/Sxx), varhat (SSE/n-2), PMCC (Sxy/sqrt(sxx\*Syy)), R^2
+  - Prediction/Sample Intervals
+  - Sample Variance, Standard Error
+  - Proportion
+  - `interface OutlierMethod`
+    - IQR_OM implements OutlierMethod
+    - SD_OM implements OutlierMethod
+    - FindOutliers()
+  - CI Variance, Mean, Proportion, b0hat, b1hat
+  - Pooled Sample Variance
+  - Hypothesis Testing
+    - 2 sample t
+    - Paired t
+    - ChiSq
+    - Significance of Correlation (ANOVA)
+    - CMI Hyp test
+  - Risk and Odds
+    - Risk, Odds
+    - Standard Error
+    - CI
+    - Confounders
+    - MH Odds
+    - CMI Hyp test
+- `class Probability`
+  - P(A|B) (P Intersect / P(B))
+  - A, B Independent (P(A)P(B) = P Intersect)
+  - `interface MVDistribution`
+    - E(X), Var(X),
+    - P(X=x), P(X<=x), P(X>x), P(a<=x<=b),
+    - Percentiles, Sample
+    - Bernoulli, Binomial, Geometric, NegativeBinomial, Hypergeometric, Poisson
+    - RealUniform, Normal, Gamma, Beta, Exponential, StudentT, ChiSq, F implements MVDistribution
+  - BVN
+- `class Combinatorics`
+  - Factorial, nPk n!/k!, nCk n!/(n-k)!k!
+  - `getAllCombinationsLength(AugList<T>, int)` (source from previous projects)
+- `class MVectors`
+  - VectorAngle, (Source from previous projects)
+  - DotProduct, CrossProduct
+- `class Imag`
+  - Im, Re, Complement, Abs, Arg
+  - Add, Sub, Mult, Div, Exp (De Moivre)
+  - Quaternions?
+  - QuaternionToFromEuler?
+- `class Mathematics`
+  - DistPointToLine
+  - GetHeadingBetweenPoints
+  - PolarToFromRectangular
+  - Range sums n(n+1)/2, (1/6)n(n+1)(2n+1), (n(n+1)/2)^2
+  - PrimesBelowN, Factorise
+  - Function Composition, IsSurjective, IsInjective, IsBijective, Inverse
+  - UnionAll, IntersectAll
+  - AllSubsets?
+  - Divisible, LCM, GCD (Euclidean Algorithm)
+  - Mapping isReflexive, isSymmetric, isTransitive, isEqRel, isAssociative
+  - Groups isBinOperator, identity, inverse
+- `class Calc`
+  - Differentiate, Integrate
+  - Standard
+  - NearSep
+  - Bern
+  - Exact
+  - IFExact
+  - 2ndLinConstInhom
+  - 2ndLinConstHom
+  - ReduceOrder
+  - Equidim
+  - VarPar
+  - Population models
+- Decision
+  - Bucket Filling
+  - Simplex, 2 Stage, Big M
+  - `class Graph` (Maybe source from previous projects)
+  - Dijkstra
+  - Floyd's Algorithm (Maybe source from previous projects)
+  - MST
+  - GanttChart
+  - Travelling Salesman
+- `class LinearAlgebra`
+  - Matrices, +-, Scal*, Mat*
+  - IsSquare, Transpose, Trace, Det, CharacteristicPolynomial, Inverse
+  - IsSymmetric, IsSkewSymmetric, IsOrthagonal, IsHermitian, isUnitary, IsDiagonal
+  - Diagonalisable, EigenValues, EigenVectors, Diagonalise
+  - RREF
+  - ker
+  - adjucate, MatMinors
+  - dim, span, basis
+  - nullity, rank
+  - IsSubspace
+  - IsLinearMapping
+  - IsVectorSpace
+- `class Generics` with an implementation of `parameterizedTypeDesc()`
+- `interface UI`
+  - `getBool()`, `getInt()`, `getDouble()`, `getStr()`
+  - `writeStr()`
+  - `CLI implements UI`
+  - `GUI implements UI`
+  - `HTMLUI implements UI`
+- `class FSM` composes `Transition`, `State` and provides methods to traverse FSM
+  - `int CurrentState`
+  - ``
+  - `class Transition`
+    - `int SourceNodeID, DestinationNodeID`
+    - `Callable<boolean> TransitionCondition`
+  - `interface State`
+- `interface Distance`
+  - `class PythagDist implements Distance`
+  - `class TaxicabDist implements Distance`
+  - `class MaxDist implements Distance`
+- `interface Interpolate`
+  - `class Lerp implements Interpolate`
+  - `class EaseIn implements Interpolate`
+  - `class EaseOut implements Interpolate`
+  - `class EaseInOut implements Interpolate`
+- `FileHandler` helper class that provides easy Read/Write functions
+- `class FibonacciHeap`
+- `interface SortingAlgorithm`
+  - `BubbleSort`, `SelectionSort`, `MergeSort`, `BinInsertionSort`, `HeapSort`, `QuickSort` implements `SortingAlgorithm`
+- `interface SqTile<T>`
+  - `BlankTile<T>`, `ValueTile<T>`, `DiagDivisorTile<T>`, `MultiTile<T>` implements `SqTile`
+- `interface HexTile`
+  - Hex grid handler
+
+- Simple example programs that are built on `BigMLib` features ex Sudoku, Crossword, Kakuro, Minesweeper, Chess, Public Transport model
+
+## Completed
+
+- Credits
+- History file documenting AugList pre-alpha
+- Check tests with Iterables containing nulls
+- Upgrade `AugList.spliterator()` to set characteristic flags
+- AugList implements RandomAccess
+- `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
+- `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
+- Format relevant sections as a table, i.e:
+
+|Return type|Method name|
+|-----------|-----------|
+|a          |b          |
+
+- Test ALL of `ALFactory`
+  - Casts to AugLists
+  - `AugList<Byte>______fromByteBuff(ByteBuffer)`
+  - `AugList<Character>_fromCharBuff(CharBuffer)`
+  - `AugList<Character>_fromCharIter(CharacterIterator)`
+  - `AugList<Character>____fromCharSq(CharSequence)`
+  - `AugList<Character>_fromStr(String)`
+  - `AugList<Character>____fromStrBuff(StringBuffer)`
+  - `AugList<Double>____fromDblBuff(DoubleBuffer)`
+  - `AugList<Double>____fromDblStream(DoubleStream)`
+  - `AugList<Float>_____fromFloatBuff(FloatBuffer)`
+  - `AugList<Integer>___fromIntBuff(IntBuffer)`
+  - `AugList<Integer>___fromDigits(int)`
+  - `AugList<Integer>___fromUnicode(String)`
+  - `AugList<Integer>___fromIntStream(IntStream)`
+  - `AugList<Integer>___identityAL(int)`
+  - `AugList<Long>______fromLongBuff(LongBuffer)`
+  - `AugList<Long>______fromLongStream(LongStream)`
+  - `AugList<Short>_____fromShortBuff(ShortBuffer)`
+  - `AugList<String>____fromDelimitedString(String, String)`
+  - `AugList<String>____fromFile(Path)`
+  - `AugList<String>____fromFile(String)`
+  - `AugList<String>____fromNewLinedString(String, String)`
+  - Casts from AugLists
+  - `ByteBuffer_________BBfromALByte(AugList<Byte>)`
+  - `CharBuffer_________CBfromALChar(AugList<Character>)`
+  - `CharacterIterator  CIfromALC(AugList<Character>)`
+  - `CharSequence_______CSfromALChar(AugList<String>)`
+  - `DoubleBuffer_______DBfromALDbl(AugList<Double>)`
+  - `DoubleStream_______DSfromALDbl(AugList<Double>)`
+  - `FloatBuffer________FBfromALFloat(AugList<Float>)`
+  - `IntBuffer__________IBFromALInt(AugList<Integer>)`
+  - `IntStream__________ISfromALInt(AugList<Integer>)`
+  - `LongBuffer_________LBfromALLong(AugList<Long>)`
+  - `LongStream_________LSfromALLong(AugList<Long>)`
+  - `ShortBuffer        StBfromALSt(AugList<Short>)`
+  - `String_____________STRfromALChar(AugList<Character>)`
+  - `String_____________STRfromALStr(AugList<String>)`
+  - `StringBuffer_______StBfromALSt(AugList<String>)`
+- `class Ticker`
+- Ensure (List/Set)(Diff/Inter/Union) don't alter parameter state.
+- Look into (List/Set)(Diff/Inter/Union) tests and ensure all cases properly tested
+- `swapRanges(int, int, int, int)` d-AL2-08-csma
+- `crossProduct(Iterable<U>)` d-AL2-08-csma (Source from previous projects)
+- `splitDelim(Function<? super T, Boolean>)`
+- `split3(int)` returns `AugList<AugList<T>>>` with `[0]` equal to left, `[1]` equal to val at Index and `[2]` equal to right. on d-AL2-08-csma
+- `isSorted(Comparator<? super T>)`
+- `isPalindrome()` sees if AugList is palindrome on d-AL2-08-csma
+- `isSet()` sees if all elements unique (I.e. `this == this.distinctCopy()`) on d-AL2-08-csma
+- Introduce `setFromCallable(int, int, Callable<T>)`, a bulk mutator that sets the given range to the values generated by the function, starting from the provided index. Should lengthen the AugList if necessary.  on d-AL2-07-write
+- Introduce `overwriteRandom(T)`, `massOverwriteRandom(AugList<T>)` on d-AL2-07-write
+- `setMany(AugList<Integer> indices, AugList<T> values)`  on d-AL2-07-write
+- Where possible, parameters that have param type `T` changed to `? super T` on d-param
+- Most parameters that take `AugList<T>` changed to take any `Iterable<T>` on d-param
+- Test nulls
+- Combine Basic Overloads
+- Test non-primitive return types
+- Test gets from empty lists (and throw `NoSuchElementException` where necessary)
+- `applyAll(Function)` changed to `applyAll(UnaryOperation)` on d-param
+- Change testAdd family of tests to check the returned AugList
+- `AugList<T>.isEquivalent()` attempts to match any object that could be constructed into `AugList<T>`
+- Separate out Special Inits by constructor
+- FIX `new AugList<T>(AugList<Integer>, AugList<T>)` to not throw if given nulls
+- Check other constructors also don't throw when fed nulls
+- Introduce Array Constructor on d-instantiation?
+- Introduce ListIterator Constructor on d-instantiation?
+- AugList implements remaining methods from `List<T>` on d-classAndInterface
+- `AugList` casts to `Enumeration<T>` on d-classAndInterface
+- AugList implements `Cloneable` on d-classAndInterface
+- AugList implements all `java.lang` Interfaces that can be reasonably implemented on d-classAndInterface
+- `AugList` implements methods from `Collection<T>` (In progress on d-classAndInterface)
+- `AugList` casts to `Collection<T>` (In progress on d-classAndInterface)
+- FIX `equals()` "UNFIXABLES" by moving functionality to `isEquivalent()` and returning to default `Object.equals()` behaviour
+- Mass changing `@code` to `@link` where possible
+- Parameter name unification
