@@ -1,6 +1,6 @@
 # BigMLib
 
-A library of classes and methods created by (<https://github.com/sm9798282>)/(<https://csgitlab.reading.ac.uk/yn019034>) made to provide an easy way of repeatedly using commonly used methods in Mathematical and Computational fields.
+A library of classes and methods created by [<https://github.com/sm9798282>]/[<https://csgitlab.reading.ac.uk/yn019034>] made to provide an easy way of repeatedly using commonly used methods in Mathematical and Computational fields.
 
 ## Major Features
 
@@ -16,6 +16,11 @@ Refer to the documentation folder for further details on all the classes / inter
 
 - `BMCloneable`, which enforces the visibility of `clone()`
 - `BMEQable`, which requires classes to provide a more lenient equivalence method `isEquivalent()`
+
+## Contributing
+
+BigMLib is currently not accepting contributions.
+Please fork the repository if you wish to make changes.
 
 ## Licensing
 

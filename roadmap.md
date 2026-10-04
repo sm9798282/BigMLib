@@ -1,6 +1,7 @@
 # Roadmap
 
 A list of possible features in future versions of BigMLib.
+Note that no guarantees are made that these features are implemented.
 
 ## Copyright and Licensing notice
 
@@ -9,13 +10,14 @@ Please see the provided LICENSE file for more information.
 
 ## TODO
 
-- Figure out how to setup a dependency graph
-- Collectors?
+- Push AugList V2
+- Make BigMLib public
 
 ## Possible features
 
-- Look into Serialisation for AugList?
-- `Number________________quickSelectKth(AugList<? super Number>, int k)` (Moved from ALFactory as this does NOT cast)
+- Figure out how to setup a dependency graph
+- Look into Serialisation for AugList
+- `Number quickSelectKth(AugList<? super Number>, int k)` (Moved from ALFactory as this does NOT cast)
 - `BoolAlg` class provides Boolean Algebra functions  
   - NOT, AND, OR, XOR
   - Implies
@@ -155,11 +157,11 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
-- Credits (In progress)
+- Credits
 - History file documenting AugList pre-alpha
 - Check tests with Iterables containing nulls
-- Figure out if `AugList.spliterator()` can be upgraded
-- AugList Implements RandomAccess
+- Upgrade `AugList.spliterator()` to set characteristic flags
+- AugList implements RandomAccess
 - `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
 - `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
 - Format relevant sections as a table, i.e:
