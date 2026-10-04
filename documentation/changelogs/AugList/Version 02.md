@@ -7,10 +7,14 @@ Please see the provided LICENSE file for more information.
 
 ## Major changes
 
+Due to all the changes between versions (below), code written with V1 will be largely incompatible with V2.
+It seems unlikely this will be a problem, as the first version of AugList released to the public is V2, hence the only code written to be compatible with V1 will be a few personal projects (as of the V2 release date, anyway.)
+
 - `equals(Object)` and `hashCode()` reverted to `Object.equals(Object)` / `Object.hashCode()` behaviour. For an enhanced version of V1 `equals(Object)`'s behaviour, use the newly added `isEquivalent(Object)` instead.
 - For the above reasons, Deprecated `AugList.equals(Object)`.
 - New Constructor from `Iterable<T>`, replaces V1 Constructors from `ArrayList<T>` and `List<T>`
 - New Constructors from `Spliterator<T>`, `Stream<T>` and value-count pairs [`new AugList<T>(Iterable<T>, Iterable<Integer>)`].
+- `pairUp(AugList)` return type and method signature changed (to `AugList<SimpleEntry<T,U>> pairUp(Iterable<? super T>`)
 - New Random family of methods: `getRandom()`, `removeRandom()`, `insertAtRandom(T)`, `insertAllAtRandom(AugList)`, `insertAllAtRandom(T...)`, `overwriteRandom(T)`, `massOverwriteRandom(Iterable<T>)`, `massOverwriteRandom(T...)`
 - New Random-adjacent methods: `fragment(int)`, `sample(int, boolean)`, `shuffleCopy()`
 - New method `parameterizedTypeDesc()` describes the parameterized type of this AugList.
@@ -33,6 +37,7 @@ Please see the provided LICENSE file for more information.
 - `toString()` now represents `null` as `"*null*"`.
 - V1 `equals()` behaviour reverted to `Object.equals()`. Use `isEquivalent()` for enhanced V1 behaviour.
 - V1 `applyAll(Function<? super T, T>)` changed to V2 `applyAll(UnaryOperator<T>)`
+- V1 `Hashtable<T, U> pairUp(AugList<T>)` changed to V2 `AugList<SimpleEntry<T, U>> pairUp(Iterable<? super T>)`
 - `forEach(null)` now does nothing (as opposed to throwing `NullPointerException`)
 
 ## Naming changes

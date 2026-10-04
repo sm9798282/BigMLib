@@ -9,6 +9,7 @@ package tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.lang.IndexOutOfBoundsException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1760,21 +1761,16 @@ public final class AugListTest implements MultiTest {
     @Test
     public void testPairUp() {
         setupTestData();
-        assertFalse(testDataDouble.pairUp(new AugList<Double>()).elements().asIterator().hasNext());
         testDataInt = testDataInt.subList(0, 5);
-        Hashtable<Double, Integer> hash = testDataDouble.pairUp(testDataInt);
-        Enumeration<Double> keys = testDataDouble.pairUp(testDataInt).keys();
-        Enumeration<Integer> elements = testDataDouble.pairUp(testDataInt).elements();
+        AugList<SimpleEntry<Double, Integer>> pair = testDataDouble.pairUp(testDataInt);
         //new AugList<Double>(keys).forEach(System.out::println);
-        assertTrue(new AugList<Double>(keys).isRearrangement(testDataDouble));
-        assertTrue(new AugList<Integer>(elements).isRearrangement(testDataInt));
-        assertTrue(hash.get(1.0) == 7);
-        assertTrue(hash.get(7.11) == 19);
-        assertTrue(hash.get(711.0) == null);
-        assertFalse(new AugList<Double>(null, 3.0).pairUp(new AugList<Double>(1.0, 2.0)).elements().asIterator().hasNext());
-        assertFalse(new AugList<Double>(2.0, 3.0).pairUp(new AugList<Double>(null, 2.0)).elements().asIterator().hasNext());
-        assertTrue(hash.getClass().toGenericString().contains("class src.AugList$"));
-        assertTrue(new AugList<Double>(hash.keys()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        for (int i = 0; i < pair.size(); i++) {
+            assertTrue(pair.get(i).getKey().equals(testDataDouble.get(i)));
+            assertTrue(pair.get(i).getValue().equals(testDataInt.get(i)));
+        }
+        assertThrows(IllegalArgumentException.class, () -> { testDataString.pairUp(testDataInt); });
+        assertTrue(pair.getClass().toGenericString().contains("class src.AugList$"));
+        assertTrue(new AugList<Double>(pair.get(0).getKey()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
     }
 
     /**

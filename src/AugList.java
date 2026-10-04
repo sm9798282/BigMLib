@@ -1711,28 +1711,27 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
     }
 
     /**
-     * Creates a {@link Hashtable} where each element in this {@link AugList} is paired with its corresponding entry in the given {@link Iterable}.
+     * Creates a {@link AugList} of {@link SimpleEntry} where each element is paired with its corresponding entry in the given {@link Iterable}.
      * @param   <U>
-     *          The type of elements in {@code AugListB}.
+     *          The type of elements in {@code itrB}.
      * @param   itrB
      *          The {@link Iterable} in question.
-     * @return  A {@link Hashtable} that pairs up elements,
-     *          or an empty {@link Hashtable} if either:<p>
-     *          - the lengths do not match, or
-     *          - at least 1 entry in either list is {@code null}.
+     * @return  An {@link AugList} of {@link SimpleEntry} that pairs up elements,
      * @since   AugList V1
+     * @throws  IllegalArgumentException
+     *          The lists have mismatched lengths.
      * @see     tests.AugListTest#testPairUp()
      * @note    Based on the C# function {@code IEnumerable<T>.Zip()}.
      * @tags    Converter
      */
-    public <U> Hashtable<T, U> pairUp(Iterable<? super U> itrB) {
+    public <U> AugList<SimpleEntry<T, U>> pairUp(Iterable<? super U> itrB) {
         AugList<U> augListB = new AugList<U>(itrB);
-        Hashtable<T, U> ret = new Hashtable<T, U>() {};
-        if (ls.size() != augListB.size() || this.anySatisfy(e -> e == null) || augListB.anySatisfy(e -> e == null)) {
-            return ret;
+        AugList<SimpleEntry<T, U>> ret = new AugList<SimpleEntry<T, U>>() {};
+        if (ls.size() != augListB.size()) {
+            throw new IllegalArgumentException();
         }
         for (int i = 0; i < ls.size(); i++) {
-            ret.put(ls.get(i), augListB.get(i));
+            ret.add(new SimpleEntry<T, U>(ls.get(i), augListB.get(i)));
         }
         return ret;
     }
