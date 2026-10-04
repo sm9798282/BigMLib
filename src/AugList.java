@@ -1287,11 +1287,9 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * <p>If the {@link Object} in question is any of the following,
      * it will be considered equivalent if that object constructs to an {@link AugList} that:
      * - {@link Enumeration}: Same values, even if a {@link #isRearrangement(AugList) Rearrangement}
-     * - {@link Iterator}: Same values, same order
-     * - {@link Iterable}: Same values, same order
-     * - {@link ListIterator}: Same values, same order
-     * - {@link Spliterator}: Same values, same order
-     * - {@link Stream}: Same values, same order
+     * - {@link Iterator}, {@link Iterable}, {@link ListIterator}, {@link Spliterator}, {@link Stream} or Array:
+     *   has the same {@link #toString()}, which <i>USUALLY</i> means same values, same order
+     * 
      * <p>Separately:
      * - A {@link String} is equivalent if it matches the {@link #toString()} representation.
      * - A {@link Number} is equivalent if it matches the {@link #hashCode()}.
@@ -1324,16 +1322,10 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
             return ((Number)(o)).intValue() == this.hashCode();
         }
         if (o instanceof Enumeration) {
-            //try {
             // If o is an Enumeration<? extends T>, it will cast without throwing.
             // Enumerations come from Hashtables, so are usually unordered - hence the isRearrangement leniency.
             return isRearrangement(new AugList<T>((Enumeration<T>)o));
             // Since unchecked casting does not throw (I believe...), this try-catch is unnecessary.
-            // } catch (Exception e) {
-            //     // If o's parameterized type is not "? extends T", it will throw upon casting.
-            //     // Since the parameterized type cannot be meaningfully compared against, return false.
-            //     return false;
-            // }
         }
         AugList ALo = new AugList();
         // ListIterator is an Iterator, so they do not need to explicitly be included in this filter.
@@ -1363,7 +1355,9 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
             }
             return ALo.toString().equals(toString());
         }
-        return false;
+        if (o.getClass().isArray()) {
+            return isEquivalent(new AugList((Object[])o));
+        }
         /** 
          * If o is not any of the supported types, then assume non-equivalence.
          * (Whilst it may be possible that o's Hashcode matches this Hashcode and o is not a supported type,
@@ -1371,6 +1365,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
          *  (This is mostly because testing the such would be quite difficult.)
          *  Hence, not all objects that are equal will be equivalent, and vice versa.)
          */
+        return false;
     }
 
     /**

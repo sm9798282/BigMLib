@@ -1193,7 +1193,14 @@ public final class AugListTest implements MultiTest {
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
-
+        // Array
+        assertTrue(testDataDouble.isEquivalent(new Double[] {1.0, 2.0, 7.11, -2.5, 3.1415926}));
+        assertFalse(testDataDouble.isEquivalent(new Double[] {}));
+        assertTrue(new AugList<Double>().isEquivalent(new Double[] {}));
+        assertTrue(new AugList<String>().isEquivalent(new Double[] {}));
+        assertFalse(new AugList<Double>(1.0).isEquivalent(new Double[] {}));
+        assertFalse(new AugList<Double>(1.0).isEquivalent(new Double[] {2.0}));
+        assertTrue(new AugList<Double>(1.0).isEquivalent(new Double[] {1.0}));
         // Iterable
         assertTrue(TESTDATA.isEquivalent(TESTDATA));
         //      Empty iterables
