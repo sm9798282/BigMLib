@@ -2272,7 +2272,7 @@ public final class AugListTest implements MultiTest {
     public void testShuffleSelf() {
         testIsRearrangement();
         for (int i = 0; i < 1021; i++) {
-        assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
+            assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
         }
         assertTrue(testDataDouble.shuffleSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
         assertTrue(new AugList<Double>().shuffleSelf().isEquivalent(new AugList<Double>()));
@@ -2414,29 +2414,77 @@ public final class AugListTest implements MultiTest {
     @Test
     public void testSpliterator() {
         setupTestData();
-        Spliterator<Double> TDD_spliterator = testDataDouble.spliterator(),
-                            ALD_spliterator = ARRLISTDOUBLE.spliterator();
-        Spliterator<String> TDS_spliterator = testDataString.spliterator(),
-                            ALS_spliterator = ARRLISTSTR.spliterator();
-        Spliterator<Integer> TDI_spliterator = testDataInt.spliterator(),
-                             ALI_spliterator = ARRLISTINT.spliterator();
-        assertEquals(testDataDouble.spliterator().getClass().toGenericString(), ("final class java.util.ArrayList$ArrayListSpliterator"));
+        // tdd [1.0, 2.0, 7.11, -2.5, 3.1415926] is also DISTINCT, NONNULL
+        // tds [The, quick, brown, fox, jumps, over, the, lazy dog] is also DISTINCT, NONNULL
+        // tdi [7, 11, 19, -24, 117, 145, -56, 43] is also DISTINCT, NONNULL
+        // v goes unused; Its purpose is to allow quick reference to the values of the 8 consts.
+        @SuppressWarnings("unused")
+        var v = Spliterator.DISTINCT + Spliterator.SORTED + Spliterator.ORDERED 
+              + Spliterator.SIZED + Spliterator.NONNULL + Spliterator.IMMUTABLE
+              + Spliterator.CONCURRENT + Spliterator.SUBSIZED;
+        // v = 0x0001 + 0x0004 + 0x0010 + 0x0040 + 0x0100 + 0x0400 + 0x1000 + 0x4000
+        // ArrayListSpliterator is ORDERED, SIZED, SUBSIZED.
+        // So an ALS has value 0x0010 + 0x0040 + 0x4000 = 0x4050.
+        // In tabular form, the 8 possible characteristics are:
+        // / / / is 0x4050 = 16464 y
+        // D / / is 0x4051 = 16465
+        // / S / is 0x4054 = 16468
+        // D+S / is 0x4055 = 16469
+        // / / N is 0x4150 = 16720 y
+        // D+/+N is 0x4151 = 16721 y
+        // / S+N is 0x4154 = 16724
+        // D+S+N is 0x4155 = 16725
+        // (D for distinct, S for sorted, N for non-null.)
+        // So tdd, tds and tdi have characteristic 16721.
+
+        // 16464 Dupes,    Unsorted, Null
+        Spliterator<Double> BDspl_16464 = ARRLISTDOUBLE.spliterator();
+        Spliterator<Double> TDspl_16464 = new AugList<Double>(null, 1.0, 1.0).spliterator();
+        // 16465 Distinct, Unsorted, Null
+        Spliterator<Double> TDspl_16465 = new AugList<Double>(null, 1.0, 2.0).spliterator();
+        // 16468 Dupes,    Sorted,   Null
+        Comparator<Double> sortASC = new Comparator<Double>() {
+            public int compare(Double o1, Double o2) {
+                if (Objects.isNull(o1)) {
+                    o1 = 0d;
+                }
+                if (Objects.isNull(o2)) {
+                    o2 = 0d;
+                }
+                return (int)(o1 - o2);
+            }
+        };
+        AugList<Double> ALD_16468 = new AugList<Double>(null, 1.0, 1.0);
+        Spliterator<Double> TDspl_16468 = ALD_16468.sort(sortASC).spliterator();
+        // 16469 Distinct, Sorted,   Null
+        AugList<Double> ALD_16469 = new AugList<Double>(null, 1.0, 2.0);
+        Spliterator<Double> TDspl_16469 = ALD_16469.sort(sortASC).spliterator();
+        // 16720 Dupes,    Unsorted, Non Null
+        Spliterator<String> TSspl_16720 = new AugList<String>("Up", "Up", "Down", "Down", "Left", "Right", "Left", "Right", "A", "B", "Start", "Select").spliterator();
+        // 16721 Distinct, Unsorted, Non Null
+        Spliterator<Double> TDspl_16721 = testDataDouble.spliterator();
+        // 16724 Dupes,    Sorted,   Non Null
+        AugList<Double> ALD_16724 = new AugList<Double>(0.0, 1.0, 1.0);
+        Spliterator<Double> TDspl_16724 = ALD_16724.sort(sortASC).spliterator();
+        // 16725 Distinct, Sorted,   Non Null
+        AugList<Double> ALD_16725 = new AugList<Double>(0.0, 1.0, 2.0);
+        Spliterator<Double> TDspl_16725 = ALD_16725.sort(sortASC).spliterator();
+        assertTrue(testDataDouble.spliterator().getClass().toGenericString().contains("class src.AugList$"));
         assertTrue(new AugList<Double>(testDataDouble.spliterator()).parameterizedTypeDesc().equals("public final class java.lang.Double"));
-        assertEquals(TDD_spliterator.characteristics(), ALD_spliterator.characteristics());
-        assertEquals(TDD_spliterator.estimateSize(), ALD_spliterator.estimateSize());
-        assertEquals(TDD_spliterator.getExactSizeIfKnown(), ALD_spliterator.getExactSizeIfKnown());
-        assertEquals(TDS_spliterator.characteristics(), ALS_spliterator.characteristics());
-        assertEquals(TDS_spliterator.estimateSize(), ALS_spliterator.estimateSize());
-        assertEquals(TDS_spliterator.getExactSizeIfKnown(), ALS_spliterator.getExactSizeIfKnown());
-        assertEquals(TDI_spliterator.characteristics(), ALI_spliterator.characteristics());
-        assertEquals(TDI_spliterator.estimateSize(), ALI_spliterator.estimateSize());
-        assertEquals(TDI_spliterator.getExactSizeIfKnown(), ALI_spliterator.getExactSizeIfKnown());
-        assertTrue(TDD_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
-        assertTrue(TDS_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
-        assertTrue(TDI_spliterator.getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
-        // The hashcodes of i.e. testDataDouble.spliterator() and ARRLISTDOUBLE.spliterator() do not match,
-        // so the only way to be 100% sure if the spliterators have the same underlying data,
-        // is to take the spliterators and check functionality is identical.
+        assertEquals(TDspl_16464.characteristics(), 16464);
+        assertEquals(TDspl_16465.characteristics(), 16465);
+        assertEquals(TDspl_16468.characteristics(), 16468);
+        assertEquals(TDspl_16469.characteristics(), 16469);
+        assertEquals(TSspl_16720.characteristics(), 16720);
+        assertEquals(TDspl_16721.characteristics(), 16721);
+        assertEquals(TDspl_16721.estimateSize(), BDspl_16464.estimateSize());
+        assertEquals(TDspl_16721.getExactSizeIfKnown(), BDspl_16464.getExactSizeIfKnown());
+        assertEquals(TDspl_16464.trySplit().characteristics(), BDspl_16464.trySplit().characteristics());
+        assertThrows(IllegalStateException.class, () -> { TDspl_16721.getComparator(); });
+        assertEquals(TDspl_16724.characteristics(), 16724);
+        assertEquals(TDspl_16725.characteristics(), 16725);
+        assertTrue(TDspl_16725.getComparator().equals(sortASC));
+        assertTrue(TDspl_16725.trySplit().getClass().toGenericString().equals("final class java.util.ArrayList$ArrayListSpliterator"));
     }
 
     /**

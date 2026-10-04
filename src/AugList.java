@@ -656,8 +656,8 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
                 clone.add((T)((BMCloneable)e).clone());
             }
             else {
-            clone.add(e);
-        }
+                clone.add(e);
+            }
         }
         return clone;
     }
@@ -1359,10 +1359,10 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
                 ALo = new AugList(oStream);
             }
             if (ALo.size() != size()) {
-                        return false; 
+                return false;
             }
             return ALo.toString().equals(toString());
-            }
+        }
         return false;
         /** 
          * If o is not any of the supported types, then assume non-equivalence.
@@ -2397,13 +2397,184 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * @since   AugList V1
      * @see     #iterator()
      * @see     #listIterator()
+     * @see     Spliterator#DISTINCT
+     * @see     Spliterator#NONNULL
+     * @see     Spliterator#ORDERED
+     * @see     Spliterator#SIZED
+     * @see     Spliterator#SORTED
+     * @see     Spliterator#SUBSIZED
      * @see     tests.AugListTest#testSpliterator()
      * @note    Encapsulates {@link List#spliterator()}.
+     *          <p>An {@link ArrayList.ArrayListSpliterator} is ORDERED, SIZED and SUBSIZED.
+     *          <p>If this {@link AugList} is a set, contains no nulls or is sorted, then sets those fields too.
      * @tags    Converter
      */
     public Spliterator<T> spliterator() {
-        return ls.spliterator();
-        //Spliterator<T> spl = ls.spliterator();
+        final ArrayList<T> LS = ls;
+        Spliterator<T> spl = LS.spliterator();
+        final Comparator<? super T> CMP = cmp;
+        final boolean ISSET = isSet(),
+                      HASNONULLS = countOf(null) == 0,
+                      ISSORTED = isSorted(cmp);
+        if (!(ISSET || HASNONULLS || ISSORTED)) {
+            return LS.spliterator();
+        }
+        return new Spliterator<T>() {
+
+            /**
+             * If a remaining element exists: performs the given action on it,
+             * returning {@code true}; else returns {@code false}.  If this
+             * Spliterator is {@link Spliterator#ORDERED} the action is performed on the
+             * next element in encounter order.  Exceptions thrown by the
+             * action are relayed to the caller.
+             * <p>
+             * Subsequent behavior of a Spliterator is unspecified if the action throws
+             * an {@link Exception}.
+             *
+             * @param   action
+             *          The action whose operation is performed at-most once
+             * @return  {@code false} if no remaining elements existed
+             *          upon entry to this method, else {@code true}.
+             * @throws  NullPointerException
+             *          if the specified action is null
+             * @note    Encapsulates {@link ArrayList.ArrayListSpliterator#tryAdvance(Consumer)}.
+             *          Doc string is a near copy of the linked method's doc string.
+             *          <p>As ArrayListSpliterator is a private class, hovering over the doc string in VSCode does not bring up ArrayListSpliterator's documentation box.
+             *          <p>Similarly, trying to ctrl-click {@code #tryAdvance(Consumer)} fails.
+             *          <p>Instead, hover over {@link #tryAdvance(Consumer)} and click the link in the documentation box.
+             * @tags    Terminator
+             */
+            public boolean tryAdvance(Consumer<? super T> action) {
+                return spl.tryAdvance(action);
+            }
+
+            /**
+             * If this {@link Spliterator} can be partitioned, returns a Spliterator
+             * covering elements, that will, upon return from this method, not
+             * be covered by this Spliterator.
+             *
+             * <p>If this Spliterator is {@link Spliterator#ORDERED}, the returned Spliterator
+             * must cover a strict prefix of the elements.
+             *
+             * <p>Unless this Spliterator covers an infinite number of elements,
+             * repeated calls to {@link #trySplit()} must eventually return {@code null}.
+             * Upon non-null return:
+             * <ul>
+             * <li>the value reported for {@link #estimateSize()} before splitting,
+             * must, after splitting, be greater than or equal to {@link #estimateSize()}
+             * for this and the returned Spliterator; and</li>
+             * <li>if this Spliterator is {@link Spliterator#SUBSIZED}, then {@link #estimateSize()}
+             * for this spliterator before splitting must be equal to the sum of
+             * {@link #estimateSize()} for this and the returned Spliterator after
+             * splitting.</li>
+             * </ul>
+             *
+             * <p>This method may return {@code null} for any reason,
+             * including emptiess, inability to split after traversal has
+             * commenced, data structure constraints, and efficiency
+             * considerations.
+             *
+             * @apiNote
+             * An ideal {@code trySplit} method efficiently (without
+             * traversal) divides its elements exactly in half, allowing
+             * balanced parallel computation.  Many departures from this ideal
+             * remain highly effective; for example, only approximately
+             * splitting an approximately balanced tree, or for a tree in
+             * which leaf nodes may contain either one or two elements,
+             * failing to further split these nodes.  However, large
+             * deviations in balance and/or overly inefficient {@code trySplit}
+             * mechanics typically result in poor parallel
+             * performance.
+             *
+             * @return  A {@link Spliterator} covering some portion of the
+             *          elements, or {@code null} if this spliterator cannot be split
+             * @note    Encapsulates {@link ArrayList.ArrayListSpliterator#trySplit()}.
+             *          Doc string is a near copy of the linked method's doc string.
+             * @tags    Terminator
+             */
+            public Spliterator<T> trySplit() {
+                return spl.trySplit();
+            }
+
+            /**
+             * Returns an estimate of the number of elements that would be
+             * encountered by a {@link #forEachRemaining} traversal, or returns
+             * {@link Long#MAX_VALUE} if infinite, unknown, or too expensive to compute.
+             *n
+             * <p>If this Spliterator is {@link Spliterator#SIZED} and has not yet been partially
+             * traversed or split, or this Spliterator is {@link Spliterator#SUBSIZED} and has
+             * not yet been partially traversed, this estimate must be an accurate
+             * count of elements that would be encountered by a complete traversal.
+             * Otherwise, this estimate may be arbitrarily inaccurate, but must decrease
+             * as specified across invocations of {@link #trySplit}.
+             *
+             * @apiNote
+             * Even an inexact estimate is often useful and inexpensive to compute.
+             * For example, a sub-spliterator of an approximately balanced binary tree
+             * may return a value that estimates the number of elements to be half of
+             * that of its parent; if the root Spliterator does not maintain an
+             * accurate count, it could estimate size to be the power of two
+             * corresponding to its maximum depth.
+             *
+             * @return  The estimated size, or {@link Long#MAX_VALUE} if infinite,
+             *          unknown, or too expensive to compute.
+             * @note    Encapsulates {@link ArrayList.ArrayListSpliterator#estimateSize()}.
+             *          Doc string is a near copy of the linked method's doc string.
+             * @tags    Terminator
+             */
+            public long estimateSize() {
+                return spl.estimateSize();
+            }
+
+            /**
+             * Returns a set of characteristics of this Spliterator and its
+             * elements. The result is represented as ORed values from
+             * {@link Spliterator#ORDERED}, {@link Spliterator#DISTINCT}, {@link Spliterator#SORTED}, {@link #SIZED},
+             * {@link Spliterator#NONNULL}, {@link Spliterator#IMMUTABLE}, {@link Spliterator#CONCURRENT},
+             * {@link Spliterator#SUBSIZED}.  Repeated calls to {@link #characteristics()} on
+             * a given spliterator, prior to or in-between calls to {@link #trySplit},
+             * should always return the same result.
+             *
+             * <p>If a Spliterator reports an inconsistent set of
+             * characteristics (either those returned from a single invocation
+             * or across multiple invocations), no guarantees can be made
+             * about any computation using this Spliterator.
+             *
+             * @apiNote The characteristics of a given spliterator before splitting
+             * may differ from the characteristics after splitting.  For specific
+             * examples see the characteristic values {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}
+             * and {@link Spliterator#CONCURRENT}.
+             *
+             * @return  A representation of characteristics
+             * @note    Overrides {@link ArrayList.ArrayListSpliterator#characteristics()}.
+             *          <p>Also sets {@link Spliterator#DISTINCT}, {@link Spliterator#SORTED} and {@link Spliterator#NONNULL} if this {@link AugList} satisfies them.
+             *          <p>Doc string is a near copy of the linked method's doc string.
+             * @tags    Terminator
+             */
+            @Override
+            public int characteristics() {
+                return spl.characteristics() | (ISSET ? Spliterator.DISTINCT : 0) | (ISSORTED ? Spliterator.SORTED : 0) | (HASNONULLS ? Spliterator.NONNULL : 0);
+            }
+
+            /**
+             * If this {@link Spliterator}'s source is {@link Spliterator#SORTED} by a {@link Comparator},
+             * returns that {@link Comparator}. Otherwise,
+             * if the source is not {@link Spliterator#SORTED}, throws {@link IllegalStateException}.
+             *
+             * @return  The {@link Comparator} that orders this {@link Spliterator}'s elements, if it exists.
+             * @throws  IllegalStateException
+             *          If the spliterator does not report a characteristic of {@code SORTED}.
+             */
+            @Override
+            public Comparator<? super T> getComparator() {
+                if (Objects.isNull(CMP)) {
+                    throw new IllegalStateException();
+                }
+                // Since a comparator over an unknown parameterised type cannot be in a natural order,
+                // this will never return null.
+                return CMP;
+            }
+        };
     }
 
     /**
@@ -2849,7 +3020,6 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
         removeIf(filter); // Destroys cmp if state changes
         return this;
     }
-
 
     //#region Misc deprecated
     // /**

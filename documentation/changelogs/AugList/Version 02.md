@@ -55,20 +55,22 @@ Parameters have (except where additional context is helpful) been renamed to fol
 - Passing `null` into `addAll(AugList<T>)` / `addAll(T...)` returns this (as opposed to throwing `NullPointerException`)
 - All of the following now work as expected when handling `null`s (as opposed to throwing `NullPointerException`):
   - Constructors,
-  - `allIndicesOf(T)`,
   - Bulk Satisfaction family of methods,
   - Bulk Containment family of methods,
-  - `countsOfElements()`,
   - Filter family of methods,
-  - `forEach(Consumer<? super T>)`,
   - Bulk Insertion family of methods,
   - "List Theory" family of methods,
   - Bulk Removal family of methods,
-  - `removeIf(Predicate<? super T>)`,
   - Set Theory family of methods,
   - Do While family of methods,
+  - `allIndicesOf(T)`,
+  - `countsOfElements()`,
+  - `forEach(Consumer<? super T>)`,
+  - `isEquivalent()`,
+  - `removeIf(Predicate<? super T>)`,
   - `toString()`,
   - `sort(Comparator<? super T>)`.
+- `shuffleCopy()` Now properly shuffles the elements.
 
 ## Testing changes
 

@@ -10,8 +10,7 @@ Please see the provided LICENSE file for more information.
 ## TODO
 
 - Credits (In progress)
-- Figure out if `AugList.spliterator()` can be upgraded
-- AugList Implements RandomAccess
+- Check tests with Iterables containing nulls
 - Figure out how to setup a dependency graph
 
 ## Possible features
@@ -157,6 +156,8 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- Figure out if `AugList.spliterator()` can be upgraded
+- AugList Implements RandomAccess
 - `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.
 - `AugList`: Mark `equals()` as deprecated and point towards `isEquivalent()`.
 - Format relevant sections as a table, i.e:

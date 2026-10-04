@@ -60,7 +60,7 @@ These methods have applications in set theory, probability, statistics, function
 - Objects considered equal to an AugList will not necessarily have an identical hashcode to AugList's hashcode.
 - For AugList X and Object Y, X.equals(Y) does not mean Y.equals(X).
 - `toString()` bug where attempting to print a list with nulls throws a `NullPointerException`.
-- Supplying `null` throws a `NullPointerException` for the following methods:
+- Supplying `null` / `Object`s containing `null`s throws a `NullPointerException` for the following methods:
   - Constructors,
   - `allIndicesOf(T)`,
   - `allSatisfy(Predicate<? super T>)`,
@@ -70,6 +70,7 @@ These methods have applications in set theory, probability, statistics, function
   - `containsAny(AugList<T>)`,
   - `containsAny(T...)`,
   - `countsOfElements()`,
+  - `equals()`,
   - `filterCopy(Predicate<? super T>)`,
   - `filterSelf(Predicate<? super T>)`,
   - `forEach(Consumer<? super T>)`,
@@ -92,6 +93,7 @@ These methods have applications in set theory, probability, statistics, function
 - `isEqual()` bug where `"[1.0]"` != `"[1.0]"`.
 - `addAll(AugList<T>)` / `addAll(T...)` bug where passing a `null` throws `NullPointerException`
 - `clone()`, `filterCopy()`, `filterSelf()`, `listIntersection()`, `setIntersection()`, `setUnion()`, `skipWhile()` and `takeWhile()`'s bug where i.e. `this.getClass() != this.clone().getClass()`
+- `shuffleCopy()` bug: Fails to actually shuffle the elements.
 - Insufficient tests in `testToString()` to test for an empty list or a list with nulls
 - No `testSwap()`
 - Documentation talks about adding the method `getAndAppendIfEmpty()`  method was commented out and never available to use.

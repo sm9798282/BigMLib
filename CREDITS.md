@@ -28,3 +28,6 @@
 
 `java.util.ArrayList`
 (Exemplar code documentation stylisation; usage examples of javadoc annotations `{@code}`, `{@link}`; Usage example of keyword `instanceof`; Idea to implement `Iterable<T>`, `RandomAccess`)
+
+`java.util.Spliterator`
+(Documentation on how to create custom Spliterators)
