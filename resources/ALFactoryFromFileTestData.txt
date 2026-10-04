@@ -1,0 +1,4 @@
+Hello!
+If this text is being held inside a variable,
+or is being printed for the user to read,
+then that means the test was a success!

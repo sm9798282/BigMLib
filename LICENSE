@@ -1,4 +1,4 @@
-# LICENSE V3
+# LICENSE V4
 
 ## Definitions
 
@@ -54,3 +54,14 @@ are to be used in the training of Generative Artificial Intelligence,
     reserves the right to alter, add or remove clauses from this License,
     and such changes will be made known to users
     in accordance to the Law.
+9) Any works, projects or products derived from this Library cannot use the name of the author in the promotion of their work, project or product without prior WRITTEN permission.
+
+## Scope of this License
+
+The Terms of License apply to all files provided with this Library, with the exceptions of the following:
+
+- Any file within the lib folder, which are the property of their respective copyright holders.
+- `.gitignore`, which is the property of the copyright holder(s) of git.
+- `LGPL_LICENSE`, which is the property to the Free Software Foundation, Inc.
+
+By copying, using, modifying or redistributing any other file provided with this library, you agree to the Terms of use (above).
