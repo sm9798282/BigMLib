@@ -692,6 +692,11 @@ public final class AugListTest implements MultiTest {
         ALt.forEach(t -> t.reset());
         ALt.forEach(null);
         assertTrue(ALt.get(0).tick() == 0);
+        AugList<Ticker> clone = ALt.clone();
+        ALt.forEach(t -> t.hashCode());
+        assertTrue(ALt.isEquivalent(clone));
+        clone.forEach(t -> t.tick());
+        assertFalse(ALt.isEquivalent(clone));
     }
 
     /**

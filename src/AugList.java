@@ -1003,7 +1003,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
         if (!Objects.isNull(action)) {
             AugList<T> clone = clone();
             ls.forEach(action);
-            if (isEquivalent(clone)) {
+            if (!isEquivalent(clone)) {
                 cmp = null; // At least 1 mutation occurred, so destroy cmp.
             }
         }
