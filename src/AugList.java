@@ -1432,7 +1432,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
     }
 
     /**
-     * Returns whether this {@link AugList} is sorted.
+     * Returns whether this {@link AugList} is sorted. Always false if the given {@link Comparator} is {@link null}.
      * @param   comparator
      *          The way in which this {@link AugList} should be sorted
      * @return  {@code isEquivalent(clone().sort(comparator))) == true}
@@ -1442,7 +1442,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * @tags    Terminator
      */
     public boolean isSorted(Comparator<? super T> comparator) {
-        return isEquivalent(clone().sort(comparator));
+        return comparator == null ? false : isEquivalent(clone().sort(comparator));
     }
 
     /**

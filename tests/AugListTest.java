@@ -1339,6 +1339,7 @@ public final class AugListTest implements MultiTest {
         };
         testDataDouble.sort(compDesc);
         assertFalse(testDataDouble.isSorted(compAsc));
+        assertFalse(testDataDouble.isSorted(null));
     }
 
     /**
