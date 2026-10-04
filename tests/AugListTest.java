@@ -1156,72 +1156,104 @@ public final class AugListTest implements MultiTest {
     public void testIsEquivalent() {
         setupTestData();
         // Return type is primitive so cannot enforce type through testing
+        // Enumeration
         assertTrue(testDataDouble.isEquivalent(testDataDouble.countsOfElements().keys()));
         assertFalse(testDataDouble.isEquivalent(testDataString.countsOfElements().keys()));
+        // Iterator
         assertTrue(testDataDouble.isEquivalent(testDataDouble.iterator()));
         assertFalse(testDataDouble.isEquivalent(testDataString.iterator()));
+        // Spliterator
         assertTrue(testDataDouble.isEquivalent(testDataDouble.spliterator()));
         assertFalse(testDataDouble.isEquivalent(testDataString.spliterator()));
-        assertTrue(testDataDouble.isEquivalent(testDataDouble));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
+        // ListIterator
         assertTrue(testDataDouble.isEquivalent(testDataDouble.listIterator()));
         assertFalse(testDataDouble.isEquivalent(testDataString.listIterator()));
+        // Stream
         assertTrue(testDataDouble.isEquivalent(testDataDouble.stream()));
         assertFalse(testDataDouble.isEquivalent(testDataString.stream()));
+        // Null
         assertFalse(testDataDouble.isEquivalent(null));
+        // Number
         assertTrue(testDataString.isEquivalent(testDataString.hashCode()));
         assertFalse(testDataDouble.isEquivalent(testDataDouble.hashCode() + 1));
         assertFalse(testDataDouble.isEquivalent(-1.2));
+        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        // Unsupported type
         assertFalse(testDataDouble.isEquivalent('A'));
-        assertFalse(new AugList<Character>().isEquivalent(testDataDouble));
-        assertTrue(new AugList<String>().isEquivalent(new AugList<String>()));
-        assertTrue(new AugList<String>().isEquivalent(new AugList<Integer>()));
+        // String
+        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
+        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
+        assertFalse(testDataDouble.isEquivalent("[1, 2, -2.5, 3.1415926, 7.11]"));
         final AugList<String> TESTDATA = new AugList<String>("Hello", "World");
-        assertTrue(TESTDATA.isEquivalent(TESTDATA));
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertTrue(TESTDATA.isEquivalent(new AugList<String>("Hello", "World")));
         assertNotSame(TESTDATA, new AugList<String>("Hello", "World"));
-        assertFalse(testDataDouble.clone().oneToOneMapCopy(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMapCopy(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
-        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
-        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+
+        // Iterable
+        assertTrue(TESTDATA.isEquivalent(TESTDATA));
+        //      Empty iterables
+        assertFalse(new AugList<Character>().isEquivalent(testDataDouble));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<String>()));
+        assertTrue(new AugList<String>().isEquivalent(new AugList<Integer>()));
         assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
         assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
         assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
         assertFalse(new AugList<Double>().isEquivalent(""));
-        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
-        assertFalse(testDataDouble.clone().oneToOneMapCopy(d -> d + 1).isEquivalent(testDataDouble));
-        assertFalse(testDataString.clone().oneToOneMapCopy(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
-        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
-        assertFalse(testDataDouble.isEquivalent(testDataString));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1.0, 2.0, -2.5, 3.1415926, 7.11]"));
-        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0,1)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
-        assertFalse(testDataDouble.isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<Double>()));
-        assertTrue(new AugList<Double>().isEquivalent(new AugList<String>()));
-        assertFalse(new AugList<Double>().isEquivalent(""));
-        assertFalse(new AugList<Double>(7.0).isEquivalent(7.0));
+        assertFalse(new AugList<Double>().isEquivalent(testDataDouble));
+        /**
+         * Create a new AugList with all the usual properties...
+         * except it behaves as if it were empty. Even though it is not, in fact, empty.
+         * 
+         * Overriding methods to produce intentionally incorrect results is not recommended.
+         * However, this is necessary to achieve full branch coverage testing.
+        */
+        AugList<Double> fakeAugList = new AugList<Double>(1.0) {
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return "/";
+            }
+        };
+        assertFalse(new AugList<Double>().isEquivalent(fakeAugList));
+        assertTrue(fakeAugList.isEquivalent(new AugList<Double>()));
+        //      Non-AugList Iterable
+        assertTrue(testDataDouble.isEquivalent(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        //      (non)Self equivalence
         assertTrue(testDataDouble.isEquivalent(testDataDouble));
         assertTrue(testDataInt.isEquivalent(testDataInt));
         assertTrue(testDataString.isEquivalent(testDataString));
+        assertFalse(testDataDouble.isEquivalent(testDataString));
         assertFalse(testDataDouble.isEquivalent(testDataInt));
-        assertTrue(testDataDouble.isEquivalent("[1.0, 2.0, 7.11, -2.5, 3.1415926]"));
-        assertFalse(testDataDouble.isEquivalent("[1, 2, 7.11, -2.5, 3.1415926]"));
+        //      Clone equivalence
         assertTrue(testDataDouble.isEquivalent(testDataDouble.clone()));
-        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
-        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
-        assertTrue(testDataDouble.isEquivalent(new ArrayList<Double>(Arrays.asList(1.0, 2.0, 7.11, -2.5, 3.1415926))));
+        //      Non-clone nonequivalence
+        assertFalse(testDataDouble.isEquivalent(testDataDouble.clone().swap(0, 1)));
+        assertFalse(testDataDouble.clone().oneToOneMapCopy(d -> d + 1).isEquivalent(testDataDouble));
+        assertFalse(testDataString.clone().oneToOneMapCopy(s -> s.toLowerCase()).isEquivalent(testDataString.distinctCopy()));
+        assertFalse(testDataInt.clone().filterCopy(i -> i == 117).isEquivalent(testDataInt));
         AugList<Double> shuffled = testDataDouble.shuffleCopy();
         if (shuffled.isEquivalent(testDataDouble)) {
             shuffled.swap(0, 1);
         }
         assertFalse(testDataDouble.isEquivalent(shuffled));
+        assertFalse(new AugList<AugList<Double>>(testDataDouble).isEquivalent(testDataDouble));
+        //      Element (non)equivalence
+        assertFalse(testDataInt.isEquivalent(new AugList<Double>(7.0, 11.0, 19.0, -24.0, 117.0, -56.0, 43.0)));
+        assertTrue(testDataDouble.isEquivalent(new AugList<Double>(1.0, 2.0, 7.11, -2.5, 3.1415926)));
+        //      Null containing checks
+        assertTrue(new AugList<Double>(null, 1.0, 1.0).isEquivalent(new AugList<Double>(null, 1.0, 1.0)));
+        assertFalse(new AugList<Double>(null, 1.0, 1.0).isEquivalent(new AugList<Double>(1.0, 1.0, 1.0)));
+        assertTrue(new AugList<Double>(1.0, 1.0, 1.0).isEquivalent(new AugList<Double>(1.0, 1.0, 1.0)));
+        assertFalse(new AugList<Double>(1.0, 1.0, 1.0).isEquivalent(new AugList<Double>(null, 1.0, 1.0)));
+        //      BMEQable / not BMEQable checks
+        assertTrue(new AugList<AugList<Double>>(testDataDouble).isEquivalent(new AugList<AugList<Double>>(testDataDouble)));
+        assertFalse(new AugList<AugList<Double>>(testDataDouble).isEquivalent(new AugList<AugList<String>>(testDataString)));
+        assertFalse(new AugList<AugList<Double>>(testDataDouble).isEquivalent(testDataDouble));
+        assertFalse(testDataDouble.isEquivalent(new AugList<AugList<Double>>(testDataDouble)));
     }
 
     /**

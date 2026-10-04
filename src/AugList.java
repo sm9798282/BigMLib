@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 //import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.RandomAccess;
 import java.util.Spliterator;
 //import java.util.TreeSet;
 import java.util.function.Consumer;
@@ -146,7 +147,7 @@ import java.util.stream.Stream;
  * @see     src.ALFactory
  * @see     tests.AugListTest
  */
-public class AugList<T> implements Cloneable, Iterable<T> {
+public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable<T> {
 
     /**
      * The {@link ArrayList} that this {@link AugList} decorates.
@@ -627,13 +628,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
     /**
      * Creates and returns a new {@link AugList} with identical contents but a different reference.
      * @return  A new {@link AugList} with identical contents as this one.
+     * @see     BMCloneable
      * @see     tests.AugListTest#testClone()
      * @since   AugList V1
      * @note    Replaces {@link Object#clone()}: Return type {@link AugList}, as opposed to an {@link Object}.
      *          <p>Also note that:</p>
+     *          <p>If the parameterised type is not {@link BMCloneable}, the same Object reference will be added to the resultant {@link AugList}.
+     *          <p>(I.e. altering the elements of the clone will also alter the elements of the original and vice versa.)
      *          <pre>this.clone() != this, this.clone().isEquivalent(this), this.clone().getClass() == this.getClass()</pre>
      * @tags    Creator
      */
+    @SuppressWarnings("unchecked")
+    @Override
     public AugList<T> clone() {
         /**
          * If clone is defined as `new AugList<T>() {}`,
@@ -645,7 +651,13 @@ public class AugList<T> implements Cloneable, Iterable<T> {
          */
         AugList<T> clone = new AugList<T>();
         for (T e : ls) {
+            if (e instanceof BMCloneable) {
+                // As e, type T, is BMCloneable, casting back to T should not be an issue.
+                clone.add((T)((BMCloneable)e).clone());
+            }
+            else {
             clone.add(e);
+        }
         }
         return clone;
     }
@@ -1287,15 +1299,18 @@ public class AugList<T> implements Cloneable, Iterable<T> {
      * @param   o
      *          The object in question.
      * @since   Method since AugList V2; Functionality since V1
-     * @see     #isRearrangement(AugList)
+     * @see     #isRearrangement(Iterable)
      * @see     #equals(Object)
+     * @see     {@link BMEQable#isEquivalent(Object)}
      * @see     tests.AugListTest#testIsEquivalent()
      * @return  {@code true} if equivalent, and {@code false} otherwise.
      * @note    Has expanded V1 {@link #equals(Object)} behaviour.
      *          That behaviour was moved to this method because it breaks the {@link #equals(Object)} contract that states that two equal objects have equal {@link #hashCode() hashcodes},
-     *          <p> and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
+     *          <p>and is not <i>symmetric</i> (i.e. For {@code AugList x} and {@code Object y}, {@code x.equals(y)} does not imply {@code y.equals(x)})
+     *          <p>Notably, does NOT check for the state of cmp.
      * @tags    Terminator
      */
+    @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public boolean isEquivalent(Object o) {
         if (Objects.isNull(o)) {
@@ -1343,41 +1358,10 @@ public class AugList<T> implements Cloneable, Iterable<T> {
                 Stream oStream = (Stream)o;
                 ALo = new AugList(oStream);
             }
-            String oPType = "", thisPType = "";
-                try {
-                    oPType = ALo.get(0).getClass().toGenericString();
-                } catch (IndexOutOfBoundsException e) {
-                    // If an exception is thrown, AL = ∅.
-                    try {
-                        this.getLast();
-                        // If an exception has not been thrown, AL = ∅ and this != ∅
-                        // So return false.
+            if (ALo.size() != size()) {
                         return false; 
-                    } catch (NoSuchElementException ex) {
-                        // If an exception is thrown, it is because this = ∅.
-                        // Whilst the parameterized type for both o and this are unknown,
-                        // from a mathematical standpoint ∅ = ∅, thus return true.
-                        return true;
-                    }
-                }
-                try {
-                    thisPType = this.getLast().getClass().toGenericString();
-                    // If the parameterized type doesn't match, or the lists are different lengths, they cannot be equivalent.
-                    if (!thisPType.equals(oPType) || size() != ALo.size()) {
-                        return false;
-                    }
-                    for (int i = 0; i < this.size(); i++) {
-                        // If any element mismatches, the lists cannot be equivalent.
-                        if (!this.get(i).equals(ALo.get(i))) {
-                            return false;
-                        }
-                    }
-                    return true;
-                } catch (NoSuchElementException e) {
-                    // If an exception has been thrown, AL != ∅, this = ∅
-                    // So return false
-                    return false;
-                }
+            }
+            return ALo.toString().equals(toString());
             }
         return false;
         /** 
@@ -1387,60 +1371,6 @@ public class AugList<T> implements Cloneable, Iterable<T> {
          *  (This is mostly because testing the such would be quite difficult.)
          *  Hence, not all objects that are equal will be equivalent, and vice versa.)
          */
-
-        // if (o instanceof AugList) {
-        //     @SuppressWarnings({ "rawtypes" })
-        //     // Suppress the rawtypes caution as o is an AugList.
-        //     // However, as it is not possible to be certain it is an AugList<T>, so cast to AugList.
-        //     AugList oAsAugList = (AugList) o;
-        //     // We know o is an AugList:
-        //     // Firstly, are the lists the same size?
-        //     if (ls.size() != oAsAugList.size()) {
-        //         return false;
-        //     }
-        //     // (This has been commented out as I can't figure out how to fix "class java.lang.Class cannot be cast to class java.lang.reflect.ParameterizedType")
-        //     {
-        //         // // If they are, do they have the same generic type?
-        //         // try {
-        //         //     /**
-        //         //      * Credit: There's no way I would be able to do this without StackOverflow.
-        //         //      * Based off the following:
-        //         //      * https://stackoverflow.com/questions/1942644/get-generic-type-of-java-util-list
-        //         //      */
-        //         //     Class<?> testClass = TypeFinder.class;
-                    
-        //         //     Field oALF = testClass.getDeclaredField("genericAugList");
-        //         //     ParameterizedType oALPT = (ParameterizedType) oALF.getGenericType();
-        //         //     Class<?> oALClass = (Class<?>) oALPT.getActualTypeArguments()[0];
-        //         //     System.out.println(oALClass.toString()); // class java.lang.String
-
-        //         //     Field tALF = testClass.getDeclaredField("thisAugList");
-        //         //     ParameterizedType tALPT = (ParameterizedType) tALF.getGenericType();
-        //         //     Class<?> tALClass = (Class<?>) tALPT.getActualTypeArguments()[0];
-        //         //     System.out.println(tALClass.toString()); // class java.lang.Integer
-
-        //         //     // If the generic fields have different names, the lists are treated as unequal.
-        //         //     if (!oALClass.toString().isEquivalent(tALClass.toString())) {
-        //         //         return false;
-        //         //     }
-        //         // } catch (NoSuchFieldException e) {
-        //         //     return false;
-        //         // }
-        //     }
-            
-        //     // If they are, are the sequences identical?
-        //     for (int i = 0; i < ls.size(); i++) {
-        //         if (!ls.get(i).equals(oAsAugList.get(i))) {
-        //             return false;
-        //         }
-        //     }
-        //     // If they are, assume equality.
-        //     return true;
-        // }
-        // if (o instanceof List) {
-        //     // Delegate the job of answering this to built-in methods.
-        //     return ls.equals(o);
-        // }
     }
 
     /**
