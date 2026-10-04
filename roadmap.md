@@ -10,7 +10,7 @@ Please see the provided LICENSE file for more information.
 ## TODO
 
 - Credits (In progress)
-- Check tests with Iterables containing nulls
+- History file documenting AugList pre-alpha
 - Figure out how to setup a dependency graph
 
 ## Possible features
@@ -156,6 +156,7 @@ Please see the provided LICENSE file for more information.
 
 ## Completed
 
+- Check tests with Iterables containing nulls
 - Figure out if `AugList.spliterator()` can be upgraded
 - AugList Implements RandomAccess
 - `AugList`: Un-override `hashCode()` to satisfy contract of `equals()`.

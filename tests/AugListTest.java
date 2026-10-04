@@ -631,6 +631,7 @@ public final class AugListTest implements MultiTest {
         assertFalse(testDataDouble.equals(ARRLISTDOUBLE));
         assertTrue(testDataDouble.equals(testDataDouble));
         assertFalse(testDataDouble.equals(testDataInt));
+        assertFalse(testDataDouble.equals(null));
     }
 
     /**
@@ -2199,6 +2200,9 @@ public final class AugListTest implements MultiTest {
         assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(99), new AugList<Double>(-1.5)).isEquivalent("[1.0, 2.0, 7.11, -2.5, -1.5]"));
         assertTrue(testDataString.clone().setMany(null, null).getClass().toGenericString().equals("public class src.AugList<T>"));
         assertTrue(testDataDouble.clone().setMany(null, null).parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(null, null, null), new AugList<Double>(null, null, null)).isEquivalent(testDataDouble));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(0, 1, 2), new AugList<Double>(null, null, null)).isEquivalent("[*null*, *null*, *null*, -2.5, 3.1415926]"));
+        assertTrue(testDataDouble.clone().setMany(new AugList<Integer>(null, null, null), new AugList<Double>(1.0, 2.0, 3.0)).isEquivalent(testDataDouble));
     }
 
     /**

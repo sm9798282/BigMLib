@@ -285,7 +285,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * @param       values
      *              Their {@link Iterable} containing the values.
      *              <p>Removes values without corresponding keys.
-     * @return      A Tuple ({@link SimpleEntry}) with equally {@link #size() sized} {@link AugList AugLists}.
+     * @return      A {@link SimpleEntry} with equally {@link #size() sized} {@link AugList AugLists}.
      * @since       AugList V2
      * @see         #equaliseAndFilter(Iterable, Iterable, boolean)
      * @note        Could easily be transferred to a helper class, as no instance data is required.
@@ -309,15 +309,15 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * Internal method that takes 2 {@link Iterable Iterables}, most likely of different lengths, and trim the longer one down to the length of the shorter.
      * @param       keys
      *              The keys which will be used.
-     *              <p>Removes keys without corresponding integers.
+     *              <p>Removes keys without corresponding integers. (A null integer is considered as missing.)
      * @param       ints
      *              Their corresponding integer values.
-     *              <p>Removes ints without corresponding keys.
+     *              <p>Removes ints without corresponding keys. (A null key is NOT considered to be missing.)
      *              <p>Negative ints are treated as 0.
      *              <p>If {@code intsAreIndices == true}, clamps ints higher than {@link #size()} to 1 less than the size.
      * @param       intsAreIndices
      *              Whether the supplied ints should be treated as Counts (Unbounded positive value) or as Indices (Bounded by AugList size)
-     * @return      A Tuple ({@link SimpleEntry}) with equally {@link #size() sized} {@link AugList AugLists}, with the ints filtered as requested.
+     * @return      A {@link SimpleEntry} with equally {@link #size() sized} {@link AugList AugLists}, with the ints filtered as requested.
      * @see         #equaliseLengths(Iterable, Iterable)
      * @see         #setMany(Iterable, Iterable)
      * @since       AugList V2
@@ -325,8 +325,14 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      */
     private SimpleEntry<AugList<T>, AugList<Integer>> equaliseAndFilter(Iterable<? super T> keys, Iterable<Integer> ints, boolean intsAreIndices) {
         SimpleEntry<AugList<T>, AugList<Integer>> res = equaliseLengths(keys, ints);
-        AugList<T> ALvalues = res.getKey();
-        AugList<Integer> ALints = res.getValue();
+        AugList<T> ALvalues = new AugList<T>(), ALVraw = res.getKey();
+        AugList<Integer> ALints = new AugList<Integer>(), ALIraw = res.getValue();
+        for (int i = 0; i < ALIraw.size(); i++) { // Removes the key if its associated int is null.
+            if (!Objects.isNull(ALIraw.get(i))) {
+                ALvalues.add(ALVraw.get(i));
+                ALints.add(ALIraw.get(i));
+            }
+        }
         ALints.applyAll(count -> count > 0 ? count : 0); // Set negatives to 0
         if (intsAreIndices) {
             // Set indices over the maximum index to within bounds
@@ -687,6 +693,8 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      *          If {@code true}, returns {@code true} if ALL elements are present.
      *          If {@code false}, returns {@code true} if ANY element is present.
      * @return  The desired result. (see param {@code allOrAny})
+     * @throws  NullPointerException
+     *          elements is null. This will never happen under the default implementation.
      * @since   AugList V2
      * @see     #containsAll(AugList)
      * @see     #containsAll(T...) containsAll(T...)
@@ -853,6 +861,8 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
 
     /**
      * Takes the cross product of this {@link AugList}, A, with the elements sourced from the given {@link Iterable}, B.
+     * @param   <U>
+     *          The type of elements sourced from itrB.
      * @param   itrB
      *          The source of the second selection of elements, B.
      * @return  The Mathematical cross product of the two lists, A x B.
@@ -932,6 +942,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      * @see     #hashCode()
      * @see     #isEquivalent(Object)
      * @see     #isRearrangement(Iterable)
+     * @see     tests.AugListTest#testEquals()
      * @tags    Terminator
      */
     @Override
@@ -1364,7 +1375,7 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
          *  This equivalence function does not consider that possibility.
          *  (This is mostly because testing the such would be quite difficult.)
          *  Hence, not all objects that are equal will be equivalent, and vice versa.)
-         */
+        */
         return false;
     }
 
