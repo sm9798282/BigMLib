@@ -2237,9 +2237,9 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
             validTarget.add(i);
         }
         AugList<T> ret = this.clone();
-        while (validTarget.size() != 0) {
+        for (int i = 0; i < ls.size(); i++) {
             Integer selectedIndex = r.nextInt(validTarget.size());
-            ret.set(selectedIndex, ls.get(selectedIndex));
+            ret.set(i, ls.get(validTarget.get(selectedIndex)));
             validTarget.removeAt(selectedIndex);
         }
         return ret;
@@ -2256,8 +2256,9 @@ public class AugList<T> implements BMCloneable, BMEQable, RandomAccess, Iterable
      */
     public AugList<T> shuffleSelf() {
         AugList<T> clone = clone();
-        this.ls = shuffleCopy().ls;
-        if (isEquivalent(clone)) {
+        AugList<T> shuffled = shuffleCopy();
+        this.clear().addAll(shuffled);
+        if (!isEquivalent(clone)) {
             cmp = null; // Order has changed, so destroy cmp.
         }
         return this;

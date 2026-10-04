@@ -2264,8 +2264,12 @@ public final class AugListTest implements MultiTest {
     @Test
     public void testShuffleSelf() {
         testIsRearrangement();
+        for (int i = 0; i < 1021; i++) {
         assertTrue(testDataDouble.shuffleSelf().getClass().toGenericString().equals("public class src.AugList<T>"));
+        }
         assertTrue(testDataDouble.shuffleSelf().parameterizedTypeDesc().equals("public final class java.lang.Double"));
+        assertTrue(new AugList<Double>().shuffleSelf().isEquivalent(new AugList<Double>()));
+        assertTrue(new AugList<Double>(1.0).shuffleSelf().isEquivalent(new AugList<Double>(1.0)));
     }
 
     /**
