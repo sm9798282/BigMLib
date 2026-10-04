@@ -6,13 +6,15 @@
  */
 package src;
 
+import java.util.Objects;
+
 /**
  * Provides increasing values with every call.
  * @version Ticker Version 1
  * @author  "https://github.com/sm9798282" aka "https://csgitlab.reading.ac.uk/yn019034"
  * @see     tests.TickerTest
  */
-public class Ticker implements Cloneable {
+public class Ticker implements BMCloneable, BMEQable {
     /**
      * Current value of the ticker.
      */
@@ -39,6 +41,7 @@ public class Ticker implements Cloneable {
      *              The value to start this {@link Ticker} at.
      * @see         tests.TickerTest#testInstantiateValue
      * @overloads   {@link #Ticker()}, {@link #Ticker(int)}
+     * @note        Also sets the justReset flag to false.
      * @tags        Constructor
      */
     public Ticker(int value) {
@@ -64,10 +67,41 @@ public class Ticker implements Cloneable {
 
     /**
      * @return  A clone of this {@link Ticker}.
+     * @see     BMCloneable
+     * @tags    Creator
      */
     @Override
     public Ticker clone() {
         return new Ticker(value, justReset);
+    }
+
+    /**
+     * If the given {@link Object} is an instance of any of the following, it is considered equivalent IF:
+     * <p>- {@link Integer}: EITHER this ticker hasn't just reset and its value matches the given {@link Integer};
+     * - {@link Integer}: OR has the same {@link #hashCode()} as this {@link Ticker}.
+     * - {@link String}: Same as {@link #toString()}.
+     * - {@link Ticker}: The value is the same and the justReset flag is the same
+     * <p>Any other type of Object will fail to evaluate as equivalent.
+     * @param   o
+     *          The {@link Object} to find equivalence against.
+     * @return  Equivalence
+     * @see     tests.TickerTest#testIsEquivalent()
+     * @tags    Terminator
+     */
+    public boolean isEquivalent(Object o) {
+        if (Objects.isNull(o)) {
+            return false;
+        }
+        if (o instanceof Integer) {
+            return isEquivalent(new Ticker((Integer)(o))) || hashCode() == o.hashCode();
+        }
+        if (o instanceof Ticker) {
+            return value == ((Ticker)o).value && justReset == ((Ticker)o).justReset;
+        }
+        if (o instanceof String) {
+            return toString().equals(o);
+        }
+        return false;
     }
 
     /**

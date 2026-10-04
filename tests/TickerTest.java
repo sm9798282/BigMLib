@@ -21,6 +21,9 @@ public final class TickerTest implements MultiTest {
     
     Ticker t = new Ticker();
 
+    /**
+     * Initialises the test data - t is reset to -1.
+     */
     public void setupTestData() {
         t = new Ticker();
     }
@@ -30,6 +33,7 @@ public final class TickerTest implements MultiTest {
         setupTestData();
         testInstantiateBlank();
         testInstantiateValue();
+        testIsEquivalent();
         testReset();
         testSet();
         testTick();
@@ -75,6 +79,28 @@ public final class TickerTest implements MultiTest {
         assertTrue(new Ticker(11).toString().equals("V11"));
         assertTrue(new Ticker(99).toString().equals("V99"));
         assertTrue(new Ticker(99).getClass().toGenericString().equals("public class src.Ticker"));
+    }
+
+    /**
+     * JUnit tester for Equivalence
+     * @see src.Ticker#isEquivalent()
+     */
+    @Test
+    public void testIsEquivalent() {
+        setupTestData();
+        assertTrue(t.isEquivalent(t));
+        assertTrue(t.isEquivalent(t.clone()));
+        assertTrue(t.isEquivalent(t.hashCode()));
+        assertFalse(t.isEquivalent(-1)); // t was just reset so value matches, justReset mismatch.
+        assertTrue(t.isEquivalent(t.toString())); // t is now considered not reset (as toString() updates the flag)
+        assertTrue(t.isEquivalent(new Ticker(-1)));
+        assertFalse(t.isEquivalent(t.clone().tick()));
+        assertFalse(t.isEquivalent(0));
+        assertFalse(t.isEquivalent(""));
+        assertFalse(t.isEquivalent(null));
+        t.tick(); // t is V0, false
+        assertTrue(t.isEquivalent(0)); // t not reset, so can match.
+        assertFalse(t.isEquivalent(1.0));
     }
 
     /**
